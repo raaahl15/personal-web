@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Workspace - Rahul Ghulam</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* PALET WARNA (DOMINAN BIRU + UNGU, MAGENTA, PINK, CORAL) */
+      --color-blue-dom: #0073FF;
+      --color-blue-light: #80B9FF;
+      --color-purple: #7000FF;
+      --color-magenta: #D9008A;
+      --color-pink: #FF4D9B;
+      --color-coral: #FF6B6B;
+      
+      --deep-space: #02081C;
+      --panel-bg: rgba(9, 18, 53, 0.4); 
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--deep-space);
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Page Routing Styles */
+    .page-view {
+      display: none;
+    }
+    .page-view.active {
+      display: block;
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Cosmic Animations */
+    @keyframes rotate-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes rotate-slow-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+    .animate-spin-slow { animation: rotate-slow 40s linear infinite; }
+    .animate-spin-reverse { animation: rotate-slow-reverse 50s linear infinite; }
+
+    /* Typewriter Effect */
+    .typewriter-text {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid var(--color-blue-light);
+      width: 0;
+      animation: typing 2.5s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing { from { width: 0; } to { width: 100%; } }
+    @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: var(--color-blue-light); } }
+
+    /* Custom Elements */
+    .gas-giant {
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(128, 185, 255, 0.4) 0%, transparent 60%),
+        repeating-linear-gradient(0deg, rgba(2, 8, 28, 0.9) 0%, rgba(0, 115, 255, 0.5) 10%, rgba(112, 0, 255, 0.4) 20%, rgba(2, 8, 28, 0.9) 30%);
+      box-shadow: inset -30px -30px 60px rgba(0, 0, 0, 0.9), inset 10px 10px 40px rgba(0, 115, 255, 0.4), 0 0 80px rgba(112, 0, 255, 0.3);
+      border: 1px solid rgba(0, 115, 255, 0.3);
+    }
+    .orbital-ring {
+      transform-style: preserve-3d;
+      transform: rotateX(75deg) rotateY(-10deg);
+      border: 1px solid rgba(0, 115, 255, 0.4);
+      box-shadow: 0 0 20px rgba(112, 0, 255, 0.2), inset 0 0 20px rgba(0, 115, 255, 0.3);
+    }
+    .orbital-ring-inner {
+      transform-style: preserve-3d;
+      transform: rotateX(70deg) rotateY(15deg);
+      border: 2px solid rgba(255, 77, 155, 0.2);
+    }
+    .glass-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid rgba(0, 115, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-panel:hover {
+      border-color: rgba(0, 115, 255, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 115, 255, 0.2);
+      transform: translateY(-5px);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 115, 255, 0.4); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 115, 255, 0.8); }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Utilities */
+    .text-gradient-main {
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-image: linear-gradient(135deg, var(--color-blue-light), var(--color-blue-dom), var(--color-purple), var(--color-pink), var(--color-coral));
+    }
+    @keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .animate-sweep { animation: sweep 1.5s ease-in-out infinite; }
+    .menu-line-open-1 { transform: translateY(4px) rotate(45deg); }
+    .menu-line-open-2 { transform: translateY(-4px) rotate(-45deg); }
+
+    /* Liquid Gradient Background */
+    @keyframes liquidMove1 {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33% { transform: translate(8%, -8%) rotate(120deg) scale(1.2); }
+      66% { transform: translate(-8%, 8%) rotate(240deg) scale(0.8); }
+      100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+    }
+    @keyframes liquidMove2 {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(15%, 20%) rotate(180deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
+    }
+    .liquid-layer::before, .liquid-layer::after {
+      content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1; filter: blur(90px); pointer-events: none;
+    }
+    .liquid-layer::before {
+      background: radial-gradient(circle at 25% 25%, var(--color-blue-dom) 0%, transparent 60%), radial-gradient(circle at 75% 60%, var(--color-purple) 0%, transparent 60%), radial-gradient(circle at 40% 80%, var(--color-coral) 0%, transparent 55%);
+      animation: liquidMove1 12s linear infinite;
+    }
+    .liquid-layer::after {
+      background: radial-gradient(circle at 65% 15%, var(--color-magenta) 0%, transparent 60%), radial-gradient(circle at 15% 65%, var(--color-blue-dom) 0%, transparent 65%), radial-gradient(circle at 85% 85%, var(--color-pink) 0%, transparent 60%);
+      animation: liquidMove2 15s linear infinite reverse;
+    }
+    #main-bg.liquid-layer::before, #main-bg.liquid-layer::after { opacity: 0.35; }
+    #mobile-menu.liquid-layer::before, #mobile-menu.liquid-layer::after { opacity: 0.85; }
+
+    /* Internal Dashboard Routing Styles */
+    .dash-view {
+      display: none;
+    }
+    .dash-view.active {
+      display: flex;
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#02081C] text-white font-sans selection:bg-[#0073FF]/40 relative flex flex-col">
+
+  <!-- DYNAMIC LIQUID FLUID BACKGROUND LAYER (Appears on all pages) -->
+  <div id="main-bg" class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#02081C] liquid-layer">
+    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay z-10"></div>
+  </div>
+
+  <!-- MOUSE TRAIL EFFECT -->
+  <div id="mouse-trail" class="hidden md:block fixed top-0 left-0 w-[400px] h-[400px] bg-[#0073FF]/20 rounded-full pointer-events-none filter blur-[150px] z-50 transition-transform duration-500 ease-out mix-blend-screen" style="transform: translate(-200px, -200px)"></div>
+
+  <!-- MAIN NAVIGATION -->
+  <nav class="fixed top-0 w-full z-50 px-4 py-4 transition-all bg-gradient-to-b from-[#02081C]/90 to-transparent backdrop-blur-md border-b border-[#0073FF]/30">
+    <div class="max-w-7xl mx-auto flex items-center justify-between relative z-50">
+      <div class="flex items-center gap-3 cursor-pointer group" onclick="setActivePage('home')">
+        <i data-lucide="hexagon" class="w-7 h-7 text-[#0073FF] animate-spin-slow drop-shadow-[0_0_8px_rgba(0,115,255,0.5)]" stroke-width="1.5"></i>
+        <span class="font-black tracking-[0.25em] uppercase text-sm group-hover:text-[#80B9FF] transition-colors text-gradient-main hidden sm:inline-block">
+          R V L T I
+        </span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-1.5 bg-[#091235]/60 p-1.5 rounded-full border border-[#0073FF]/40 backdrop-blur-lg shadow-[0_0_20px_rgba(0,115,255,0.2)] overflow-x-auto hide-scrollbar">
+        <button data-target="home" class="nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300">
+          <i data-lucide="home" class="w-4 h-4"></i> <span class="hidden lg:inline">Home</span>
+        </button>
+        <button data-target="profile" class="nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300">
+          <i data-lucide="user" class="w-4 h-4"></i> <span class="hidden lg:inline">Profile</span>
+        </button>
+        <button data-target="portfolio" class="nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300">
+          <i data-lucide="briefcase" class="w-4 h-4"></i> <span class="hidden lg:inline">Portfolio</span>
+        </button>
+        <button data-target="projects" class="nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300">
+          <i data-lucide="folder-git-2" class="w-4 h-4"></i> <span class="hidden lg:inline">Vault</span>
+        </button>
+        <button data-target="dashboard" class="nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300">
+          <i data-lucide="terminal-square" class="w-4 h-4"></i> <span class="hidden lg:inline">Command</span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Icon Toggle -->
+      <button id="mobile-menu-btn" class="md:hidden w-10 h-10 rounded-full border border-[#0073FF]/50 flex flex-col items-center justify-center gap-1.5 hover:bg-[#0073FF]/30 transition-colors shadow-[0_0_10px_rgba(0,115,255,0.3)] z-50">
+        <div id="mobile-line-1" class="w-4 h-0.5 bg-[#80B9FF] rounded-full transition-transform duration-300"></div>
+        <div id="mobile-line-2" class="w-4 h-0.5 bg-[#80B9FF] rounded-full transition-transform duration-300"></div>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU FULLSCREEN OVERLAY -->
+  <div id="mobile-menu" class="fixed inset-0 bg-[#02081C]/70 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-500 flex flex-col items-center justify-center gap-8 md:hidden shadow-2xl overflow-hidden liquid-layer">
+    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay z-0"></div>
+    <button data-target="home" class="mobile-nav-btn relative z-10 text-[#80B9FF] text-2xl font-black tracking-[0.2em] uppercase hover:text-[#0073FF] transition-colors flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,115,255,0.4)]"><i data-lucide="home" class="w-6 h-6"></i> Home</button>
+    <button data-target="profile" class="mobile-nav-btn relative z-10 text-[#80B9FF] text-2xl font-black tracking-[0.2em] uppercase hover:text-[#0073FF] transition-colors flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,115,255,0.4)]"><i data-lucide="user" class="w-6 h-6"></i> Profile</button>
+    <button data-target="portfolio" class="mobile-nav-btn relative z-10 text-[#80B9FF] text-2xl font-black tracking-[0.2em] uppercase hover:text-[#0073FF] transition-colors flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,115,255,0.4)]"><i data-lucide="briefcase" class="w-6 h-6"></i> Portfolio</button>
+    <button data-target="projects" class="mobile-nav-btn relative z-10 text-[#80B9FF] text-2xl font-black tracking-[0.2em] uppercase hover:text-[#0073FF] transition-colors flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,115,255,0.4)]"><i data-lucide="folder-git-2" class="w-6 h-6"></i> Vault</button>
+    <button data-target="dashboard" class="mobile-nav-btn relative z-10 text-[#80B9FF] text-2xl font-black tracking-[0.2em] uppercase hover:text-[#0073FF] transition-colors flex items-center gap-4 drop-shadow-[0_0_8px_rgba(0,115,255,0.4)]"><i data-lucide="terminal-square" class="w-6 h-6"></i> Command</button>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="w-full flex-1 relative z-10">
+
+    <!-- ========================================= -->
+    <!-- 1. HOME PAGE VIEW                         -->
+    <!-- ========================================= -->
+    <div id="page-home" class="page-view active w-full relative z-10 min-h-screen pb-24">
+      <!-- SIDE PANEL (Desktop Only) -->
+      <div class="fixed left-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-8 z-40 mix-blend-screen">
+        <div class="w-px h-16 bg-gradient-to-b from-transparent to-[#0073FF]/60"></div>
+        <div class="flex flex-col items-center gap-2 group"><span class="text-xs font-bold tracking-widest transition-colors text-[#80B9FF]">01</span><div class="w-1.5 h-1.5 rounded-full bg-[#0073FF] shadow-[0_0_10px_#0073FF]"></div></div>
+        <div class="flex flex-col items-center gap-2 group"><span class="text-xs font-bold tracking-widest transition-colors text-gray-500 group-hover:text-[#0073FF]">02</span><div class="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-[#0073FF]"></div></div>
+        <div class="flex flex-col items-center gap-2 group"><span class="text-xs font-bold tracking-widest transition-colors text-gray-500 group-hover:text-[#0073FF]">03</span><div class="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-[#0073FF]"></div></div>
+        <div class="w-px h-16 bg-gradient-to-t from-transparent to-[#0073FF]/60"></div>
+        <div class="absolute top-full mt-10 whitespace-nowrap -rotate-90 origin-top-left text-[9px] tracking-[0.4em] text-[#80B9FF]/70 uppercase font-bold">SYSTEM STATUS: OPTIMAL</div>
+      </div>
+
+      <!-- SCROLLING PARALLAX BACKGROUND (Hanya di Home) -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+         <div data-parallax-y="-0.25" data-parallax-rot="0.05" class="absolute top-[170vh] right-[5%] w-[120px] h-[120px] md:w-[180px] md:h-[180px] rounded-full gas-giant opacity-50 shadow-[0_0_40px_rgba(0,115,255,0.3)]"></div>
+         <div data-parallax-y="-0.35" data-parallax-rot="0.2" class="absolute top-[190vh] left-[15%] text-[#0073FF] opacity-30"><i data-lucide="hexagon" class="w-8 h-8 md:w-10 md:h-10" stroke-width="1"></i></div>
+         <div data-parallax-y="-0.2" data-parallax-rot="-0.1" class="absolute top-[250vh] right-[20%] text-[#D9008A] opacity-20"><i data-lucide="octagon" class="w-12 h-12 md:w-16 md:h-16" stroke-width="1"></i></div>
+         <div data-parallax-y="-0.4" data-parallax-rot="0.15" class="absolute top-[300vh] left-[25%] text-[#FF6B6B] opacity-30"><i data-lucide="box" class="w-10 h-10 md:w-12 md:h-12" stroke-width="1"></i></div>
+         <div data-parallax-y="-0.3" class="absolute top-[280vh] left-[10%] w-[50px] h-[50px] md:w-[80px] md:h-[80px] rounded-full bg-gradient-to-tr from-[#0073FF] to-[#D9008A] opacity-50 blur-[5px]"></div>
+      </div>
+
+      <!-- SECTION 1: HERO -->
+      <div class="relative w-full min-h-screen flex flex-col items-center justify-center pt-20 px-4 text-center overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div data-parallax-y="0.05" class="absolute top-[10%] left-[20%] w-1 h-1 bg-[#80B9FF] rounded-full shadow-[0_0_8px_#80B9FF]"></div>
+          <div data-parallax-y="0.08" class="absolute top-[50%] right-[10%] w-1.5 h-1.5 bg-[#0073FF] rounded-full shadow-[0_0_10px_#0073FF]"></div>
+          <div data-parallax-y="0.06" class="absolute top-[80%] left-[15%] w-2 h-2 bg-white rounded-full opacity-40"></div>
+        </div>
+        
+        <!-- Centerpiece Planet -->
+        <div data-parallax-center="true" data-parallax-y="0.25" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] z-10">
+          <div class="absolute w-[180px] h-[180px] sm:w-[250px] sm:h-[250px] md:w-[380px] md:h-[380px] rounded-full gas-giant animate-spin-slow z-10"></div>
+          <div class="absolute w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] md:w-[650px] md:h-[650px] rounded-full orbital-ring z-20">
+             <div class="absolute top-0 left-1/2 w-2 h-2 bg-[#0073FF] rounded-full shadow-[0_0_12px_#0073FF] -translate-x-1/2 -translate-y-1/2 animate-spin-reverse" style="transform-origin: 50% 50%"></div>
+          </div>
+          <div class="absolute w-[250px] h-[250px] sm:w-[320px] sm:h-[320px] md:w-[550px] md:h-[550px] rounded-full orbital-ring-inner z-0"></div>
+          <div class="absolute bottom-[15%] md:bottom-[15%] z-30 flex flex-col items-center">
+            <svg viewBox="0 0 24 64" class="w-5 h-12 sm:w-6 sm:h-16 md:w-8 md:h-24 text-black drop-shadow-[0_0_20px_rgba(0,115,255,0.8)] fill-[#02081C] stroke-[#80B9FF] stroke-[0.5px]">
+              <path d="M12 4 C14 4 15 5 15 7 C15 9 14 10 12 10 C10 10 9 9 9 7 C9 5 10 4 12 4 Z" />
+              <path d="M12 11 L12 35 M8 18 L16 18 M12 35 L9 62 M12 35 L15 62" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="w-16 h-3 sm:w-24 sm:h-4 md:w-32 md:h-6 rounded-[100%] bg-gradient-to-b from-[#0073FF]/50 to-transparent border-t border-[#80B9FF]/60 blur-[1px] mt-[-3px] sm:mt-[-5px]"></div>
+          </div>
+        </div>
+
+        <!-- Foreground Hero Content -->
+        <div data-parallax-y="-0.05" class="relative z-30 flex flex-col items-center mt-32 md:mt-20 pointer-events-auto w-full px-4">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0073FF]/40 bg-gradient-to-r from-[#091235]/80 to-[#7000FF]/30 backdrop-blur-md mb-6 shadow-[0_0_15px_rgba(0,115,255,0.3)]">
+             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#80B9FF] animate-pulse"></i>
+             <span class="text-[9px] md:text-[10px] text-[#80B9FF] font-black tracking-[0.2em] uppercase">Welcome to my website</span>
+          </div>
+          <div class="h-6 mb-4 flex items-center justify-center">
+            <div class="inline-block text-[10px] md:text-xs text-[#80B9FF]/70 tracking-[0.3em] font-mono font-bold uppercase typewriter-text">> INITIATING SYSTEMS COMMAND_</div>
+          </div>
+          <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 text-gradient-main uppercase drop-shadow-[0_0_30px_rgba(112,0,255,0.3)] leading-tight">
+            ENGINEERING <br /> THE FUTURE
+          </h1>
+          <p class="text-[#80B9FF] text-xs md:text-sm mb-12 font-bold max-w-xl leading-relaxed bg-[#02081C]/60 backdrop-blur-md p-5 rounded-2xl border border-[#0073FF]/30 shadow-[0_0_20px_rgba(0,115,255,0.2)] mx-auto w-full">
+            Ngebangun ekosistem digital yang gak cuma estetis, tapi juga scalable dan powerful. Let's build something epic.
+          </p>
+          <button onclick="setActivePage('projects')" class="group relative w-full sm:w-auto justify-center px-10 py-4 rounded-full bg-gradient-to-r from-[#7000FF]/40 to-[#0073FF]/40 backdrop-blur-md border border-[#0073FF] text-[#80B9FF] text-sm font-bold tracking-widest uppercase overflow-hidden transition-all duration-500 hover:from-[#0073FF] hover:to-[#D9008A] hover:text-white hover:shadow-[0_0_40px_rgba(0,115,255,0.6)] flex items-center gap-3">
+            EXPLORE THE VAULT <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+            <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-sweep"></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 2: INTRO & SKILL MATRIX -->
+      <div class="relative z-20 w-full max-w-6xl mx-auto px-4 mt-32">
+        <div class="glass-panel p-6 sm:p-8 md:p-12 rounded-[2rem] mb-16 text-center max-w-4xl mx-auto flex flex-col items-center relative overflow-hidden group">
+          <div class="absolute inset-0 bg-gradient-to-br from-[#0073FF]/10 via-[#7000FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <i data-lucide="user" class="w-10 h-10 md:w-12 md:h-12 text-[#0073FF] mb-6" stroke-width="1"></i>
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-6 tracking-tight uppercase drop-shadow-[0_0_15px_rgba(0,115,255,0.4)]">Architecting Digital & Physical Realms</h2>
+          <p class="text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
+            Saya adalah seorang Systems Engineer & Full-Stack Developer yang bersemangat mengintegrasikan perangkat keras presisi dengan perangkat lunak berskala besar. Dari mendesain sirkuit tertanam hingga membangun aplikasi antarmuka web modern, misi saya adalah menciptakan ekosistem teknologi yang mulus dan efisien.
+          </p>
+        </div>
+        <div class="text-center mb-12">
+          <h3 class="text-[#80B9FF] font-bold tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-xs uppercase mb-4 flex items-center justify-center gap-4">
+            <div class="w-8 sm:w-12 h-px bg-[#0073FF]/40"></div>Core Capabilities<div class="w-8 sm:w-12 h-px bg-[#0073FF]/40"></div>
+          </h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div data-parallax-y="-0.02" class="glass-panel p-6 sm:p-8 rounded-2xl flex flex-col items-center text-center group">
+            <div class="relative w-16 h-16 sm:w-20 sm:h-20 mb-6 flex items-center justify-center">
+              <div class="absolute inset-0 text-[#7000FF]/30 animate-spin-slow group-hover:text-[#0073FF]/60 transition-colors"><i data-lucide="hexagon" class="w-full h-full" stroke-width="0.5"></i></div>
+              <div class="relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_10px_rgba(0,115,255,0.5)]"><i data-lucide="cpu" class="w-10 h-10 sm:w-12 sm:h-12 text-[#0073FF]" stroke-width="1"></i></div>
+            </div>
+            <h3 class="text-white font-bold tracking-wide mb-2 uppercase text-xs sm:text-sm">Embedded Systems</h3>
+            <p class="text-[#80B9FF]/70 text-[10px] sm:text-xs tracking-wider leading-relaxed">Microcontrollers, IoT, RTOS, C/C++</p>
+          </div>
+          <div data-parallax-y="-0.04" class="glass-panel p-6 sm:p-8 rounded-2xl flex flex-col items-center text-center group">
+            <div class="relative w-16 h-16 sm:w-20 sm:h-20 mb-6 flex items-center justify-center">
+              <div class="absolute inset-0 text-[#D9008A]/30 animate-spin-slow group-hover:text-[#0073FF]/60 transition-colors"><i data-lucide="box" class="w-full h-full" stroke-width="0.5"></i></div>
+              <div class="relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_10px_rgba(0,115,255,0.5)]"><i data-lucide="globe" class="w-10 h-10 sm:w-12 sm:h-12 text-[#80B9FF]" stroke-width="1"></i></div>
+            </div>
+            <h3 class="text-white font-bold tracking-wide mb-2 uppercase text-xs sm:text-sm">Web Engineering</h3>
+            <p class="text-[#80B9FF]/70 text-[10px] sm:text-xs tracking-wider leading-relaxed">React.js, Node.js, Modern UI/UX</p>
+          </div>
+          <div data-parallax-y="-0.06" class="glass-panel p-6 sm:p-8 rounded-2xl flex flex-col items-center text-center group">
+            <div class="relative w-16 h-16 sm:w-20 sm:h-20 mb-6 flex items-center justify-center">
+              <div class="absolute inset-0 text-[#FF6B6B]/30 animate-spin-slow group-hover:text-[#0073FF]/60 transition-colors"><i data-lucide="octagon" class="w-full h-full" stroke-width="0.5"></i></div>
+              <div class="relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_10px_rgba(255,77,155,0.5)]"><i data-lucide="database" class="w-10 h-10 sm:w-12 sm:h-12 text-[#FF4D9B]" stroke-width="1"></i></div>
+            </div>
+            <h3 class="text-white font-bold tracking-wide mb-2 uppercase text-xs sm:text-sm">System Architecture</h3>
+            <p class="text-[#80B9FF]/70 text-[10px] sm:text-xs tracking-wider leading-relaxed">Cloud, Database Design, Security</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: EXTENDED HOMEPAGE -->
+      <div class="relative z-20 w-full max-w-6xl mx-auto px-4 mt-20 sm:mt-32">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="order-2 lg:order-1">
+             <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl text-center border-t border-[#0073FF]/30 hover:border-[#7000FF] transition-colors">
+                  <h4 class="text-2xl sm:text-3xl md:text-4xl font-black text-gradient-main mb-2">5+</h4>
+                  <p class="text-[9px] sm:text-[10px] text-[#80B9FF] uppercase tracking-widest font-bold">Years Exp.</p>
+                </div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl text-center border-t border-[#0073FF]/30 hover:border-[#7000FF] transition-colors">
+                  <h4 class="text-2xl sm:text-3xl md:text-4xl font-black text-gradient-main mb-2">24</h4>
+                  <p class="text-[9px] sm:text-[10px] text-[#80B9FF] uppercase tracking-widest font-bold">Projects Done</p>
+                </div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl text-center border-t border-[#0073FF]/30 hover:border-[#7000FF] transition-colors">
+                  <h4 class="text-2xl sm:text-3xl md:text-4xl font-black text-gradient-main mb-2">99%</h4>
+                  <p class="text-[9px] sm:text-[10px] text-[#80B9FF] uppercase tracking-widest font-bold">Uptime</p>
+                </div>
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl text-center border-t border-[#0073FF]/30 hover:border-[#7000FF] transition-colors">
+                  <h4 class="text-2xl sm:text-3xl md:text-4xl font-black text-gradient-main mb-2">1M+</h4>
+                  <p class="text-[9px] sm:text-[10px] text-[#80B9FF] uppercase tracking-widest font-bold">Lines of Code</p>
+                </div>
+             </div>
+          </div>
+          <div class="order-1 lg:order-2">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-6 uppercase drop-shadow-[0_0_15px_rgba(0,115,255,0.4)]">
+              Sinergi Perangkat & <span class="text-[#0073FF]">Kode</span>
+            </h2>
+            <p class="text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base mb-8 border-l-2 border-[#0073FF] pl-4 sm:pl-6 py-2">
+              Bukan sekadar menulis baris kode, tapi merancang sebuah sistem holistik. Dari sensor mikro hingga cloud berskala global, setiap elemen harus saling berbicara dengan harmoni. Itulah esensi dari inovasi teknologi kosmik.
+            </p>
+            <button onclick="setActivePage('profile')" class="text-[#80B9FF] font-bold tracking-widest text-xs sm:text-sm uppercase flex items-center gap-2 hover:text-[#0073FF] transition-colors drop-shadow-[0_0_10px_rgba(0,115,255,0.5)]">
+              Kenali Lebih Lanjut <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SECTION 4: SPOTLIGHT LINK -->
+      <div class="mt-20 sm:mt-32 text-center z-20 w-full px-4">
+        <p class="text-[#80B9FF]/60 text-[10px] sm:text-xs uppercase font-bold tracking-[0.3em] mb-6">Jelajahi Dunia Saya</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+          <button onclick="setActivePage('portfolio')" class="w-full sm:w-auto justify-center px-8 py-4 sm:py-3 rounded-full bg-[#091235]/50 border border-[#0073FF] text-[#80B9FF] text-xs font-bold tracking-widest uppercase hover:bg-[#0073FF]/20 transition-colors shadow-[0_0_15px_rgba(0,115,255,0.3)] flex items-center gap-2">
+            <i data-lucide="briefcase" class="w-4 h-4"></i> Lihat Portofolio
+          </button>
+          <button onclick="setActivePage('projects')" class="w-full sm:w-auto justify-center px-8 py-4 sm:py-3 rounded-full bg-[#7000FF]/10 border border-[#7000FF] text-[#FF4D9B] text-xs font-bold tracking-widest uppercase hover:bg-[#7000FF]/30 transition-colors shadow-[0_0_15px_rgba(112,0,255,0.3)] flex items-center gap-2">
+            <i data-lucide="folder-git-2" class="w-4 h-4"></i> Dokumentasi Riset
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- 2. PROFILE PAGE VIEW                      -->
+    <!-- ========================================= -->
+    <div id="page-profile" class="page-view w-full max-w-6xl mx-auto z-20 relative pt-32 px-4 min-h-screen">
+
+        <div class="glass-panel p-10 md:p-16 rounded-[2.5rem] flex flex-col items-center text-center w-full shadow-[0_0_40px_rgba(0,115,255,0.15)] relative overflow-hidden group mt-16">
+          <div class="absolute inset-0 bg-gradient-to-br from-[#0073FF]/10 via-[#7000FF]/5 to-transparent opacity-50"></div>
+         
+          <div class="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-[#091235] border border-[#0073FF]/30 shadow-[0_0_20px_rgba(0,115,255,0.3)] relative z-10">
+             <i data-lucide="wrench" class="w-10 h-10 text-[#80B9FF] drop-shadow-[0_0_10px_rgba(128,185,255,0.5)]"></i>
+             </div>
+         
+           <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter mb-4 drop-shadow-[0_0_10px_rgba(0,115,255,0.4)] relative z-10">
+            Module Under Development
+          </h2>
+         
+             <p class="text-[#80B9FF]/80 text-sm md:text-base max-w-lg leading-relaxed mb-10 relative z-10">
+            Modul <strong class="text-white">Profile</strong> sedang dalam tahap integrasi dengan arsitektur cloud. Silakan kembali ke Halaman Utama.
+             </p>
+         
+             <button onclick="setActivePage('home')" class="relative z-10 px-8 py-3 rounded-full bg-[#091235]/60 border border-[#0073FF]/50 text-[#80B9FF] text-xs font-bold tracking-widest uppercase hover:bg-[#0073FF]/20 hover:text-white hover:border-[#0073FF] transition-all shadow-[0_0_15px_rgba(0,115,255,0.2)]">
+            Kembali Ke Home
+             </button>
+         </div>
+        </div>
+             </div>
+            </div>
+         </div>
+       </div>
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- 3. PORTFOLIO PAGE VIEW                    -->
+    <!-- ========================================= -->
+   <div id="page-portfolio" class="page-view w-full max-w-6xl mx-auto z-20 relative pt-32 px-4 min-h-screen">
+
+        <div class="glass-panel p-10 md:p-16 rounded-[2.5rem] flex flex-col items-center text-center w-full shadow-[0_0_40px_rgba(0,115,255,0.15)] relative overflow-hidden group mt-16">
+          <div class="absolute inset-0 bg-gradient-to-br from-[#0073FF]/10 via-[#7000FF]/5 to-transparent opacity-50"></div>
+         
+          <div class="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-[#091235] border border-[#0073FF]/30 shadow-[0_0_20px_rgba(0,115,255,0.3)] relative z-10">
+             <i data-lucide="wrench" class="w-10 h-10 text-[#80B9FF] drop-shadow-[0_0_10px_rgba(128,185,255,0.5)]"></i>
+             </div>
+         
+           <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter mb-4 drop-shadow-[0_0_10px_rgba(0,115,255,0.4)] relative z-10">
+            Module Under Development
+          </h2>
+         
+             <p class="text-[#80B9FF]/80 text-sm md:text-base max-w-lg leading-relaxed mb-10 relative z-10">
+            Modul <strong class="text-white">Portfolio</strong> sedang dalam tahap integrasi dengan arsitektur cloud. Silakan kembali ke Halaman Utama.
+             </p>
+         
+             <button onclick="setActivePage('home')" class="relative z-10 px-8 py-3 rounded-full bg-[#091235]/60 border border-[#0073FF]/50 text-[#80B9FF] text-xs font-bold tracking-widest uppercase hover:bg-[#0073FF]/20 hover:text-white hover:border-[#0073FF] transition-all shadow-[0_0_15px_rgba(0,115,255,0.2)]">
+            Kembali Ke Home
+             </button>
+         </div>
+        </div>
+             </div>
+            </div>
+         </div>
+       </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 4. PROJECTS (VAULT) PAGE VIEW             -->
+    <!-- ========================================= -->
+    <div id="page-projects" class="page-view w-full max-w-6xl mx-auto z-20 relative pt-32 px-4 min-h-screen">
+
+         <div class="glass-panel p-10 md:p-16 rounded-[2.5rem] flex flex-col items-center text-center w-full shadow-[0_0_40px_rgba(0,115,255,0.15)] relative overflow-hidden group mt-16">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0073FF]/10 via-[#7000FF]/5 to-transparent opacity-50"></div>
+         
+            <div class="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-[#091235] border border-[#0073FF]/30 shadow-[0_0_20px_rgba(0,115,255,0.3)] relative z-10">
+               <i data-lucide="wrench" class="w-10 h-10 text-[#80B9FF] drop-shadow-[0_0_10px_rgba(128,185,255,0.5)]"></i>
+               </div>
+         
+            <h2 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter mb-4 drop-shadow-[0_0_10px_rgba(0,115,255,0.4)] relative z-10">
+             Module Under Development
+             </h2>
+         
+              <p class="text-[#80B9FF]/80 text-sm md:text-base max-w-lg leading-relaxed mb-10 relative z-10">
+              Modul <strong class="text-white">Projects</strong> sedang dalam tahap integrasi dengan arsitektur cloud. Silakan kembali ke Halaman Utama.
+               </p>
+         
+               <button onclick="setActivePage('home')" class="relative z-10 px-8 py-3 rounded-full bg-[#091235]/60 border border-[#0073FF]/50 text-[#80B9FF] text-xs font-bold tracking-widest uppercase hover:bg-[#0073FF]/20 hover:text-white hover:border-[#0073FF] transition-all shadow-[0_0_15px_rgba(0,115,255,0.2)]">
+              Kembali Ke Home
+               </button>
+            </div>
+            </div>
+                 </div>
+              </div>
+                </div>
+          </div>
+     </div>
+      
+
+
+    <!-- ========================================= -->
+    <!-- 5. DASHBOARD PAGE VIEW                    -->
+    <!-- ========================================= -->
+    <div id="page-dashboard" class="page-view w-full max-w-[90rem] mx-auto z-20 relative pt-24 px-4 min-h-screen pb-24">
+      
+      <div class="flex flex-col-reverse md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+         <div class="relative w-full md:w-96">
+            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#80B9FF]"></i>
+            <input type="text" placeholder="Search tasks, organizations..." class="w-full bg-[#091235]/40 border border-[#0073FF]/30 rounded-full py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#D9008A] transition-colors backdrop-blur-md">
+         </div>
+         <div class="flex justify-between items-center w-full md:w-auto gap-4 md:gap-6">
+            <div class="flex items-center gap-4">
+               <button class="relative text-[#80B9FF] hover:text-white transition-colors">
+                  <i data-lucide="bell" class="w-5 h-5"></i>
+                  <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#FF6B6B] rounded-full border-2 border-[#02081C]"></span>
+               </button>
+               <button class="text-[#80B9FF] hover:text-white transition-colors"><i data-lucide="message-square" class="w-5 h-5"></i></button>
+            </div>
+            <div class="flex items-center gap-3 bg-[#091235]/60 py-1.5 px-3 rounded-full border border-[#0073FF]/30 cursor-pointer hover:bg-[#091235] transition-colors shrink-0">
+               <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="w-7 h-7 rounded-full object-cover">
+               <span class="text-xs sm:text-sm font-bold text-white hidden sm:block">Rahul Ghulam</span>
+               <i data-lucide="chevron-down" class="w-4 h-4 text-[#80B9FF]"></i>
+            </div>
+         </div>
+      </div>
+
+      <div class="flex flex-col lg:grid lg:grid-cols-12 gap-6">
+         
+         <div class="lg:col-span-3 xl:col-span-2 w-full overflow-x-auto hide-scrollbar pb-2 lg:pb-0">
+            <div class="glass-panel p-2 sm:p-4 rounded-2xl sm:rounded-3xl flex flex-row lg:flex-col gap-2 h-full border-[#0073FF]/20 shadow-[0_0_20px_rgba(0,115,255,0.05)] w-max lg:w-full">
+               <button data-dashtarget="home" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 bg-gradient-to-r from-[#0073FF]/20 to-transparent border-b-2 lg:border-b-0 lg:border-l-2 border-[#0073FF] text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest rounded-t-xl lg:rounded-t-none lg:rounded-r-xl transition-all whitespace-nowrap">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+               </button>
+               <button data-dashtarget="projects" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase tracking-widest hover:bg-[#091235]/50 rounded-xl transition-all whitespace-nowrap">
+                  <i data-lucide="folder" class="w-4 h-4"></i> My Projects
+               </button>
+               <button data-dashtarget="organisasi" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase tracking-widest hover:bg-[#091235]/50 rounded-xl transition-all whitespace-nowrap">
+                  <i data-lucide="users" class="w-4 h-4"></i> Organisasi
+               </button>
+               <button data-dashtarget="kkn" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase tracking-widest hover:bg-[#091235]/50 rounded-xl transition-all whitespace-nowrap">
+                  <i data-lucide="map-pin" class="w-4 h-4"></i> KKN Saba
+               </button>
+               <button data-dashtarget="analytics" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase tracking-widest hover:bg-[#091235]/50 rounded-xl transition-all whitespace-nowrap">
+                  <i data-lucide="activity" class="w-4 h-4"></i> Analytics
+               </button>
+               <div class="hidden lg:block my-2 border-t border-[#0073FF]/20 mx-4 shrink-0"></div>
+               <div class="lg:hidden w-px bg-[#0073FF]/20 my-2 mx-1 shrink-0"></div>
+               <button data-dashtarget="team" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase tracking-widest hover:bg-[#091235]/50 rounded-xl transition-all whitespace-nowrap">
+                  <i data-lucide="network" class="w-4 h-4"></i> Team Kel 5
+               </button>
+               <button data-dashtarget="settings" class="dash-nav-btn shrink-0 flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:py-3 text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase tracking-widest hover:bg-[#091235]/50 rounded-xl transition-all lg:mt-auto whitespace-nowrap">
+                  <i data-lucide="settings" class="w-4 h-4"></i> Settings
+               </button>
+            </div>
+         </div>
+
+         <div class="lg:col-span-10 xl:col-span-10 w-full relative">
+
+            <div id="dash-home" class="dash-view active flex-col xl:flex-row gap-6">
+               <div class="flex-1 flex flex-col gap-6">
+                  <div class="rounded-[2rem] p-6 sm:p-8 bg-gradient-to-br from-[#7000FF] via-[#D9008A] to-[#FF4D9B] relative overflow-hidden shadow-[0_0_30px_rgba(217,0,138,0.4)] border border-[#FF4D9B]/50 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+                     <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+                     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 border-white/30 shadow-lg relative z-10 shrink-0">
+                     <div class="relative z-10">
+                        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white mb-2 tracking-tight leading-tight">Selamat Datang,<br/>Rahul Ghulam</h2>
+                        <p class="text-white/90 text-xs sm:text-sm font-medium leading-relaxed max-w-md">
+                           Semangat mengabdi! Kelola tugas KKN Saba Mortara, cek progres proker IoT, dan pantau sistem organisasi di satu tempat.
+                        </p>
+                     </div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                     <div class="glass-panel p-4 sm:p-5 rounded-[2rem] hover:border-[#0073FF] group">
+                        <h4 class="text-white font-bold text-xs sm:text-sm mb-3">Tugas KKN</h4>
+                        <div class="text-2xl sm:text-3xl font-black text-[#80B9FF]">4 <span class="text-[10px] sm:text-xs text-gray-400 font-medium">pending</span></div>
+                     </div>
+                     <div class="glass-panel p-4 sm:p-5 rounded-[2rem] hover:border-[#D9008A] group">
+                        <h4 class="text-white font-bold text-xs sm:text-sm mb-3">Proyek IoT</h4>
+                        <div class="text-2xl sm:text-3xl font-black text-[#D9008A]">2 <span class="text-[10px] sm:text-xs text-gray-400 font-medium">aktif</span></div>
+                     </div>
+                     <div class="glass-panel p-4 sm:p-5 rounded-[2rem] hover:border-[#7000FF] group">
+                        <h4 class="text-white font-bold text-xs sm:text-sm mb-3">Rapat Minggu Ini</h4>
+                        <div class="text-2xl sm:text-3xl font-black text-[#7000FF]">3 <span class="text-[10px] sm:text-xs text-gray-400 font-medium">agenda</span></div>
+                     </div>
+                     <div class="glass-panel p-4 sm:p-5 rounded-[2rem] hover:border-[#FF6B6B] group">
+                        <h4 class="text-white font-bold text-xs sm:text-sm mb-3">Laporan Desa</h4>
+                        <div class="text-2xl sm:text-3xl font-black text-[#FF6B6B]">65% <span class="text-[10px] sm:text-xs text-gray-400 font-medium">selesai</span></div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="w-full xl:w-80 flex flex-col gap-6 shrink-0 mt-2 xl:mt-0">
+                  <div class="glass-panel p-6 rounded-[2rem] flex-1 flex flex-col">
+                     <h3 class="text-sm text-white font-bold tracking-widest mb-6">Aktivitas Terkini</h3>
+                     <div class="relative border-l border-[#0073FF]/30 ml-2 space-y-6">
+                        <div class="relative pl-4">
+                           <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-[#D9008A] rounded-full shadow-[0_0_8px_#D9008A]"></div>
+                           <p class="text-xs text-white font-bold">Desain PulseGuard Selesai</p>
+                           <p class="text-[9px] text-[#80B9FF] mt-1 tracking-wider uppercase">Hari ini, 10:30 AM</p>
+                        </div>
+                        <div class="relative pl-4">
+                           <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-[#0073FF] rounded-full border border-[#02081C]"></div>
+                           <p class="text-xs text-gray-300">Rapat Kabinet Arundaya</p>
+                           <p class="text-[9px] text-[#80B9FF] mt-1 tracking-wider uppercase">Kemarin, 14:00 PM</p>
+                        </div>
+                        <div class="relative pl-4">
+                           <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-[#0073FF] rounded-full border border-[#02081C]"></div>
+                           <p class="text-xs text-gray-300">Revisi Modul Praktikum</p>
+                           <p class="text-[9px] text-[#80B9FF] mt-1 tracking-wider uppercase">8 Mei, 09:15 AM</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div id="dash-organisasi" class="dash-view flex-col gap-6">
+               <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                  <h2 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(0,115,255,0.4)]">Manajemen Organisasi</h2>
+               </div>
+               
+               <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  <div class="glass-panel p-6 rounded-[2rem] hover:border-[#0073FF] group border-t-4 border-t-[#0073FF]">
+                     <div class="w-12 h-12 rounded-xl bg-[#0073FF]/20 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(0,115,255,0.3)]">
+                        <i data-lucide="layout" class="w-6 h-6 text-[#80B9FF]"></i>
+                     </div>
+                     <h3 class="text-xl font-bold text-white mb-1">BEM KM FT UGM</h3>
+                     <p class="text-[10px] text-[#0073FF] uppercase font-bold tracking-widest mb-4">Kabinet Konstelasi Biru Arundaya</p>
+                     <p class="text-xs text-gray-400 leading-relaxed mb-6">Mengelola program kerja, perancangan desain branding, dan koordinasi antardivisi Fakultas Teknik.</p>
+                     <button class="w-full py-2 bg-[#091235] text-[#80B9FF] rounded-lg text-xs font-bold uppercase tracking-widest border border-[#0073FF]/30 hover:bg-[#0073FF] hover:text-white transition-colors">Buka Workspace</button>
+                  </div>
+                   
+                  <div class="glass-panel p-6 rounded-[2rem] hover:border-[#D9008A] group border-t-4 border-t-[#D9008A]">
+                     <div class="w-12 h-12 rounded-xl bg-[#D9008A]/20 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(217,0,138,0.3)]">
+                        <i data-lucide="microscope" class="w-6 h-6 text-[#FF4D9B]"></i>
+                     </div>
+                     <h3 class="text-xl font-bold text-white mb-1">Asprak Fisika Dasar</h3>
+                     <p class="text-[10px] text-[#D9008A] uppercase font-bold tracking-widest mb-4">Laboratorium Teknik Fisika</p>
+                     <p class="text-xs text-gray-400 leading-relaxed mb-6">Menyusun materi, membimbing praktikan, dan mengevaluasi modul praktikum fisika terapan.</p>
+                     <button class="w-full py-2 bg-[#091235] text-[#FF4D9B] rounded-lg text-xs font-bold uppercase tracking-widest border border-[#D9008A]/30 hover:bg-[#D9008A] hover:text-white transition-colors">Jadwal Praktikum</button>
+                  </div>
+
+                  <div class="glass-panel p-6 rounded-[2rem] hover;border-[#7000FF] group border-t-4 border-t-[#7000FF]">
+                     <div class="w-12 h-12 rounded-xl bg-[#7000FF]/20 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(112,0,255,0.3)]">
+                        <i data-lucide="cpu" class="w-6 h-6 text-[#80B9FF]"></i>
+                     </div>
+                     <h3 class="text-xl font-bold text-white mb-1">GMRT</h3>
+                     <p class="text-[10px] text-[#7000FF] uppercase font-bold tracking-widest mb-4">Gadjah Mada Robotic Team</p>
+                     <p class="text-xs text-gray-400 leading-relaxed mb-6">Riset dan pengembangan sistem kontrol robotika, pemrograman mikrokontroler, dan manajemen budget.</p>
+                     <button class="w-full py-2 bg-[#091235] text-[#80B9FF] rounded-lg text-xs font-bold uppercase tracking-widest border border-[#7000FF]/30 hover:bg-[#7000FF] hover;text-white transition-colors">Data Riset</button>
+                  </div>
+               </div>
+            </div>
+
+            <div id="dash-kkn" class="dash-view flex-col gap-6">
+               
+               <div class="relative w-full h-40 sm:h-56 md:h-64 rounded-3xl overflow-hidden shadow-[0_0_30px_rgba(0,115,255,0.2)] mb-2">
+                  <img src="https://images.unsplash.com/photo-1542361345-89e58247f2d5?auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-gradient-to-t from-[#02081C] via-[#02081C]/70 to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 md:left-10 z-10">
+                     <span class="px-3 py-1 bg-[#FF6B6B]/20 border border-[#FF6B6B] text-[#FF6B6B] text-[8px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full mb-2 sm:mb-3 inline-block">Lokasi Pengabdian</span>
+                     <h2 class="text-2xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-1">Saba Mortara</h2>
+                     <p class="text-[10px] md:text-xs text-[#80B9FF] font-bold uppercase tracking-widest"><i data-lucide="map-pin" class="inline w-3 h-3 mr-1"></i> Desa Ganda-Ganda, Sulawesi Tengah</p>
+                  </div>
+               </div>
+
+               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div class="glass-panel p-6 rounded-[2rem] bg-gradient-to-b from-[#7000FF]/10 to-transparent">
+                     <div class="w-10 h-10 rounded-full bg-[#7000FF]/20 flex items-center justify-center border border-[#7000FF]/50 text-[#80B9FF] mb-4"><i data-lucide="briefcase" class="w-5 h-5"></i></div>
+                     <h3 class="text-lg font-bold text-white mb-1">Staff SNF</h3>
+                     <p class="text-[9px] text-[#80B9FF] uppercase tracking-widest mb-4 font-bold border-b border-white/10 pb-3">Sponsorship & Fund-raising</p>
+                     <ul class="space-y-3 text-xs text-gray-300">
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#7000FF] shrink-0"></i> Menyusun proposal kemitraan.</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#7000FF] shrink-0"></i> Pendekatan instansi/perusahaan.</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#7000FF] shrink-0"></i> Mengelola pendanaan program kerja.</li>
+                     </ul>
+                  </div>
+
+                  <div class="glass-panel p-6 rounded-[2rem] bg-gradient-to-b from-[#0073FF]/10 to-transparent">
+                     <div class="w-10 h-10 rounded-full bg-[#0073FF]/20 flex items-center justify-center border border-[#0073FF]/50 text-[#80B9FF] mb-4"><i data-lucide="users" class="w-5 h-5"></i></div>
+                     <h3 class="text-lg font-bold text-white mb-1">Anggota KKN</h3>
+                     <p class="text-[9px] text-[#80B9FF] uppercase tracking-widest mb-4 font-bold border-b border-white/10 pb-3">Desa Ganda-Ganda</p>
+                     <ul class="space-y-3 text-xs text-gray-300">
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#0073FF] shrink-0"></i> Sosialisasi program pemberdayaan.</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#0073FF] shrink-0"></i> Pengabdian masyarakat aktif.</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#0073FF] shrink-0"></i> Pemetaan potensi SDA lokal.</li>
+                     </ul>
+                  </div>
+
+                  <div class="glass-panel p-6 rounded-[2rem] bg-gradient-to-b from-[#D9008A]/10 to-transparent">
+                     <div class="w-10 h-10 rounded-full bg-[#D9008A]/20 flex items-center justify-center border border-[#D9008A]/50 text-[#FF4D9B] mb-4"><i data-lucide="cpu" class="w-5 h-5"></i></div>
+                     <h3 class="text-lg font-bold text-white mb-1">Kluster Saintek</h3>
+                     <p class="text-[9px] text-[#D9008A] uppercase tracking-widest mb-4 font-bold border-b border-white/10 pb-3">Teknik Fisika</p>
+                     <ul class="space-y-3 text-xs text-gray-300">
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#D9008A] shrink-0"></i> Desain instrumentasi medis/IoT.</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#D9008A] shrink-0"></i> Perancangan energi terbarukan.</li>
+                        <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#D9008A] shrink-0"></i> Penyuluhan teknologi cerdas.</li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+
+            <div id="dash-team" class="dash-view flex-col gap-6">
+               <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 border-b border-[#0073FF]/30 pb-6 gap-2">
+                  <div>
+                     <h2 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(0,115,255,0.4)]">Team Kel 5</h2>
+                     <p class="text-[10px] sm:text-xs text-[#80B9FF] uppercase tracking-widest font-bold mt-1">Academic & Project Team</p>
+                  </div>
+                  <div class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#0073FF]/20 border border-[#0073FF] text-[#80B9FF] font-bold text-[10px] sm:text-xs uppercase">8 Members</div>
+               </div>
+               
+               <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center border-[#FF6B6B]/40 bg-[#091235]/60 shadow-[0_0_15px_rgba(255,107,107,0.15)]">
+                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FF6B6B]/20 border border-[#FF6B6B] flex items-center justify-center mb-3"><span class="font-bold text-xs sm:text-sm text-[#FF4D9B]">RG</span></div>
+                     <h4 class="text-white font-bold text-xs sm:text-sm">Rahul</h4>
+                     <p class="text-[8px] sm:text-[9px] text-[#FF6B6B] uppercase tracking-widest font-bold mt-1">Koordinator</p>
+                  </div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0073FF]/20 border border-[#0073FF] flex items-center justify-center mb-3"><span class="font-bold text-xs sm:text-sm text-[#80B9FF]">KV</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Kevan</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0073FF]/20 border border-[#0073FF] flex items-center justify-center mb-3"><span class="font-bold text-xs sm:text-sm text-[#80B9FF]">HM</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Hamid</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0073FF]/20 border border-[#0073FF] flex items-center justify-center mb-3"><span class="font-bold text-xs sm:text-sm text-[#80B9FF]">IR</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Irwan</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#D9008A]/20 border border-[#D9008A] flex items-center justify-center mb-3"><span class="font-bold text-xs sm:text-sm text-[#FCCBF0]">MD</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Manda</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#D9008A]/20 border border-[#D9008A] flex items-center justify center mb-3"><span class="font-bold text-xs sm:text-sm text-[#FCCBF0]">HN</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Hanna</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#D9008A]/20 border border-[#D9008A] flex items-center justify center mb-3"><span class="font-bold text-xs sm:text-sm text-[#FCCBF0]">SL</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Salma</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+                  <div class="glass-panel p-4 rounded-[1.5rem] flex flex-col items-center text-center"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#D9008A]/20 border border-[#D9008A] flex items-center justify center mb-3"><span class="font-bold text-xs sm:text-sm text-[#FCCBF0]">HD</span></div><h4 class="text-white font-bold text-xs sm:text-sm">Heidi</h4><p class="text-[8px] sm:text-[9px] text-gray-500 uppercase tracking-widest mt-1">Member</p></div>
+               </div>
+            </div>
+
+            <div id="dash-projects" class="dash-view flex-col gap-6 items-center justify-center py-20 text-center">
+               <i data-lucide="folder" class="w-12 h-12 md:w-16 md:h-16 text-[#0073FF] opacity-50 mb-4 animate-pulse"></i>
+               <h2 class="text-xl md:text-2xl font-bold text-white">Project Database</h2>
+               <p class="text-[#80B9FF] text-xs md:text-sm mt-2">Loading repository data...</p>
+            </div>
+            <div id="dash-analytics" class="dash-view flex-col gap-6 items-center justify-center py-20 text-center">
+               <i data-lucide="pie-chart" class="w-12 h-12 md:w-16 md:h-16 text-[#D9008A] opacity-50 mb-4 animate-pulse"></i>
+               <h2 class="text-xl md:text-2xl font-bold text-white">System Analytics</h2>
+               <p class="text-[#80B9FF] text-xs md:text-sm mt-2">Generating charts...</p>
+            </div>
+            <div id="dash-settings" class="dash-view flex-col gap-6 items-center justify-center py-20 text-center">
+               <i data-lucide="settings" class="w-12 h-12 md:w-16 md:h-16 text-[#7000FF] opacity-50 mb-4 animate-spin-slow"></i>
+               <h2 class="text-xl md:text-2xl font-bold text-white">System Configuration</h2>
+               <p class="text-[#80B9FF] text-xs md:text-sm mt-2">Accessing secure protocols...</p>
+            </div>
+
+         </div>
+      </div>
+    </div>
+
+
+  <!-- Footer -->
+  <footer class="relative z-20 py-8 text-center border-t border-[#0073FF]/30 mt-auto bg-[#02081C]/90 backdrop-blur-md">
+    <p class="text-[10px] tracking-[0.3em] text-[#80B9FF]/60 uppercase font-bold">
+      © 2026 • Powered by Rahul Ghulam
+    </p>
+  </footer>
+
+  <!-- Vanilla JavaScript Logic -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // -- MOBILE MENU LOGIC --
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const line1 = document.getElementById('mobile-line-1');
+    const line2 = document.getElementById('mobile-line-2');
+    let isMenuOpen = false;
+
+    function toggleMobileMenu() {
+      isMenuOpen = !isMenuOpen;
+      if(isMenuOpen) {
+        mobileMenu.classList.remove('translate-x-full');
+        line1.classList.add('menu-line-open-1');
+        line2.classList.add('menu-line-open-2');
+      } else {
+        mobileMenu.classList.add('translate-x-full');
+        line1.classList.remove('menu-line-open-1');
+        line2.classList.remove('menu-line-open-2');
+      }
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+    // Attach click events to mobile nav buttons
+    document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget.getAttribute('data-target');
+        setActivePage(target);
+        toggleMobileMenu(); // Close menu after clicking
+      });
+    });
+
+    // -- DESKTOP MENU LOGIC --
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget.getAttribute('data-target');
+        setActivePage(target);
+      });
+    });
+
+    // -- PAGE ROUTING LOGIC --
+    function setActivePage(pageId) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page-view');
+      pages.forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      // Show selected page
+      const activePage = document.getElementById('page-' + pageId);
+      if (activePage) {
+        activePage.classList.add('active');
+      }
+
+      // Scroll to top instantly
+      window.scrollTo(0, 0);
+
+      // Update Desktop Navigation styling
+      const navButtons = document.querySelectorAll('.nav-btn');
+      navButtons.forEach(btn => {
+        if (btn.dataset.target === pageId) {
+          btn.className = "nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300 bg-gradient-to-r from-[#0073FF] to-[#D9008A] text-white shadow-[0_0_15px_rgba(0,115,255,0.6)]";
+        } else {
+          btn.className = "nav-btn flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-[10px] lg:text-[11px] tracking-[0.1em] lg:tracking-[0.2em] font-bold uppercase transition-all duration-300 text-[#80B9FF]/70 hover:text-white hover:bg-[#0073FF]/40";
+        }
+      });
+    }
+
+    // Initialize with Home active
+    setActivePage('home');
+
+    // -- MOUSE TRAIL LOGIC --
+    const trail = document.getElementById('mouse-trail');
+    window.addEventListener('mousemove', (e) => {
+      // Run if visible (desktop)
+      if(window.innerWidth >= 768) {
+        trail.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`;
+      }
+    });
+
+    // -- PARALLAX SCROLL LOGIC --
+    window.addEventListener('scroll', () => {
+      const offsetY = window.scrollY;
+      
+      // Reduce parallax speed slightly on mobile to prevent layout jumps
+      const isMobile = window.innerWidth < 768;
+      const speedMultiplier = isMobile ? 0.6 : 1;
+      
+      // Select all elements with parallax data attributes
+      document.querySelectorAll('.active [data-parallax-y]').forEach(el => {
+         const rawSpeed = parseFloat(el.getAttribute('data-parallax-y') || 0);
+         const ySpeed = rawSpeed * speedMultiplier; 
+         
+         const rotSpeed = parseFloat(el.getAttribute('data-parallax-rot') || 0);
+         const isCenter = el.hasAttribute('data-parallax-center');
+         
+         let transformStr = '';
+         
+         if (isCenter) {
+           transformStr = `translate(-50%, calc(-50% + ${offsetY * ySpeed}px))`;
+         } else {
+           transformStr = `translateY(${offsetY * ySpeed}px)`;
+           if (rotSpeed !== 0) {
+             transformStr += ` rotate(${offsetY * rotSpeed}deg)`;
+           }
+         }
+         
+         el.style.transform = transformStr;
+      });
+    });
+
+    // -- INTERNAL DASHBOARD MENU LOGIC --
+    document.querySelectorAll('.dash-nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget.getAttribute('data-dashtarget');
+        
+        // Hide all dash views
+        document.querySelectorAll('.dash-view').forEach(view => {
+           view.classList.remove('active');
+        });
+        
+        // Show target dash view
+        const activeView = document.getElementById('dash-' + target);
+        if(activeView) activeView.classList.add('active');
+
+        // Reset all buttons style
+        document.querySelectorAll('.dash-nav-btn').forEach(b => {
+           b.classList.remove('bg-gradient-to-r', 'from-[#0073FF]/20', 'to-transparent', 'border-b-2', 'lg:border-b-0', 'lg:border-l-2', 'border-[#0073FF]', 'text-white');
+           b.classList.add('text-[#80B9FF]', 'hover:bg-[#091235]/50');
+        });
+        
+        // Apply active style to clicked button
+        e.currentTarget.classList.remove('text-[#80B9FF]', 'hover:bg-[#091235]/50');
+        e.currentTarget.classList.add('bg-gradient-to-r', 'from-[#0073FF]/20', 'to-transparent', 'border-b-2', 'lg:border-b-0', 'lg:border-l-2', 'border-[#0073FF]', 'text-white');
+      });
+    });
+  </script>
+</body>
+</html>
