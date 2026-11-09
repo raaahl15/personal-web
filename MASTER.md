@@ -1,8 +1,31 @@
-# Konsep & Sistem — Personal Web "Life OS"
+# MASTER — Personal Web "Life OS"
 
-> Dokumen ini adalah cetak biru (blueprint) untuk personal website Rahul Ghulam.
-> Tujuannya supaya arah project jelas dulu sebelum ngoding ulang, dan supaya
-> nggak gonta-ganti konsep lagi.
+> **File induk project.** Semua konsep, sistem, keputusan, catatan pengerjaan
+> (history), dan saran ke depan dicatat di sini. Kalau ada yang berubah, file ini
+> yang di-update lebih dulu.
+
+| | |
+|---|---|
+| Pemilik | Rahul Ghulam |
+| Repo | https://github.com/raaahl15/personal-web |
+| Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
+| Status saat ini | **Fase 0 — Persiapan:** mengumpulkan referensi desain |
+| Terakhir diperbarui | 2026-11-09 |
+
+## Daftar Isi
+
+**Bagian A — Konsep & Sistem**
+1. Ide Besar · 2. Peta Menu · 3. Arsitektur · 4. Database · 5. Struktur Folder ·
+6. Desain Visual · 7. Roadmap · 8. Keamanan · 9. Keputusan Terbuka ·
+10. Penyimpanan (GitHub & Drive)
+
+**Bagian B — Catatan Berjalan**
+11. Log Keputusan · 12. Log Pengerjaan (History) · 13. Saran & Ide ke Depan ·
+14. Cara Memperbarui File Ini
+
+---
+
+# BAGIAN A — KONSEP & SISTEM
 
 ---
 
@@ -221,7 +244,7 @@ personal-web/
 ├─ lib/supabase/                  ← client & server helper
 ├─ supabase/migrations/           ← SQL skema database (versi terkontrol)
 ├─ middleware.ts                  ← proteksi /app/*
-├─ docs/KONSEP.md                 ← dokumen ini
+├─ MASTER.md                      ← dokumen ini
 └─ legacy/index.html              ← versi lama, jadi referensi desain
 ```
 
@@ -231,6 +254,9 @@ habit tracker → `features/habits/` + `app/app/habits/`. Selesai.
 ---
 
 ## 6. Desain Visual (melanjutkan yang sudah ada)
+
+> ⏳ **Sementara.** Isi di bawah diambil dari `index.html` lama. Akan disusun ulang
+> setelah referensi desain terkumpul di Drive `02 - Design References` (lihat K-06).
 
 Token warna dari `index.html` dipertahankan dan dipindah ke `tailwind.config`:
 
@@ -256,7 +282,7 @@ Kerjakan bertahap, tiap fase menghasilkan sesuatu yang bisa langsung dipakai.
 
 | Fase | Target | Hasil |
 |---|---|---|
-| **0. Fondasi** | Setup Next.js + Tailwind + shadcn, pindahkan token warna, simpan `index.html` lama ke `legacy/` | Project baru jalan di Vercel |
+| **0. Persiapan & Fondasi** | Kumpulkan referensi desain → isi Bagian 6, kunci isi tiap halaman; lalu setup Next.js + Tailwind + shadcn dari awal, simpan `index.html` lama ke `legacy/` | Desain final + project baru jalan di Vercel |
 | **1. Public Site** | Welcome, About, Portfolio (data sementara dari file JSON), Contact | Website publik live ✅ |
 | **2. Auth & Shell** | Supabase, login, middleware `/app`, sidebar Life OS | Ruang private bisa diakses |
 | **3. Projects & Tasks** | CRUD project + task + lampiran, Kanban; Portfolio mulai ambil data dari DB | Kumpulan tugas/project jalan |
@@ -286,3 +312,116 @@ yang bisa dikirim ke orang. Fase berikutnya menambah alat bantu harian.
 2. **Konteks task** — apakah kategori tetap (Kuliah, BEM, Asprak, GMRT, KKN) atau bebas dibuat sendiri?
 3. **Mata uang** — cukup IDR, atau perlu multi-currency?
 4. **Bahasa situs publik** — Indonesia, Inggris, atau dua bahasa?
+
+---
+
+## 10. Penyimpanan: GitHub & Google Drive
+
+| Disimpan di | Isi |
+|---|---|
+| **GitHub** (repo) | Kode, `MASTER.md` ini, aset final yang dipakai web |
+| **Google Drive** | Referensi desain, file mentah/besar, bahan portfolio, backup data |
+
+Struktur folder Drive **Personal Web**:
+
+```
+Personal Web/
+├─ README.md               ← link ke repo + aturan penyimpanan
+├─ 01 - Docs               ← export PDF dokumen (baca offline)
+├─ 02 - Design References  ← screenshot & link referensi desain, moodboard
+├─ 03 - Assets             ← foto profil, logo, font, ilustrasi (mentah)
+├─ 04 - Portfolio Content  ← bahan per project (foto, laporan, video demo)
+└─ 05 - Backups            ← export data Life OS (JSON/CSV)
+```
+
+Aturan:
+1. `MASTER.md` hanya diedit di GitHub → satu sumber kebenaran, tidak ada dua versi.
+2. Nama file di Drive: `YYYY-MM-DD_nama-singkat.ext` (contoh `2026-11-09_ref-hero-dark.png`).
+3. Aset yang sudah final → dioptimasi lalu masuk ke repo (`public/`).
+
+---
+
+# BAGIAN B — CATATAN BERJALAN
+
+---
+
+## 11. Log Keputusan
+
+Keputusan penting yang sudah disepakati. Jangan diubah tanpa menambah baris baru
+yang menjelaskan alasannya.
+
+| # | Tanggal | Keputusan | Alasan |
+|---|---|---|---|
+| K-01 | 2026-11-09 | Web dibagi dua: **Public Site** + **Life OS (private)** dalam satu aplikasi | Satu codebase, portfolio bisa otomatis dari data project |
+| K-02 | 2026-11-09 | Stack: Next.js + TypeScript + Tailwind + shadcn/ui + Supabase, hosting Vercel | Butuh login & database; gratis untuk skala personal |
+| K-03 | 2026-11-09 | Pengerjaan **mulai dari awal**; `index.html` lama hanya jadi referensi | Versi lama satu file 66 KB, tidak bisa menyimpan data |
+| K-04 | 2026-11-09 | GitHub untuk kode & dokumen, Google Drive untuk bahan mentah & file besar | Pemisahan jelas, tidak ada duplikasi dokumen |
+| K-05 | 2026-11-09 | Semua konsep, history, dan saran dicatat di **satu file `MASTER.md`** | Satu tempat acuan; mudah dilacak |
+| K-06 | 2026-11-09 | Desain visual menunggu referensi dari Rahul (tema kosmik lama belum tentu dipakai) | Desain ingin dimulai ulang berdasarkan referensi baru |
+
+---
+
+## 12. Log Pengerjaan (History)
+
+Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-09 — Sesi 3: File master
+- `docs/KONSEP.md` dipindah & dikembangkan menjadi `MASTER.md` di root repo.
+- Ditambah Bagian B: Log Keputusan, Log Pengerjaan, Saran & Ide, cara update.
+- Ditambah `CLAUDE.md` berisi aturan agar setiap sesi kerja selalu mencatat ke file ini.
+
+### 2026-11-09 — Sesi 2: Google Drive & rencana dokumentasi
+- Dibuat folder Google Drive **Personal Web** + 5 subfolder + `README.md`.
+- Dibuat `README.md` di repo yang menautkan ke folder Drive.
+- Diputuskan: pengerjaan dimulai dari awal, Rahul mengumpulkan referensi desain dulu.
+
+### 2026-11-09 — Sesi 1: Konsep & sistem
+- Analisis repo lama: satu file `index.html` (Tailwind CDN, tema kosmik, halaman
+  home/portfolio/projects/profile/dashboard ditukar dengan `display:none`, tanpa
+  penyimpanan data).
+- Disusun konsep Public Site + Life OS, sitemap, arsitektur, skema database,
+  struktur folder, token desain, roadmap 8 fase, catatan keamanan.
+
+### 2026-05-10 — Versi awal (sebelum dokumen ini)
+- Upload `portfolio.html`, lalu di-rename menjadi `index.html`.
+
+---
+
+## 13. Saran & Ide ke Depan
+
+### Langkah berikutnya (prioritas)
+- [ ] **Rahul:** kumpulkan 5–15 referensi desain di Drive `02 - Design References`
+      (pisahkan: welcome page, portfolio, dashboard, journal, money).
+- [ ] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa).
+- [ ] Susun ulang Bagian 6 (Desain Visual) berdasarkan referensi.
+- [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
+- [ ] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/`.
+
+### Saran
+- Mulai dari **situs publik dulu** (Fase 1) supaya cepat punya sesuatu yang bisa dibagikan.
+- Siapkan konten portfolio sejak sekarang di Drive `04 - Portfolio Content`
+  (satu subfolder per project: foto, ringkasan 2–3 kalimat, peran kamu, tech stack, link).
+- Dari dashboard lama, konteks yang sudah terlihat: BEM KM FT UGM, Asprak Fisika
+  Dasar, GMRT, KKN Saba Mortara → kandidat awal kategori task & project.
+- Kalau `MASTER.md` sudah terlalu panjang (>1000 baris), pecah bagian fitur ke
+  `docs/features/*.md`, tapi tetap ditautkan dari sini.
+
+### Bank ide (belum dijadwalkan)
+- Habit tracker, reading/watch list, goals tahunan
+- Global search (⌘K) lintas journal, task, project
+- Reminder via email/Telegram, integrasi Google Calendar
+- Sinkron otomatis dokumen ke Google Drive via GitHub Action
+- Mode PWA agar bisa di-install di HP
+
+---
+
+## 14. Cara Memperbarui File Ini
+
+Setiap kali ada pengerjaan:
+
+1. **Log Pengerjaan (12):** tambah entri baru paling atas —
+   `### YYYY-MM-DD — Sesi N: judul` + poin apa yang dikerjakan.
+2. **Log Keputusan (11):** kalau ada keputusan baru / perubahan, tambah baris `K-xx`.
+3. **Saran & Ide (13):** centang yang selesai, tambah langkah berikutnya.
+4. **Bagian A:** kalau konsep/sistem berubah, edit bagian terkait.
+5. **Header:** perbarui *Status saat ini* dan *Terakhir diperbarui*.
