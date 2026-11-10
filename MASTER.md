@@ -9,7 +9,7 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** arah desain visual & animasi ditetapkan (biru langit + glassmorphism, Outfit + Inter, alur gelap → terang); referensi Drive sudah dirapikan per halaman; project Next.js 16 dua bahasa sudah disiapkan + konten dari CV; berikutnya deploy Vercel & desain welcome page di FigCraft |
+| Status saat ini | **Fase 0 — Persiapan:** **desain UI/UX v1.0 selesai di FigCraft** (5 halaman, 27 frame: design system, situs publik desktop+mobile, Life OS desktop+mobile, light/dark via variabel); project Next.js 16 dua bahasa sudah disiapkan + konten dari CV; berikutnya Rahul review desain → unggah file ke Drive → deploy Vercel → mulai Fase 1 |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -407,7 +407,65 @@ UI/UX Pro Max (kontras 4.5:1 di light & dark, fokus keyboard terlihat, target se
 hormati `prefers-reduced-motion` (animasi berat dimatikan).
 
 **Tambahan tipografi dari referensi:** aksen *serif miring* untuk 1–2 kata di judul
-(mis. Instrument Serif Italic) — opsional, diputuskan saat desain di FigCraft.
+→ **dipakai: Instrument Serif Italic** (K-24), hanya untuk 1–2 kata aksen (mis. "*website.*").
+
+### Desain UI/UX v1.0 (FigCraft) — 2026-11-10
+
+File: `2026-11-10_personal-web-ui-v1.0.figcraft` (lokal: `D:\rahul\personal-web-design\`,
+plus `export/` berisi 5 PDF per halaman, 4 PNG, `tokens-v1.0.css`). **Belum diunggah ke
+Drive `06 - Design Files`** (lihat Bagian 13).
+
+| Halaman FigCraft | Isi |
+|---|---|
+| 00 · Cover & Design System | Cover, Foundations (palet 16, token Light/Dark, tipografi, radius/efek), Components, Motion & Interaction spec |
+| 01 · Public Site — Desktop (1440) | Welcome, About, Portfolio, Project Detail (GROMICS), Contact, Login |
+| 02 · Public Site — Mobile (375) | Welcome, Menu terbuka, Portfolio |
+| 03 · Life OS — Desktop (1440×1024) | Today (Light + Dark), Journal, Tasks (Kanban), Money, Invest, Projects, Settings |
+| 04 · Life OS — Mobile (375) | Today (Light + Dark), bottom sheet catat pengeluaran |
+
+**Token tema (variabel FigCraft, koleksi `Theme`, mode Light / Dark)** — dipakai di semua
+komponen; ganti mode = ganti tema (dark mode di desain cukup duplikat frame + set mode).
+
+| Token | Light | Dark | Pakai untuk |
+|---|---|---|---|
+| bg | `#F0F7FF` | `#010A16` | latar halaman |
+| surface | `#FFFFFF` | `#021024` | kartu solid, editor, form |
+| glass / glass-stroke | `#FFFFFF` 70% / `#FFFFFF` 90% | `#062956` 55% / `#3D9BFF` 18% | kartu kaca + blur 24 |
+| muted | `#E1F0FF` | `#041A35` | chip, track progress, input |
+| border | `#CDE4FF` | `#062956` | garis |
+| text / text-2 / text-3 | `#021024` / `#0F4FA3` / `#4A6890` | `#F0F7FF` / `#97C9FF` / `#78BAFF` | teks utama / sekunder / meta (semua ≥4.5:1) |
+| primary / on-primary | `#1662CC` / `#FFFFFF` | `#3D9BFF` / `#010A16` | tombol, link, nav aktif |
+| primary-soft | `#CDE4FF` | `#0A3B7A` | chip/latar aktif |
+| ring | `#1E7DFF` | `#3D9BFF` | fokus (2px + halo 4px) |
+| success / success-soft | `#15803D` / `#DCFCE7` | `#4ADE80` / `#052E16` | pemasukan, selesai (K-22) |
+| warm / warm-soft | `#C2410C` / `#FFEDD5` | `#FB923C` / `#431407` | pengeluaran, peringatan, prioritas tinggi (K-22) |
+| chart-1/2/3 | `#1662CC` `#5CAEFF` `#0A3B7A` | `#3D9BFF` `#97C9FF` `#CDE4FF` | grafik |
+
+**Skala & bentuk:** Display Outfit ExtraLight 104–136 · H1 Outfit Light 64 · H2 Outfit
+Regular 40 · H3 Outfit Medium 24 · angka Outfit SemiBold (tabular) · body Inter 16–18 /
+150–160% · label Inter SemiBold 12 +14% huruf kapital. Radius 12 (input), 20 (kartu kecil),
+28–32 (kartu/bingkai), pill (tombol, nav). Kaca: blur 24 + border 1px + bayangan
+`0 12 32 #062956/10%`. Target sentuh ≥44px.
+
+**Komponen (main component di halaman 00):** Button/Primary, Button/Glass, Button/Small,
+Button/Outline, IconButton, ThemeToggle, LangSwitch, Navbar/Public, Navbar/Mobile,
+Sidebar/LifeOS, BottomNav/LifeOS (5 item), FilterTabs, Field, StatCard, TaskRow,
+TransactionRow. Ikon = vektor gaya lucide (stroke 1.75–2).
+
+**Catatan pola halaman:**
+- Welcome: hero gelap (mode Dark) → section transisi gradien gelap→terang + 4 statistik →
+  project unggulan (kartu folder, kertas menyembul) → cuplikan About (nama raksasa marquee)
+  → penutup "LET'S WORK TOGETHER" → footer.
+- Life OS: sidebar pil ikon + tooltip (aria-label wajib); widget kaca di atas latar dengan
+  blob blur; Money menampilkan saldo per akun dalam mata uangnya + total IDR dengan kurs
+  manual; transfer IDR→USD menampilkan dua jumlah + kurs tersirat (K-16).
+- Kontras dicek: teks putih **tidak** boleh di atas Pure Sky/Bright Sky (≈2.9:1) — gradien
+  berisi teks dimulai dari Azure/Deep Sky (K-23).
+
+**Selisih dengan kode saat ini (`app/globals.css`) yang perlu disamakan di Fase 1:**
+`--card` light masih Arctic Sky (desain: putih untuk `surface`, Arctic Sky untuk `muted`);
+belum ada token `success`, `warm-soft`/`success-soft`, `text-3`, `glass`/`glass-stroke`;
+`--chart-1` light masih Cerulean (desain: Deep Sky).
 
 ---
 
@@ -508,6 +566,14 @@ Alur kerja desain:
 4. File desain (`.figcraft`) + export PNG disimpan ke Drive `06 - Design Files/`;
    keputusan desain final dicatat di Bagian 6.
 
+Catatan teknis FigCraft (ditemukan Sesi 7):
+- Font **Outfit** dan **Instrument Serif** belum terpasang di laptop, dan Inter bawaan sistem
+  tidak punya style Medium. Di setiap sesi, Claude memuat file font resmi Google Fonts lewat
+  `text.loadFont` (hanya untuk sesi itu). Supaya permanen: pasang Outfit, Inter (variable),
+  dan Instrument Serif di Windows, atau aktifkan *Download fonts* di menu Text ▸ Missing fonts.
+- `page.select` di dalam `batch` tidak andal → pindah halaman dengan `run_command` terpisah.
+- Hindari child `sizing: fill` di dalam parent `hug` (tinggi jadi 0).
+
 ---
 
 # BAGIAN B — CATATAN BERJALAN
@@ -541,12 +607,42 @@ yang menjelaskan alasannya.
 | K-18 | 2026-11-10 | i18n memakai **cara bawaan Next.js 16** (`app/[lang]`, `proxy.ts` rewrite/redirect, kamus JSON) — bukan next-intl (merevisi K-17 bagian library) | Didukung resmi di Next 16.4 + Cache Components; tanpa dependensi tambahan; kebutuhan hanya 2 bahasa |
 | K-19 | 2026-11-10 | Warna tombol utama light mode = **Deep Sky `#1662CC`**, bukan Cerulean | Teks putih di Cerulean hanya 3.9:1 (gagal WCAG AA 4.5:1); Deep Sky 5.8:1 |
 | K-20 | 2026-11-10 | Konten publik awal diambil dari **CV Rahul** (versi sebelum Nov 2026) → `content/profile.ts`; nomor HP tidak ditampilkan | Bahan paling lengkap yang ada; privasi |
+| K-21 | 2026-11-10 | **Desain UI/UX v1.0** di FigCraft menjadi acuan implementasi Fase 1–7; tema dibangun dengan **variabel FigCraft** (koleksi `Palette` + `Theme` mode Light/Dark), bukan warna mentah | Satu sumber token untuk light/dark; mudah diekspor ke CSS (`tokens-v1.0.css`) |
+| K-22 | 2026-11-10 | Warna fungsional dikunci: success `#15803D`/`#4ADE80`, warm `#C2410C`/`#FB923C` (+ versi soft), teks meta `text-3` `#4A6890`/`#78BAFF`; permukaan kartu light = putih | Melengkapi Bagian 6 yang menunggu hex fungsional; semua lolos 4.5:1 |
+| K-23 | 2026-11-10 | Teks putih hanya di atas Deep Sky/Azure atau lebih gelap; gradien yang berisi teks dimulai dari `#0F4FA3`/`#1662CC` | Putih di atas Pure Sky ≈2.9:1 (gagal WCAG AA), ditemukan saat cek kontras |
+| K-24 | 2026-11-10 | Aksen **Instrument Serif Italic** dipakai untuk 1–2 kata di judul besar | Sesuai referensi video welcome; menutup opsi yang terbuka di Bagian 6 |
+| K-25 | 2026-11-10 | Navigasi Life OS: desktop = sidebar pil ikon + tooltip; mobile = bottom nav 5 item (Today, Journal, Tasks, Money, More); situs publik mobile = top bar + menu layar penuh | Aturan skill: bottom nav ≤5, target sentuh ≥44px, label aksesibel |
 
 ---
 
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 7: Desain UI/UX v1.0 di FigCraft
+- Koneksi MCP `figcraft` **berhasil** (attach 127.0.0.1:47821).
+- Skill UI/UX Pro Max dipakai untuk aturan glassmorphism, pola landing portfolio, chart
+  (line/bar, label nilai, jangan andalkan warna saja), preset GSAP; gaya/palet/font tetap
+  mengikuti K-09/K-10.
+- Dibuat file `2026-11-10_personal-web-ui-v1.0.figcraft` (5 halaman, 27 frame):
+  - **00** Cover, Foundations (palet 16 sebagai variabel, token Theme Light/Dark, tipografi,
+    radius/efek), Components (16 main component), Motion & Interaction spec.
+  - **01** Welcome, About, Portfolio, Project Detail GROMICS, Contact, Login (desktop 1440).
+  - **02** Welcome, Menu terbuka, Portfolio (mobile 375).
+  - **03** Today Light + Dark, Journal (editor blok + menu `/`), Tasks Kanban (konteks
+    sendiri, state drag), Money (akun IDR/USD, transfer berkurs, budget), Invest (ekuitas,
+    posisi terbuka, jurnal trading), Projects (switch Publik/Unggulan), Settings (konteks,
+    export JSON/CSV).
+  - **04** Today mobile Light + Dark, bottom sheet catat pengeluaran.
+- Konten memakai data CV (`content/profile.ts`); data Life OS = contoh (dummy).
+- Perbaikan selama review screenshot: kontras teks putih di gradien (K-23), layout kolaps
+  (fill di dalam hug), teks outline variable font yang menampilkan kontur → diganti teks
+  "ghost" berisi, font Outfit/Instrument Serif/Inter Medium dimuat manual.
+- Export: 5 PDF per halaman, 4 PNG (cover, welcome, Today light/dark), `tokens-v1.0.css`
+  di `D:\rahul\personal-web-design\export\`.
+- Unggah ke Drive `06 - Design Files` **gagal** (izin tool Google Drive `create_file`
+  ditolak di sesi ini) → perlu diunggah manual atau izin ditambahkan.
+- Keputusan baru K-21 s.d. K-25; Bagian 6 dilengkapi spesifikasi v1.0.
 
 ### 2026-11-10 — Sesi 6: Rapikan Drive referensi
 - Dicek ulang root Drive: `03 - Assets` dan `README.md` **ternyata ada**; catatan
@@ -627,8 +723,18 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 
 ### Langkah berikutnya (prioritas)
 - [x] Hubungkan alat desain (FigCraft) ke Claude Code — 2026-11-10
-- [ ] Buka session Claude Code baru → izinkan server `figcraft` → tes koneksi.
-- [ ] Sesi desain pertama di FigCraft: welcome page (desktop + mobile).
+- [x] Buka session Claude Code baru → izinkan server `figcraft` → tes koneksi — 2026-11-10
+- [x] Sesi desain pertama di FigCraft → **desain UI/UX v1.0 lengkap** (27 frame) — 2026-11-10
+- [ ] **Rahul:** review desain v1.0 di FigCraft (buka `D:\rahul\personal-web-design\…v1.0.figcraft`
+      atau PDF di `export/`); tulis revisi sebagai komentar FigCraft atau di chat → v1.1.
+- [ ] **Rahul:** unggah folder `D:\rahul\personal-web-design\` ke Drive `06 - Design Files/2026-11-10_ui-v1.0/`
+      (atau beri izin tool Google Drive `create_file` agar Claude yang mengunggah).
+- [ ] **Rahul (opsional):** pasang font Outfit, Inter (variable) & Instrument Serif di Windows
+      agar FigCraft tidak perlu memuat font tiap sesi.
+- [ ] Fase 1: samakan `app/globals.css` dengan token v1.0 (lihat "Selisih dengan kode" di Bagian 6),
+      lalu bangun komponen (Navbar pil, Button, kartu kaca, kartu folder) dan halaman Welcome.
+- [ ] Desain v1.1 (setelah review): halaman About/Contact mobile, Login mobile, Journal & Money
+      mobile, state kosong/loading/error, foto asli & cover project.
 - [x] **Rahul:** kumpulkan referensi desain di Drive `02 - Design References` — 2026-11-10 (3 gambar, 6 video)
 - [x] Susun ulang Bagian 6 (Desain Visual) berdasarkan referensi gambar — 2026-11-10
 - [x] Analisis 6 video referensi → bagian Animasi di Bagian 6 — 2026-11-10
@@ -649,8 +755,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [ ] **Rahul:** hubungkan repo ke **Vercel** (vercel.com → login GitHub → Import
       `personal-web` → Deploy; setelan default Next.js) → situs sementara di `*.vercel.app`.
       Catat URL-nya di header file ini.
-- Catatan: cek data CV, bahan project, dan foto profil (3 poin di atas) **ditunda sampai
-  desain UI/UX website versi 1 selesai** (permintaan Rahul, 2026-11-10).
+- Catatan: cek data CV, bahan project, dan foto profil (3 poin di atas) ditunda sampai
+  desain UI/UX versi 1 selesai — **desain v1.0 sudah selesai (Sesi 7)**, jadi ketiganya
+  bisa dikerjakan sekarang; foto & cover project akan menggantikan placeholder gradien di desain.
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
 
 ### Saran
