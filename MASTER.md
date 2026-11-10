@@ -9,7 +9,8 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** **desain UI/UX v1.0 selesai di FigCraft** (5 halaman, 27 frame: design system, situs publik desktop+mobile, Life OS desktop+mobile, light/dark via variabel); project Next.js 16 dua bahasa sudah disiapkan + konten dari CV; berikutnya Rahul review desain → unggah file ke Drive → deploy Vercel → mulai Fase 1 |
+| Situs (Vercel) | https://raaahl15-personal-web.vercel.app (auto-deploy dari `main`) |
+| Status saat ini | **Fase 0 — Persiapan:** **desain UI/UX v1.0 selesai di FigCraft** (5 halaman, 27 frame: design system, situs publik desktop+mobile, Life OS desktop+mobile, light/dark via variabel); project Next.js 16 dua bahasa sudah disiapkan + konten dari CV; desain sudah di Drive dan situs sementara live di Vercel; berikutnya Rahul review desain (iPad) → revisi v1.1 → mulai Fase 1 |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -646,6 +647,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   untuk direview dari iPad. (Catatan teknis: upload by-reference hanya jalan untuk file di
   dalam folder kerja repo → disalin sementara ke `.upload-tmp/` lalu dihapus.)
 - Keputusan baru K-21 s.d. K-25; Bagian 6 dilengkapi spesifikasi v1.0.
+- Branch kerja di-merge (fast-forward) ke `main` dan di-push.
+- Deploy Vercel aktif: https://raaahl15-personal-web.vercel.app — dicek `/` (200, `lang=en`)
+  dan `/id` (200, `lang=id`). Isi masih halaman sementara; tampilan v1.0 dibangun di Fase 1.
 
 ### 2026-11-10 — Sesi 6: Rapikan Drive referensi
 - Dicek ulang root Drive: `03 - Assets` dan `README.md` **ternyata ada**; catatan
@@ -754,9 +758,7 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [ ] **Rahul:** foto profil untuk situs → Drive `03 - Assets`.
 - [x] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/` — 2026-11-10
 - [x] Merge branch kerja ke `main` + push ke GitHub — 2026-11-10
-- [ ] **Rahul:** hubungkan repo ke **Vercel** (vercel.com → login GitHub → Import
-      `personal-web` → Deploy; setelan default Next.js) → situs sementara di `*.vercel.app`.
-      Catat URL-nya di header file ini.
+- [x] **Rahul:** hubungkan repo ke **Vercel** → https://raaahl15-personal-web.vercel.app — 2026-11-10
 - Catatan: cek data CV, bahan project, dan foto profil (3 poin di atas) ditunda sampai
   desain UI/UX versi 1 selesai — **desain v1.0 sudah selesai (Sesi 7)**, jadi ketiganya
   bisa dikerjakan sekarang; foto & cover project akan menggantikan placeholder gradien di desain.
