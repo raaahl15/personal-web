@@ -9,7 +9,7 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** arah desain visual ditetapkan (biru langit + glassmorphism, font Outfit + Inter); menunggu screenshot dari video referensi animasi |
+| Status saat ini | **Fase 0 — Persiapan:** arah desain visual & animasi ditetapkan (biru langit + glassmorphism, Outfit + Inter, alur gelap → terang); berikutnya desain welcome page di FigCraft |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -255,9 +255,9 @@ habit tracker → `features/habits/` + `app/app/habits/`. Selesai.
 
 ## 6. Desain Visual
 
-> Disusun 2026-11-10 dari referensi gambar di Drive `02 - Design References`
-> (K-09, K-10). **Belum final:** bagian animasi menunggu screenshot dari 6 video
-> referensi.
+> Disusun 2026-11-10 dari 3 gambar + 6 video referensi di Drive
+> `02 - Design References` (K-09, K-10, K-11). Detail visual final (hex warna
+> fungsional, ukuran) dikunci saat desain di FigCraft.
 
 ### Arah desain
 **Bersih, lapang, glassmorphism, biru langit monokrom, sudut sangat bulat, dark/light
@@ -326,10 +326,40 @@ hijau lembut untuk pemasukan/sukses — nilai hex ditentukan saat desain di FigC
 - Kombinasi sans + sans sesuai aturan referensi font pairing (hindari serif+serif,
   script+script). Keduanya tersedia di Google Fonts / `next/font`.
 
-### Animasi (menunggu)
-Video referensi di Drive (welcome, portfolio, login, efek scroll ke bawah, transisi
-dark→light) belum bisa dianalisis. Perlu 2–4 screenshot per video + catatan di
-`links.txt`. Prinsip sementara: Public Site boleh lebih ekspresif; Life OS tenang.
+### Animasi
+Dianalisis 2026-11-10 dari 6 video di Drive `02 - Design References` (frame diambil
+otomatis dari video; easing/kecepatan masih perkiraan).
+
+**Benang merah:** hampir semua referensi memakai alur **gelap → terang** saat
+scroll. Dark/light mode dijadikan "alur cerita" welcome page, bukan sekadar setting.
+
+| Video | Sumber | Yang diambil |
+|---|---|---|
+| `suka untuk welcome page animasinya` | @heroinspo (web bank "Clarity is the real luxury") | Pembuka gelap + garis cahaya biru-ungu "warp"; latar berubah gelap → putih → biru langit saat scroll; angka statistik menghitung naik; judul sans + aksen *serif miring* |
+| `efect geser websitenya kebawah` | @fraxbit | Hero gelap teks besar → bagian terang; parallax gambar vs konten; kartu muncul sambil bergeser naik |
+| `suka animasinya` | @samanastudio ("Montfort Trading") | Scroll sinematik "kamera menembus adegan" (gunung → awan → bumi → hutan); judul huruf renggang terbelah saat zoom. Berat → opsional, hanya untuk hero |
+| `suka untuk animasi login page` | @esther252005 | Panel overlay geser kiri-kanan (Sign In ↔ Create Account) + teks crossfade. Ambil animasinya, warna diganti Sky Blue; panel kedua diisi konten lain (hanya 1 akun) |
+| `suka untuk animasi di portfolio` | portfolio Eka Wahyu Maulidan | **Kartu folder yang terbuka saat hover (kertas menyembul)** untuk Projects/Certificates/Awards; navbar pil dengan indikator aktif bergeser; latar garis kontur topografi; timeline Education/Experience; teks raksasa "PORTOFOLIO" membesar sebagai transisi; tab + carousel kartu. (Efek hover foto → topeng: opsional) |
+| `suka bagian transisi dari dark mode ke light mode` | @chard0xx | **Ganti tema dengan lingkaran membesar dari tombol toggle** (View Transitions API + `clip-path: circle()`); nama raksasa outline berjalan (marquee) di belakang foto; judul efek mengetik; carousel coverflow 3D; penutup tipografi tebal "LET'S WORK TOGETHER" + kartu kontak |
+
+**Penerapan per halaman:**
+
+| Halaman | Animasi |
+|---|---|
+| Welcome | Pembuka gelap + cahaya warp → scroll gelap → terang (biru langit); counter angka; parallax ringan; (opsional) hero sinematik menembus adegan |
+| About | Nama raksasa outline berjalan di belakang foto; timeline pendidikan/pengalaman |
+| Portfolio | Kartu folder terbuka saat hover; carousel coverflow; judul efek mengetik; teks raksasa sebagai transisi antar bagian |
+| Contact | Penutup tipografi tebal + kartu kontak |
+| Login | Panel geser + crossfade |
+| Global | Toggle dark/light dengan lingkaran membesar; navbar pil dengan indikator aktif bergeser |
+| Life OS | Minimal: transisi tema + kartu fade-in; tanpa efek berat |
+
+**Catatan teknis (untuk Fase 1):** animasi scroll & transisi pakai **Motion**
+(Framer Motion) atau GSAP ScrollTrigger; ganti tema pakai View Transitions API;
+hormati `prefers-reduced-motion` (animasi berat dimatikan).
+
+**Tambahan tipografi dari referensi:** aksen *serif miring* untuk 1–2 kata di judul
+(mis. Instrument Serif Italic) — opsional, diputuskan saat desain di FigCraft.
 
 ---
 
@@ -401,9 +431,9 @@ Aturan:
 
 ### Format referensi desain
 - **Foto/screenshot** (PNG/JPG/WebP) → paling ideal, bisa langsung dianalisis AI.
-- **Video** (termasuk TikTok) → AI tidak bisa menonton video / membuka link TikTok.
-  Sertakan 2–4 screenshot momen penting + catatan singkat (animasi/interaksi apa
-  yang disukai) + link sumber asli (Dribbble/Awwwards/website) bila disebut di video.
+- **Video** → unggah **file videonya** ke Drive (bukan link TikTok); Claude bisa
+  mengambil frame dan menganalisisnya (K-12). Nama file = apa yang disukai
+  (contoh `suka animasi login page.mp4`). Link TikTok saja tidak bisa dibuka.
 - Catat di `links.txt` per referensi: link + "kenapa suka" + nama file screenshot.
 
 ### Alat desain: FigCraft (ArtCraft)
@@ -446,6 +476,8 @@ yang menjelaskan alasannya.
 | K-08 | 2026-11-10 | Referensi desain utama berupa screenshot + catatan; video/TikTok hanya pelengkap | AI tidak bisa menonton video atau membuka link TikTok |
 | K-09 | 2026-11-10 | Arah visual baru: **biru langit monokrom + glassmorphism + sudut bulat + dark/light mode**; tema kosmik ungu-magenta lama ditinggalkan | Sesuai referensi layout & palet "Sky Blue Premium" dari Rahul; lebih tenang untuk dipakai harian |
 | K-10 | 2026-11-10 | Font: **Outfit** (judul) + **Inter** (isi), menggantikan Montserrat | Dipilih Rahul (opsi A); cocok dengan judul sans geometris di referensi layout |
+| K-11 | 2026-11-10 | Konsep animasi: alur **gelap → terang** saat scroll, toggle tema lingkaran membesar, kartu folder di portfolio; Life OS animasi minimal | Hasil analisis 6 video referensi Rahul |
+| K-12 | 2026-11-10 | Video referensi dianalisis langsung oleh Claude (ambil frame otomatis); screenshot manual tidak wajib lagi (merevisi K-08) | Frame bisa diekstrak dari file video di Drive; link TikTok tetap tidak bisa dibuka |
 
 ---
 
@@ -460,6 +492,8 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - Dianalisis 3 gambar referensi (layout, palet Sky Blue, font pairing) → Bagian 6
   disusun ulang: layout, komponen, palet + pemakaian light/dark, tipografi.
 - Keputusan K-09 (arah visual biru langit + glassmorphism) dan K-10 (Outfit + Inter).
+- 6 video referensi dianalisis langsung (unduh dari Drive → ambil frame dengan
+  OpenCV) → bagian Animasi di Bagian 6 diisi; keputusan K-11 dan K-12.
 - MCP `figcraft` gagal terhubung di sesi ini (aplikasi belum dibuka via shortcut).
 
 ### 2026-11-10 — Sesi 4: Format referensi & koneksi FigCraft
@@ -503,8 +537,7 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [ ] Sesi desain pertama di FigCraft: welcome page (desktop + mobile).
 - [x] **Rahul:** kumpulkan referensi desain di Drive `02 - Design References` — 2026-11-10 (3 gambar, 6 video)
 - [x] Susun ulang Bagian 6 (Desain Visual) berdasarkan referensi gambar — 2026-11-10
-- [ ] **Rahul:** ambil 2–4 screenshot dari tiap video referensi + isi catatan di `links.txt`
-      → lengkapi bagian Animasi di Bagian 6.
+- [x] Analisis 6 video referensi → bagian Animasi di Bagian 6 — 2026-11-10
 - [ ] Rapikan Drive: pindahkan referensi ke subfolder per halaman; cek `03 - Assets` & `README.md` root.
 - [ ] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa).
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
