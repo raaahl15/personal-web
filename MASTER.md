@@ -11,7 +11,7 @@
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://personal-web-coral-pi.vercel.app (project Vercel `personal-web`, auto-deploy dari `main`; alias lama `raaahl15-personal-web.vercel.app`) |
 | Supabase | Project `xhoonuobulugboohqxqc` (region Sydney `ap-southeast-2`, paket Free) — URL `https://xhoonuobulugboohqxqc.supabase.co` |
-| Status saat ini | **Fase 3 — Projects & Tasks (kode selesai, menunggu SQL):** Tasks (List + Kanban), Projects (daftar, detail, lampiran, switch Publik/Unggulan), Konteks di Pengaturan, Portfolio publik membaca database; berikutnya Rahul menjalankan `supabase/migrations/0001_projects_tasks.sql` di SQL Editor → uji di perangkat |
+| Status saat ini | **Fase 3 — Projects & Tasks (database aktif, tahap uji):** Tasks (List + Kanban), Projects (daftar, detail, lampiran, switch Publik/Unggulan), Konteks di Pengaturan, Portfolio publik membaca database; SQL sudah dijalankan & RLS terverifikasi; berikutnya Rahul menguji di perangkat → perbaikan → Fase 4 (Journal) |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -865,8 +865,10 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [ ] Fase 2 opsional: reset password / magic link.
 - [x] **Rahul:** kirim Publishable key Supabase → `.env.local` — 2026-11-10
 - [x] Fase 3 (kode): Tasks, Projects, lampiran, Konteks, Portfolio dari database — Sesi 11
-- [ ] **Rahul:** jalankan `supabase/migrations/0001_projects_tasks.sql` di Supabase → SQL Editor,
-      lalu uji: tambah/centang/edit task, Kanban, buat project + lampiran, switch Publik.
+- [x] **Rahul:** jalankan `supabase/migrations/0001_projects_tasks.sql` — 2026-11-10. Dicek Claude
+      via REST anon: 3 project publik terbaca; contexts/tasks/project_files tertutup (RLS OK).
+- [ ] **Rahul:** uji di perangkat: tambah/centang/edit task, Kanban, buat project + lampiran,
+      switch Publik/Unggulan, ubah konteks.
 - [ ] Fase 3 lanjutan (opsional): urutan manual task (drag di dalam kolom), subtask, pencarian.
 - [ ] Fase 1 sisa: cek di iPad/HP asli; foto profil + cover
       project asli (menggantikan placeholder gradien); carousel "Moments" saat foto kegiatan ada;
