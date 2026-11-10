@@ -9,7 +9,7 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** arah desain visual & animasi ditetapkan (biru langit + glassmorphism, Outfit + Inter, alur gelap → terang); berikutnya desain welcome page di FigCraft |
+| Status saat ini | **Fase 0 — Persiapan:** arah desain visual & animasi ditetapkan (biru langit + glassmorphism, Outfit + Inter, alur gelap → terang); referensi Drive sudah dirapikan per halaman; berikutnya desain welcome page di FigCraft |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -267,9 +267,9 @@ lama. Nuansa "langit malam" tetap terasa lewat ujung gelap palet (dark mode).
 ### Referensi yang dipakai
 | File (Drive `02 - Design References`) | Yang diambil |
 |---|---|
-| `design layout inspiration.jpg` (Orizon Design, "New Way Of Living") | Tata letak, kartu kaca, sidebar & navbar pil |
-| `Sky Blue Premium Palette.jpg` | Palet warna 16 tingkat |
-| `Perfect Font Pairing Formula!💠.jpg` | Aturan pasangan font → dipilih Outfit + Inter |
+| `_umum/design layout inspiration.jpg` (Orizon Design, "New Way Of Living") | Tata letak, kartu kaca, sidebar & navbar pil |
+| `_umum/Sky Blue Premium Palette.jpg` | Palet warna 16 tingkat |
+| `_umum/Perfect Font Pairing Formula!💠.jpg` | Aturan pasangan font → dipilih Outfit + Inter |
 
 ### Layout & komponen
 - **Bingkai utama** bersudut sangat bulat (radius ±32px) berisi visual/foto
@@ -335,12 +335,12 @@ scroll. Dark/light mode dijadikan "alur cerita" welcome page, bukan sekadar sett
 
 | Video | Sumber | Yang diambil |
 |---|---|---|
-| `suka untuk welcome page animasinya` | @heroinspo (web bank "Clarity is the real luxury") | Pembuka gelap + garis cahaya biru-ungu "warp"; latar berubah gelap → putih → biru langit saat scroll; angka statistik menghitung naik; judul sans + aksen *serif miring* |
-| `efect geser websitenya kebawah` | @fraxbit | Hero gelap teks besar → bagian terang; parallax gambar vs konten; kartu muncul sambil bergeser naik |
-| `suka animasinya` | @samanastudio ("Montfort Trading") | Scroll sinematik "kamera menembus adegan" (gunung → awan → bumi → hutan); judul huruf renggang terbelah saat zoom. Berat → opsional, hanya untuk hero |
-| `suka untuk animasi login page` | @esther252005 | Panel overlay geser kiri-kanan (Sign In ↔ Create Account) + teks crossfade. Ambil animasinya, warna diganti Sky Blue; panel kedua diisi konten lain (hanya 1 akun) |
-| `suka untuk animasi di portfolio` | portfolio Eka Wahyu Maulidan | **Kartu folder yang terbuka saat hover (kertas menyembul)** untuk Projects/Certificates/Awards; navbar pil dengan indikator aktif bergeser; latar garis kontur topografi; timeline Education/Experience; teks raksasa "PORTOFOLIO" membesar sebagai transisi; tab + carousel kartu. (Efek hover foto → topeng: opsional) |
-| `suka bagian transisi dari dark mode ke light mode` | @chard0xx | **Ganti tema dengan lingkaran membesar dari tombol toggle** (View Transitions API + `clip-path: circle()`); nama raksasa outline berjalan (marquee) di belakang foto; judul efek mengetik; carousel coverflow 3D; penutup tipografi tebal "LET'S WORK TOGETHER" + kartu kontak |
+| `welcome/suka untuk welcome page animasinya` | @heroinspo (web bank "Clarity is the real luxury") | Pembuka gelap + garis cahaya biru-ungu "warp"; latar berubah gelap → putih → biru langit saat scroll; angka statistik menghitung naik; judul sans + aksen *serif miring* |
+| `welcome/efect geser websitenya kebawah` | @fraxbit | Hero gelap teks besar → bagian terang; parallax gambar vs konten; kartu muncul sambil bergeser naik |
+| `welcome/suka animasinya` | @samanastudio ("Montfort Trading") | Scroll sinematik "kamera menembus adegan" (gunung → awan → bumi → hutan); judul huruf renggang terbelah saat zoom. Berat → opsional, hanya untuk hero |
+| `login/suka untuk animasi login page` | @esther252005 | Panel overlay geser kiri-kanan (Sign In ↔ Create Account) + teks crossfade. Ambil animasinya, warna diganti Sky Blue; panel kedua diisi konten lain (hanya 1 akun) |
+| `portfolio/suka untuk animasi di portfolio` | portfolio Eka Wahyu Maulidan | **Kartu folder yang terbuka saat hover (kertas menyembul)** untuk Projects/Certificates/Awards; navbar pil dengan indikator aktif bergeser; latar garis kontur topografi; timeline Education/Experience; teks raksasa "PORTOFOLIO" membesar sebagai transisi; tab + carousel kartu. (Efek hover foto → topeng: opsional) |
+| `_umum/suka bagian transisi dari dark mode ke light mode` | @chard0xx | **Ganti tema dengan lingkaran membesar dari tombol toggle** (View Transitions API + `clip-path: circle()`); nama raksasa outline berjalan (marquee) di belakang foto; judul efek mengetik; carousel coverflow 3D; penutup tipografi tebal "LET'S WORK TOGETHER" + kartu kontak |
 
 **Penerapan per halaman:**
 
@@ -420,7 +420,8 @@ Personal Web/
 ├─ README.md               ← link ke repo + aturan penyimpanan
 ├─ 01 - Docs               ← export PDF dokumen (baca offline)
 ├─ 02 - Design References  ← referensi desain dari luar
-│  ├─ welcome/ portfolio/ dashboard/ journal/ money/   ← screenshot per halaman
+│  ├─ _umum/               ← referensi lintas halaman (layout, palet, font, toggle tema)
+│  ├─ welcome/ portfolio/ login/ dashboard/ journal/ money/   ← referensi per halaman
 │  └─ links.txt            ← link + "kenapa suka" + nama screenshot
 ├─ 03 - Assets             ← foto profil, logo, font, ilustrasi (mentah)
 ├─ 04 - Portfolio Content  ← bahan per project (foto, laporan, video demo)
@@ -490,6 +491,15 @@ yang menjelaskan alasannya.
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 
+### 2026-11-10 — Sesi 6: Rapikan Drive referensi
+- Dicek ulang root Drive: `03 - Assets` dan `README.md` **ternyata ada**; catatan
+  Sesi 5 bahwa keduanya tidak ditemukan keliru (hasil pencarian waktu itu terpotong).
+- Dibuat subfolder baru `_umum/` (referensi lintas halaman) dan `login/` di
+  `02 - Design References`; 9 referensi dipindah: `_umum/` (3 gambar + video toggle
+  tema), `welcome/` (3 video), `portfolio/` (1 video), `login/` (1 video).
+  Path di Bagian 6 dan struktur di Bagian 10 diperbarui.
+- MCP `figcraft` masih gagal terhubung ("Connection closed").
+
 ### 2026-11-10 — Sesi 5: Analisis referensi & arah desain visual
 - Dicek progres GitHub + Drive. Ditemukan: referensi (3 gambar, 6 video) diunggah
   langsung ke `02 - Design References` (subfolder per halaman masih kosong);
@@ -545,7 +555,8 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] **Rahul:** kumpulkan referensi desain di Drive `02 - Design References` — 2026-11-10 (3 gambar, 6 video)
 - [x] Susun ulang Bagian 6 (Desain Visual) berdasarkan referensi gambar — 2026-11-10
 - [x] Analisis 6 video referensi → bagian Animasi di Bagian 6 — 2026-11-10
-- [ ] Rapikan Drive: pindahkan referensi ke subfolder per halaman; cek `03 - Assets` & `README.md` root.
+- [x] Rapikan Drive: pindahkan referensi ke subfolder per halaman; cek `03 - Assets` & `README.md` root — 2026-11-10
+- [ ] Perbarui template `links.txt` di Drive: aturan "video wajib disertai screenshot" sudah tidak berlaku (K-12).
 - [ ] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa).
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
 - [ ] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/`.
