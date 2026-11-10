@@ -1,14 +1,37 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/proxy";
 
-// Routing bahasa situs publik (K-17):
+// Routing bahasa situs publik (K-17, K-18):
 //   /about     → dirender dari app/[lang]/about dengan lang=en (rewrite, URL tetap)
 //   /id/about  → lang=id
 //   /en/about  → redirect permanen ke /about (hindari konten ganda)
-// Life OS (/app), /login, dan /api tidak memakai prefix bahasa.
-const NON_LOCALIZED = /^\/(app|login|api)(\/|$)/;
+// Area privat (Fase 2):
+//   /app/*     → wajib login (sesi Supabase diverifikasi di sini); belum login → /login?next=…
+//   /login     → sudah login → /app
+// /api dan /auth tidak memakai prefix bahasa.
+const PRIVATE = /^\/app(\/|$)/;
+const NON_LOCALIZED = /^\/(app|login|api|auth)(\/|$)/;
 
-export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
+
+  if (PRIVATE.test(pathname) || pathname === "/login") {
+    const { response, isAuthed } = await updateSession(request);
+
+    if (PRIVATE.test(pathname) && !isAuthed) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.search = `?next=${encodeURIComponent(pathname + search)}`;
+      return NextResponse.redirect(url);
+    }
+    if (pathname === "/login" && isAuthed) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/app";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
 
   if (pathname === "/en" || pathname.startsWith("/en/")) {
     const url = request.nextUrl.clone();

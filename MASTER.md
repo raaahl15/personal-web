@@ -10,7 +10,7 @@
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://raaahl15-personal-web.vercel.app (auto-deploy dari `main`) |
-| Status saat ini | **Fase 1 — Public Site (berjalan):** desain UI/UX v1.0 disetujui; Welcome, About, Portfolio, detail project, dan Contact sudah dibangun sesuai desain (EN + ID, light/dark, mobile); berikutnya deploy ke Vercel + cek di perangkat asli, lalu foto asli & sisa Fase 1 |
+| Status saat ini | **Fase 2 — Auth & Shell (kode selesai, menunggu Supabase):** situs publik live (Fase 1, sisa: foto asli dll.); login, proteksi `/app/*`, dan shell Life OS (sidebar + bottom nav) sudah dibangun; berikutnya Rahul membuat project Supabase + mengisi env di Vercel → uji login → Fase 3 (Projects & Tasks) |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -264,15 +264,15 @@ personal-web/
 │  │  ├─ portfolio/page.tsx
 │  │  ├─ portfolio/[slug]/page.tsx
 │  │  └─ contact/page.tsx
-│  ├─ (auth)/login/page.tsx
-│  └─ app/                        ← Life OS (private)
-│     ├─ layout.tsx               ← sidebar + cek login
-│     ├─ page.tsx                 ← Dashboard Today
-│     ├─ journal/…
-│     ├─ tasks/…
-│     ├─ projects/…
-│     ├─ money/…
-│     └─ settings/…
+│  └─ (private)/                  ← root layout ke-2: area privat (bahasa ID, noindex)
+│     ├─ layout.tsx
+│     ├─ login/                   ← page + login-card (panel geser) + actions (signIn)
+│     └─ app/                     ← Life OS (/app/*), dijaga proxy.ts + lib/auth.ts
+│        ├─ layout.tsx            ← sidebar (desktop) + bottom nav (HP)
+│        ├─ actions.ts            ← signOut
+│        ├─ page.tsx              ← Dashboard "Hari ini"
+│        ├─ journal/ tasks/ projects/ money/ money/invest/   ← placeholder s.d. fasenya
+│        └─ settings/
 ├─ components/
 │  ├─ ui/                         ← shadcn (button, card, dialog…)
 │  ├─ site/                       ← komponen situs publik (navbar, menu mobile, footer, kartu folder,
@@ -620,12 +620,36 @@ yang menjelaskan alasannya.
 | K-27 | 2026-11-10 | Form kontak Fase 1 = validasi di klien lalu membuka aplikasi email (`mailto:`) | Belum ada backend/layanan email; pengiriman langsung menyusul |
 | K-28 | 2026-11-10 | Hero Welcome & bingkainya selalu gelap memakai kelas `.dark` lokal (token tema ikut gelap di dalamnya), di mode terang maupun gelap | Alur gelap → terang (K-11) tetap utuh tanpa menggandakan komponen |
 | K-29 | 2026-11-10 | Ganti bahasa tetap memuat ulang dokumen (konsekuensi `[lang]` sebagai root layout, K-18), dihaluskan dengan View Transitions antar-dokumen + pemulihan scroll + prerender saat hover — bukan memindah i18n ke client | Struktur i18n bawaan Next tetap sederhana & SEO-friendly; di Safari/Chrome terbaru hasilnya crossfade tanpa kedip |
+| K-30 | 2026-11-10 | Auth: Supabase via `@supabase/ssr` (cookie). Rute `/app/*` dijaga di `proxy.ts` (refresh sesi + `getClaims()` yang memverifikasi JWT); semua pembacaan user lewat satu DAL `lib/auth.ts` di dalam `<Suspense>`; Server Action memverifikasi ulang. Env: `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (fallback `…_ANON_KEY`) | Pola resmi Next 16 + Cache Components (shell statis, bagian sesi streaming); `getClaims()` lebih aman daripada `getSession()` |
+| K-31 | 2026-11-10 | Area privat = route group `app/(private)` sebagai root layout kedua (ID, `noindex`); login hanya email + password untuk satu akun (sign-up dimatikan di Supabase); magic link / reset password menyusul | Pisah total dari i18n publik; cukup untuk pemakaian pribadi |
 
 ---
 
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 10: Fase 2 — Auth & Shell Life OS
+- Rahul: "lanjut fase 2". Dibaca panduan Next 16 *Authentication with Cache Components*.
+- Paket: `@supabase/supabase-js` 2.119, `@supabase/ssr` 0.12.7.
+- `lib/supabase/` (env, client server, refresh sesi untuk proxy), `lib/auth.ts` (DAL
+  `getCurrentUser`, nama dari metadata `full_name`, fallback "Rahul"), `proxy.ts`
+  (`/app/*` tanpa sesi → `/login?next=…`; `/login` saat sudah login → `/app`).
+- Font & script tema dipindah ke `lib/fonts.ts` (dipakai 2 root layout).
+- `app/(private)/`: root layout (ID, noindex); **login** sesuai desain (form + panel biru yang
+  bergeser ke kiri untuk mode pengunjung + tautan ke situs publik; versi HP; tampil
+  pemberitahuan bila env Supabase belum diisi; `next` hanya boleh ke `/app…`, pesan error
+  umum); **shell Life OS**: sidebar pil (tooltip + aria-label, toggle tema vertikal, avatar),
+  bottom nav HP (4 modul + "Lainnya" berupa lembar bawah), halaman "Hari ini" (sapaan +
+  tanggal WIB, kartu modul + fasenya), placeholder Jurnal/Tasks/Projects/Money/Invest,
+  Pengaturan (akun, tema, keluar).
+- Footer publik: tautan "Login" (sesuai desain v1.0). `.env.example` ditambahkan.
+- Verifikasi: lint & build lolos (`/app/*` = shell statis + bagian sesi dinamis); uji CDP:
+  `/app/tasks` → `/login?next=%2Fapp%2Ftasks`, login desktop/HP/mode pengunjung, dan (dengan
+  bypass lokal sementara yang tidak di-commit) shell desktop terang/gelap, HP, lembar "Lainnya".
+- Ditemukan & diperbaiki: karakter "—/…/→" rusak di `login-card.tsx` akibat `Set-Content`
+  PowerShell (encoding ANSI) → selalu tulis file lewat tool editor / UTF-8 tanpa BOM.
+- Belum bisa diuji: login sungguhan (menunggu project Supabase dari Rahul).
 
 ### 2026-11-10 — Sesi 9: Revisi Fase 1 dari Rahul (kehalusan & menu HP)
 - Masukan Rahul setelah cek di iPad: animasi kurang mulus, menu HP kurang, ganti bahasa
@@ -791,7 +815,18 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
       agar FigCraft tidak perlu memuat font tiap sesi.
 - [x] Fase 1 (bagian besar): token v1.0 di `globals.css`, komponen situs, halaman Welcome, About,
       Portfolio, detail project, Contact (EN + ID) — 2026-11-10, Sesi 8
-- [ ] Fase 1 sisa: deploy ke Vercel (merge ke `main`) lalu cek di iPad/HP asli; foto profil + cover
+- [x] Fase 2 (kode): login, proteksi `/app/*`, shell Life OS — 2026-11-10, Sesi 10
+- [ ] **Rahul — setup Supabase (sekali saja):**
+      1. supabase.com → New project (region Singapore), simpan password database di tempat aman.
+      2. Authentication → Sign In / Providers → Email: aktif; **matikan "Allow new users to sign up"**.
+      3. Authentication → Users → Add user → email + password milikmu (centang auto-confirm),
+         lalu edit user metadata: `{"full_name": "Rahul Ghulam Hidayatulloh"}`.
+      4. Project Settings → API Keys: salin **Project URL** dan **Publishable key** (bukan secret).
+      5. Vercel → personal-web → Settings → Environment Variables: isi
+         `NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` → Redeploy.
+      6. Kirim URL + publishable key ke Claude (aman, kunci publik) untuk `.env.local` & uji login.
+- [ ] Fase 2 sisa: uji login sungguhan di produksi; reset password / magic link (opsional).
+- [ ] Fase 1 sisa: cek di iPad/HP asli; foto profil + cover
       project asli (menggantikan placeholder gradien); carousel "Moments" saat foto kegiatan ada;
       halaman 404 bergaya; gambar OG untuk share link; kirim form kontak langsung (server action +
       layanan email, mis. Resend) menggantikan `mailto:`.

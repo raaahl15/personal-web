@@ -37,10 +37,13 @@ export function ThemeToggle({
   lightLabel,
   darkLabel,
   className,
+  vertical = false,
 }: {
   lightLabel: string;
   darkLabel: string;
   className?: string;
+  /** Susun atas-bawah (sidebar Life OS). */
+  vertical?: boolean;
 }) {
   const theme = useSyncExternalStore(subscribe, currentTheme, () => "light" as Theme);
 
@@ -106,13 +109,20 @@ export function ThemeToggle({
   );
 
   return (
-    <div role="group" className={cn("relative flex items-center gap-1 rounded-full bg-muted p-1", className)}>
+    <div
+      role="group"
+      className={cn("relative flex items-center gap-1 rounded-full bg-muted p-1", vertical && "flex-col", className)}
+    >
       {/* Thumb yang bergeser di belakang ikon aktif */}
       <span
         aria-hidden
         className={cn(
           "vt-keep absolute top-1 left-1 size-11 rounded-full bg-card shadow-sm transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] md:size-9",
-          theme === "dark" ? "translate-x-12 md:translate-x-10" : "translate-x-0",
+          theme !== "dark"
+            ? "translate-0"
+            : vertical
+              ? "translate-y-12 md:translate-y-10"
+              : "translate-x-12 md:translate-x-10",
         )}
       />
       {item("light", lightLabel, Sun)}

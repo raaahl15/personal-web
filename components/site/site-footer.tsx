@@ -18,6 +18,11 @@ export function SiteFooter({ lang, dict }: { lang: Locale; dict: Dictionary }) {
             </Link>
           </li>
         ))}
+        <li>
+          <Link href="/login" className="rounded text-subtle outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+            Login
+          </Link>
+        </li>
       </ul>
       <p className="text-subtle">{dict.footer.built} · EN / ID</p>
     </footer>

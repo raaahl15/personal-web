@@ -1,24 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Inter, Instrument_Serif, Outfit } from "next/font/google";
 import { hasLocale, locales, localePath } from "@/lib/i18n";
+import { fontVariables, themeScript } from "@/lib/fonts";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { getDictionary } from "./dictionaries";
 import "../globals.css";
-
-// Font (K-10, K-24): Outfit judul, Inter isi, Instrument Serif Italic untuk 1–2 kata aksen.
-const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
-});
-
-// Dipasang sebelum paint: tema tanpa kedip (tersimpan → ikut sistem) + kelas .js untuk animasi reveal.
-const themeScript = `(function(){var e=document.documentElement;e.classList.add("js");try{var t=localStorage.getItem("theme");var d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;if(d)e.classList.add("dark")}catch(x){}})()`;
 
 // Setelah ganti bahasa: kembalikan posisi scroll (disimpan LangSwitch). Jalan di akhir <body>
 // sebelum paint pertama; kalau halaman di-prerender (hover), tunggu sampai benar-benar dibuka.
@@ -54,7 +41,7 @@ export default async function PublicRootLayout({ children, params }: LayoutProps
   return (
     <html
       lang={lang}
-      className={`${outfit.variable} ${inter.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${fontVariables} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
