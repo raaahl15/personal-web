@@ -56,6 +56,9 @@ Prinsip yang dipegang:
 
 ## 2. Peta Menu (Sitemap)
 
+Situs publik dua bahasa (K-17): Inggris tanpa prefix (`/about`), Indonesia dengan
+prefix `/id` (`/id/about`). Life OS (`/app/*`) hanya bahasa Indonesia.
+
 ```
 /                       → Welcome page (hero "Welcome to my website")
 /about                  → Profil, skill, pengalaman, organisasi
@@ -71,6 +74,7 @@ Prinsip yang dipegang:
 /app/projects           → Kumpulan project + file/link + progres
 /app/projects/[id]      → Detail project (task, catatan, lampiran)
 /app/money              → Money management (transaksi, budget, laporan)
+/app/money/invest       → Portofolio trading/investasi (forex, saham, crypto, dll)
 /app/settings           → Profil, kategori, export data
 ```
 
@@ -99,7 +103,10 @@ bukan di-hardcode, tapi dari tabel `projects` yang `is_public = true`.
 
 **✅ Tasks (`/app/tasks`)**
 - Tampilan *List* dan *Kanban* (To Do → In Progress → Done)
-- Field: judul, deadline, prioritas, konteks (Kuliah / BEM / Asprak / GMRT / KKN), project terkait
+- Field: judul, deadline, prioritas, konteks, project terkait
+- **Konteks dibuat sendiri** (K-15): bisa tambah, ganti nama, ganti warna/ikon, hapus
+  di Settings. Isian awal: Kuliah, BEM, Asprak, GMRT, KKN. Konteks yang dihapus tidak
+  menghapus task-nya; task jadi "tanpa konteks".
 - Bisa dihubungkan ke project
 
 **🗂️ Projects (`/app/projects`)** — "kumpulan tugas/project yang bisa diakses"
@@ -109,10 +116,22 @@ bukan di-hardcode, tapi dari tabel `projects` yang `is_public = true`.
 - Switch `featured` → tampil di Welcome page
 
 **💰 Money (`/app/money`)**
-- Akun/dompet: Cash, Bank, E-wallet (GoPay, OVO, dll)
+- Akun/dompet: Cash, Bank, E-wallet (GoPay, OVO, dll), Broker/Exchange (akun trading)
+- **Dua mata uang: IDR dan USD** (K-16). Setiap akun punya mata uangnya sendiri;
+  transfer IDR ↔ USD mencatat jumlah keluar & jumlah masuk (kurs tersirat).
+- Total kekayaan & laporan ditampilkan dalam IDR memakai kurs harian USD→IDR
+  (disimpan di tabel `exchange_rates`; diisi manual dulu, otomatis dari API nanti).
 - Transaksi: pemasukan / pengeluaran / transfer antar akun
 - Kategori (Makan, Transport, Kos, Organisasi, ...) + budget bulanan per kategori
 - Laporan: grafik pengeluaran per kategori, tren bulanan
+
+**📈 Invest (`/app/money/invest`)** — trading & investasi (K-16)
+- Aset dengan kelas: forex, saham, crypto, lainnya (reksadana, obligasi, emas, …)
+- Catat trade: beli/jual (atau long/short untuk forex), jumlah, harga, fee, tanggal,
+  akun broker, catatan/alasan masuk (jurnal trading)
+- Posisi terbuka + rata-rata harga, P/L terealisasi per trade, ringkasan per kelas aset
+- Harga terkini diisi manual dulu; integrasi API harga (crypto/saham/forex) nanti
+- Dikerjakan **setelah** Money dasar stabil (lihat Roadmap Fase 5)
 
 **⚙️ Settings**
 Kelola kategori, akun, profil publik, dan **export semua data ke JSON/CSV**.
@@ -177,6 +196,7 @@ Semua tabel punya `user_id` dan dilindungi **Row Level Security (RLS)**:
 profiles            (id, full_name, headline, bio, avatar_url, socials jsonb)
 
 projects            (id, user_id, title, slug, summary, content, category,
+                     -- title/summary/content berupa jsonb {en, id} untuk situs 2 bahasa (K-17)
                      status[idea|active|done|archived], cover_url,
                      tech_stack text[], links jsonb,
                      is_public bool, featured bool, start_date, end_date,
@@ -184,24 +204,39 @@ projects            (id, user_id, title, slug, summary, content, category,
 
 project_files       (id, project_id, name, storage_path, mime_type, size)
 
-tasks               (id, user_id, project_id?, title, description,
+contexts            (id, user_id, name, color, icon, position)   ← dibuat sendiri (K-15)
+
+tasks               (id, user_id, project_id?, context_id?, title, description,
                      status[todo|doing|done], priority[low|med|high],
-                     context, due_date, completed_at, position, created_at)
+                     due_date, completed_at, position, created_at)
+                     -- context_id ON DELETE SET NULL
 
 journal_entries     (id, user_id, entry_date UNIQUE per user, title,
                      content jsonb  ← format block BlockNote,
                      mood smallint, tags text[], created_at, updated_at)
 
-accounts            (id, user_id, name, type[cash|bank|ewallet],
-                     initial_balance numeric)
+accounts            (id, user_id, name, type[cash|bank|ewallet|broker],
+                     currency[IDR|USD], initial_balance numeric)
 
 categories          (id, user_id, name, type[income|expense], icon, color)
 
 transactions        (id, user_id, account_id, category_id?,
                      type[income|expense|transfer], amount numeric,
-                     to_account_id?, note, occurred_at, created_at)
+                     to_account_id?, to_amount numeric?,  ← jumlah masuk bila beda mata uang
+                     note, occurred_at, created_at)
 
-budgets             (id, user_id, category_id, month date, amount numeric)
+budgets             (id, user_id, category_id, month date, amount numeric)  ← dalam IDR
+
+exchange_rates      (id, rate_date, base='USD', quote='IDR', rate numeric)
+
+-- Invest (K-16)
+assets              (id, user_id, symbol, name, class[forex|stock|crypto|other],
+                     quote_currency[IDR|USD], last_price numeric?, price_updated_at?)
+
+trades              (id, user_id, account_id, asset_id,
+                     side[buy|sell|long|short], quantity numeric, price numeric,
+                     fee numeric, opened_at, closed_at?, close_price numeric?,
+                     realized_pnl numeric?, note, created_at)
 ```
 
 Relasi penting:
@@ -209,6 +244,8 @@ Relasi penting:
 - `projects 1—N project_files` → lampiran disimpan di Supabase Storage
 - `accounts 1—N transactions`, `categories 1—N transactions`
 - Saldo akun **dihitung** (`initial_balance + Σ transaksi`), tidak disimpan, supaya tidak pernah selisih
+- Saldo selalu dalam mata uang akun; konversi ke IDR hanya saat ditampilkan (pakai `exchange_rates`)
+- `contexts 1—N tasks`, `assets 1—N trades`, `accounts 1—N trades`
 
 ---
 
@@ -217,7 +254,7 @@ Relasi penting:
 ```
 personal-web/
 ├─ app/
-│  ├─ (public)/
+│  ├─ [locale]/(public)/          ← en | id (next-intl, K-17)
 │  │  ├─ page.tsx                 ← Welcome
 │  │  ├─ about/page.tsx
 │  │  ├─ portfolio/page.tsx
@@ -241,6 +278,7 @@ personal-web/
 │  ├─ tasks/
 │  ├─ projects/
 │  └─ money/
+├─ messages/en.json, id.json      ← teks UI situs publik per bahasa
 ├─ lib/supabase/                  ← client & server helper
 ├─ supabase/migrations/           ← SQL skema database (versi terkontrol)
 ├─ middleware.ts                  ← proteksi /app/*
@@ -378,7 +416,7 @@ Kerjakan bertahap, tiap fase menghasilkan sesuatu yang bisa langsung dipakai.
 | **2. Auth & Shell** | Supabase, login, middleware `/app`, sidebar Life OS | Ruang private bisa diakses |
 | **3. Projects & Tasks** | CRUD project + task + lampiran, Kanban; Portfolio mulai ambil data dari DB | Kumpulan tugas/project jalan |
 | **4. Journal** | Editor BlockNote, satu entri per hari, mood, kalender, search | Journaling harian jalan |
-| **5. Money** | Akun, kategori, transaksi, budget, grafik | Money management jalan |
+| **5. Money** | Akun IDR/USD, kategori, transaksi, budget, grafik, kurs; lalu sub-modul Invest (aset, trade, P/L) | Money management + jurnal trading jalan |
 | **6. Dashboard Today** | Gabungkan ringkasan semua modul di `/app` | Satu layar untuk hari ini |
 | **7. Polish** | PWA (install di HP), export data, dark/light, fitur lanjutan | Siap dipakai harian |
 
@@ -399,10 +437,16 @@ yang bisa dikirim ke orang. Fase berikutnya menambah alat bantu harian.
 
 ## 9. Keputusan yang Perlu Kamu Tentukan
 
-1. **Nama domain** — misal `rahulghulam.dev` / `rahulghulam.my.id` (opsional, Vercel kasih domain gratis).
-2. **Konteks task** — apakah kategori tetap (Kuliah, BEM, Asprak, GMRT, KKN) atau bebas dibuat sendiri?
-3. **Mata uang** — cukup IDR, atau perlu multi-currency?
-4. **Bahasa situs publik** — Indonesia, Inggris, atau dua bahasa?
+Semua sudah dijawab 2026-11-10 → K-14 s.d. K-17.
+
+1. ~~Nama domain~~ → pakai `*.vercel.app` dulu; nama domain sendiri dipikirkan nanti (K-14).
+2. ~~Konteks task~~ → dibuat sendiri, bisa tambah/ganti/hapus (K-15).
+3. ~~Mata uang~~ → IDR + USD, plus sub-modul Invest untuk forex/saham/crypto (K-16).
+4. ~~Bahasa situs publik~~ → dua bahasa, Inggris + Indonesia (K-17).
+
+Masih terbuka:
+- Nama domain sendiri (sebelum situs dibagikan luas).
+- Bahasa default situs publik: diusulkan **Inggris** (portfolio dibaca recruiter); bisa diganti.
 
 ---
 
@@ -484,6 +528,10 @@ yang menjelaskan alasannya.
 | K-11 | 2026-11-10 | Konsep animasi: alur **gelap → terang** saat scroll, toggle tema lingkaran membesar, kartu folder di portfolio; Life OS animasi minimal | Hasil analisis 6 video referensi Rahul |
 | K-12 | 2026-11-10 | Video referensi dianalisis langsung oleh Claude (ambil frame otomatis); screenshot manual tidak wajib lagi (merevisi K-08) | Frame bisa diekstrak dari file video di Drive; link TikTok tetap tidak bisa dibuka |
 | K-13 | 2026-11-10 | Skill **UI/UX Pro Max** dipasang sebagai skill acuan project (`.claude/skills/ui-ux-pro-max/`); dipakai untuk aturan UX, aksesibilitas, animasi, pedoman stack & checklist — **tidak** untuk mengganti gaya/palet/font yang sudah diputuskan | Permintaan Rahul; uji `--design-system` otomatis menyarankan Brutalism + Caveat yang bertentangan dengan K-09/K-10, jadi keputusan MASTER.md diutamakan |
+| K-14 | 2026-11-10 | Domain: pakai `*.vercel.app` dulu; domain sendiri diputuskan nanti | Gratis, cukup selama pengembangan |
+| K-15 | 2026-11-10 | Konteks task **dibuat sendiri** (tabel `contexts`, bisa tambah/ganti/hapus); isian awal Kuliah, BEM, Asprak, GMRT, KKN | Kegiatan berubah tiap semester |
+| K-16 | 2026-11-10 | Money mendukung **IDR + USD** (mata uang per akun, kurs harian untuk total dalam IDR) + sub-modul **Invest** (forex, saham, crypto, instrumen lain) | Rahul aktif trading di berbagai instrumen; akun broker sering dalam USD |
+| K-17 | 2026-11-10 | Situs publik **dua bahasa** (Inggris default, Indonesia di `/id`) pakai next-intl; Life OS hanya Indonesia | Portfolio bisa dibaca recruiter luar & lokal; Life OS cuma dipakai sendiri |
 
 ---
 
@@ -499,6 +547,11 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   tema), `welcome/` (3 video), `portfolio/` (1 video), `login/` (1 video).
   Path di Bagian 6 dan struktur di Bagian 10 diperbarui.
 - MCP `figcraft` masih gagal terhubung ("Connection closed").
+- Rahul menjawab 4 keputusan terbuka → K-14 (vercel.app), K-15 (konteks task bebas),
+  K-16 (IDR + USD + modul Invest), K-17 (dua bahasa). Diperbarui: sitemap & modul
+  (Bagian 2), skema database (Bagian 4: `contexts`, `currency`, `to_amount`,
+  `exchange_rates`, `assets`, `trades`, konten project jsonb `{en,id}`), struktur
+  folder (`[locale]`, `messages/`), Roadmap Fase 5, Bagian 9.
 
 ### 2026-11-10 — Sesi 5: Analisis referensi & arah desain visual
 - Dicek progres GitHub + Drive. Ditemukan: referensi (3 gambar, 6 video) diunggah
@@ -557,7 +610,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Analisis 6 video referensi → bagian Animasi di Bagian 6 — 2026-11-10
 - [x] Rapikan Drive: pindahkan referensi ke subfolder per halaman; cek `03 - Assets` & `README.md` root — 2026-11-10
 - [ ] Perbarui template `links.txt` di Drive: aturan "video wajib disertai screenshot" sudah tidak berlaku (K-12).
-- [ ] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa).
+- [x] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa) — 2026-11-10
+- [ ] **Rahul:** konfirmasi bahasa default situs publik (usulan: Inggris).
+- [ ] Siapkan teks halaman publik dalam **dua bahasa** (EN + ID).
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
 - [ ] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/`.
 
