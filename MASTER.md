@@ -9,8 +9,9 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Situs (Vercel) | https://raaahl15-personal-web.vercel.app (auto-deploy dari `main`) |
-| Status saat ini | **Fase 2 — Auth & Shell (kode selesai, menunggu Supabase):** situs publik live (Fase 1, sisa: foto asli dll.); login, proteksi `/app/*`, dan shell Life OS (sidebar + bottom nav) sudah dibangun; berikutnya Rahul membuat project Supabase + mengisi env di Vercel → uji login → Fase 3 (Projects & Tasks) |
+| Situs (Vercel) | https://personal-web-coral-pi.vercel.app (project Vercel `personal-web`, auto-deploy dari `main`; alias lama `raaahl15-personal-web.vercel.app`) |
+| Supabase | Project `xhoonuobulugboohqxqc` (region Sydney `ap-southeast-2`, paket Free) — URL `https://xhoonuobulugboohqxqc.supabase.co` |
+| Status saat ini | **Fase 2 selesai:** situs publik live (Fase 1, sisa: foto asli dll.); login Supabase berfungsi di HP, iPad, dan komputer; shell Life OS aktif; berikutnya **Fase 3 — Projects & Tasks** (tabel database + RLS, CRUD, Kanban) |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -649,7 +650,12 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   bypass lokal sementara yang tidak di-commit) shell desktop terang/gelap, HP, lembar "Lainnya".
 - Ditemukan & diperbaiki: karakter "—/…/→" rusak di `login-card.tsx` akibat `Set-Content`
   PowerShell (encoding ANSI) → selalu tulis file lewat tool editor / UTF-8 tanpa BOM.
-- Belum bisa diuji: login sungguhan (menunggu project Supabase dari Rahul).
+- Rahul membuat project Supabase (Free, region Sydney), user tunggal + metadata `full_name`
+  (via SQL Editor), mengisi env di Vercel (Type: Config) lalu redeploy.
+- Sempat muncul "Supabase belum dikonfigurasi" di iPad karena dibuka lewat alamat lain;
+  setelah dirapikan, **login berfungsi di HP, iPad, dan komputer** → Fase 2 selesai.
+- Catatan: firewall Vercel (Security Checkpoint) memblokir pengecekan otomatis Claude ke situs
+  produksi setelah polling berulang; verifikasi produksi dilakukan Rahul di perangkat asli.
 
 ### 2026-11-10 — Sesi 9: Revisi Fase 1 dari Rahul (kehalusan & menu HP)
 - Masukan Rahul setelah cek di iPad: animasi kurang mulus, menu HP kurang, ganti bahasa
@@ -816,7 +822,7 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Fase 1 (bagian besar): token v1.0 di `globals.css`, komponen situs, halaman Welcome, About,
       Portfolio, detail project, Contact (EN + ID) — 2026-11-10, Sesi 8
 - [x] Fase 2 (kode): login, proteksi `/app/*`, shell Life OS — 2026-11-10, Sesi 10
-- [ ] **Rahul — setup Supabase (sekali saja):**
+- [x] **Rahul — setup Supabase** (selesai 2026-11-10; langkah disimpan sebagai acuan):
       1. supabase.com → New project (region Singapore), simpan password database di tempat aman.
       2. Authentication → Sign In / Providers → Email: aktif; **matikan "Allow new users to sign up"**.
       3. Authentication → Users → Add user → email + password milikmu (centang auto-confirm),
@@ -825,7 +831,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
       5. Vercel → personal-web → Settings → Environment Variables: isi
          `NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` → Redeploy.
       6. Kirim URL + publishable key ke Claude (aman, kunci publik) untuk `.env.local` & uji login.
-- [ ] Fase 2 sisa: uji login sungguhan di produksi; reset password / magic link (opsional).
+- [x] Uji login di produksi — berhasil di HP, iPad, dan komputer (2026-11-10)
+- [ ] Fase 2 opsional: reset password / magic link.
+- [ ] **Rahul:** kirim Publishable key Supabase ke Claude → `.env.local` untuk pengembangan Fase 3.
 - [ ] Fase 1 sisa: cek di iPad/HP asli; foto profil + cover
       project asli (menggantikan placeholder gradien); carousel "Moments" saat foto kegiatan ada;
       halaman 404 bergaya; gambar OG untuk share link; kirim form kontak langsung (server action +
