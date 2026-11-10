@@ -9,7 +9,7 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** mengumpulkan referensi desain; FigCraft siap untuk desain via prompt |
+| Status saat ini | **Fase 0 — Persiapan:** arah desain visual ditetapkan (biru langit + glassmorphism, font Outfit + Inter); menunggu screenshot dari video referensi animasi |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -39,8 +39,8 @@ Personal web ini punya **dua wajah** dalam satu aplikasi:
 | **Life OS (Private)** | Hanya kamu (wajib login) | Dashboard harian, Journal, Tasks & Projects, Money, dll | Dinamis, data tersimpan di database |
 
 Analogi: Public Site = **etalase toko**, Life OS = **ruang kerja di belakang toko**.
-Keduanya satu domain, satu codebase, satu desain (tema *cosmic* biru-ungu yang sudah
-ada di `index.html` tetap dipakai).
+Keduanya satu domain, satu codebase, satu desain (biru langit + glassmorphism,
+lihat Bagian 6 dan K-09).
 
 Prinsip yang dipegang:
 
@@ -253,26 +253,83 @@ habit tracker → `features/habits/` + `app/app/habits/`. Selesai.
 
 ---
 
-## 6. Desain Visual (melanjutkan yang sudah ada)
+## 6. Desain Visual
 
-> ⏳ **Sementara.** Isi di bawah diambil dari `index.html` lama. Akan disusun ulang
-> setelah referensi desain terkumpul di Drive `02 - Design References` (lihat K-06).
+> Disusun 2026-11-10 dari referensi gambar di Drive `02 - Design References`
+> (K-09, K-10). **Belum final:** bagian animasi menunggu screenshot dari 6 video
+> referensi.
 
-Token warna dari `index.html` dipertahankan dan dipindah ke `tailwind.config`:
+### Arah desain
+**Bersih, lapang, glassmorphism, biru langit monokrom, sudut sangat bulat, dark/light
+mode sebagai fitur utama.** Menggantikan tema kosmik ungu-magenta dari `index.html`
+lama. Nuansa "langit malam" tetap terasa lewat ujung gelap palet (dark mode).
 
-| Token | Hex | Dipakai untuk |
+### Referensi yang dipakai
+| File (Drive `02 - Design References`) | Yang diambil |
+|---|---|
+| `design layout inspiration.jpg` (Orizon Design, "New Way Of Living") | Tata letak, kartu kaca, sidebar & navbar pil |
+| `Sky Blue Premium Palette.jpg` | Palet warna 16 tingkat |
+| `Perfect Font Pairing Formula!💠.jpg` | Aturan pasangan font → dipilih Outfit + Inter |
+
+### Layout & komponen
+- **Bingkai utama** bersudut sangat bulat (radius ±32px) berisi visual/foto
+  *full-bleed* sebagai latar.
+- **Judul raksasa** tipis, semi-transparan, menumpuk di atas visual.
+- **Kartu kaca (glassmorphism)** mengambang: putih/gelap transparan + `backdrop-blur`,
+  sudut bulat, bayangan halus.
+- **Sidebar ikon vertikal berbentuk pil** (kiri): navigasi + avatar + notifikasi;
+  **toggle dark/light** di bagian bawah.
+- **Navbar atas berbentuk pil**: tombol di kiri–kanan, filter/menu di tengah.
+- Detail: tombol panah bulat ↗, angka statistik besar (mis. "10K+"), tumpukan avatar,
+  ikon aksi bulat (like/save/share).
+
+Penerapan per wajah:
+- **Public Site / Welcome:** hero di dalam bingkai + judul besar + kartu kaca
+  berisi project unggulan & statistik singkat.
+- **Life OS:** sidebar pil = navigasi app; kartu kaca = widget dashboard (task hari ini,
+  ringkasan uang, jurnal). Animasi lebih minimal karena dipakai harian.
+
+### Palet warna — Sky Blue (monokrom)
+| Nama | Hex | | Nama | Hex |
+|---|---|---|---|---|
+| Cloud | `#F0F7FF` | | Cerulean | `#1E7DFF` |
+| Arctic Sky | `#E1F0FF` | | Deep Sky | `#1662CC` |
+| Mist Blue | `#CDE4FF` | | Azure | `#0F4FA3` |
+| Light Sky | `#B6D8FF` | | Twilight Blue | `#0A3B7A` |
+| Clear Sky | `#97C9FF` | | Evening Sky | `#062956` |
+| Day Sky | `#78BAFF` | | Night Blue | `#041A35` |
+| Bright Sky | `#5CAEFF` | | Midnight | `#021024` |
+| Pure Sky | `#3D9BFF` | | Ink Sky | `#010A16` |
+
+> Hex dibaca dari teks gambar; urutan nama Mist Blue/Light Sky dan
+> Twilight/Evening/Night Blue perlu dicek ulang di gambar aslinya.
+
+Pemakaian (usulan token Tailwind `sky-50` … `sky-950` versi sendiri):
+
+| Peran | Light mode | Dark mode |
 |---|---|---|
-| `deep-space` | `#02081C` | Background utama |
-| `blue-dom` | `#0073FF` | Warna utama, tombol, link |
-| `blue-light` | `#80B9FF` | Teks aksen, garis |
-| `purple` | `#7000FF` | Gradien, highlight |
-| `magenta` | `#D9008A` | Aksen sekunder |
-| `pink` | `#FF4D9B` | Badge, notifikasi |
-| `coral` | `#FF6B6B` | Pengeluaran / peringatan |
+| Latar halaman | Cloud `#F0F7FF` | Ink Sky `#010A16` |
+| Permukaan / kartu | Arctic Sky `#E1F0FF` (kaca putih) | Midnight `#021024` (kaca gelap) |
+| Garis / border | Mist Blue `#CDE4FF` | Evening Sky `#062956` |
+| Aksen utama (tombol, link) | Cerulean `#1E7DFF` | Pure Sky `#3D9BFF` |
+| Teks utama | Midnight `#021024` | Cloud `#F0F7FF` |
+| Teks sekunder | Azure `#0F4FA3` | Clear Sky `#97C9FF` |
 
-Font: **Montserrat** (judul) + **Inter** (isi).
-Public site boleh penuh animasi kosmik (planet, orbit, typewriter); Life OS dibuat
-**lebih tenang** — panel kaca gelap, animasi minimal — karena dipakai lama tiap hari.
+Warna fungsional di luar palet (dipakai secukupnya): **oranye hangat** (seperti
+cahaya lampu di referensi layout) untuk pengeluaran/peringatan/notifikasi, dan
+hijau lembut untuk pemasukan/sukses — nilai hex ditentukan saat desain di FigCraft.
+
+### Tipografi
+- **Judul:** **Outfit** (sans geometris; bobot tipis–sedang untuk judul raksasa, tebal
+  untuk angka statistik).
+- **Isi & UI:** **Inter**.
+- Kombinasi sans + sans sesuai aturan referensi font pairing (hindari serif+serif,
+  script+script). Keduanya tersedia di Google Fonts / `next/font`.
+
+### Animasi (menunggu)
+Video referensi di Drive (welcome, portfolio, login, efek scroll ke bawah, transisi
+dark→light) belum bisa dianalisis. Perlu 2–4 screenshot per video + catatan di
+`links.txt`. Prinsip sementara: Public Site boleh lebih ekspresif; Life OS tenang.
 
 ---
 
@@ -387,12 +444,23 @@ yang menjelaskan alasannya.
 | K-06 | 2026-11-09 | Desain visual menunggu referensi dari Rahul (tema kosmik lama belum tentu dipakai) | Desain ingin dimulai ulang berdasarkan referensi baru |
 | K-07 | 2026-11-10 | Alat desain: **FigCraft (ArtCraft)** yang dikendalikan Claude via MCP | Desain bisa dibuat & direvisi lewat prompt; tidak perlu Figma |
 | K-08 | 2026-11-10 | Referensi desain utama berupa screenshot + catatan; video/TikTok hanya pelengkap | AI tidak bisa menonton video atau membuka link TikTok |
+| K-09 | 2026-11-10 | Arah visual baru: **biru langit monokrom + glassmorphism + sudut bulat + dark/light mode**; tema kosmik ungu-magenta lama ditinggalkan | Sesuai referensi layout & palet "Sky Blue Premium" dari Rahul; lebih tenang untuk dipakai harian |
+| K-10 | 2026-11-10 | Font: **Outfit** (judul) + **Inter** (isi), menggantikan Montserrat | Dipilih Rahul (opsi A); cocok dengan judul sans geometris di referensi layout |
 
 ---
 
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 5: Analisis referensi & arah desain visual
+- Dicek progres GitHub + Drive. Ditemukan: referensi (3 gambar, 6 video) diunggah
+  langsung ke `02 - Design References` (subfolder per halaman masih kosong);
+  folder `03 - Assets` dan `README.md` root Drive tidak ditemukan.
+- Dianalisis 3 gambar referensi (layout, palet Sky Blue, font pairing) → Bagian 6
+  disusun ulang: layout, komponen, palet + pemakaian light/dark, tipografi.
+- Keputusan K-09 (arah visual biru langit + glassmorphism) dan K-10 (Outfit + Inter).
+- MCP `figcraft` gagal terhubung di sesi ini (aplikasi belum dibuka via shortcut).
 
 ### 2026-11-10 — Sesi 4: Format referensi & koneksi FigCraft
 - Ditetapkan format referensi desain: foto/screenshot utama; video & TikTok
@@ -433,10 +501,12 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Hubungkan alat desain (FigCraft) ke Claude Code — 2026-11-10
 - [ ] Buka session Claude Code baru → izinkan server `figcraft` → tes koneksi.
 - [ ] Sesi desain pertama di FigCraft: welcome page (desktop + mobile).
-- [ ] **Rahul:** kumpulkan 5–15 referensi desain di Drive `02 - Design References`
-      (pisahkan: welcome page, portfolio, dashboard, journal, money).
+- [x] **Rahul:** kumpulkan referensi desain di Drive `02 - Design References` — 2026-11-10 (3 gambar, 6 video)
+- [x] Susun ulang Bagian 6 (Desain Visual) berdasarkan referensi gambar — 2026-11-10
+- [ ] **Rahul:** ambil 2–4 screenshot dari tiap video referensi + isi catatan di `links.txt`
+      → lengkapi bagian Animasi di Bagian 6.
+- [ ] Rapikan Drive: pindahkan referensi ke subfolder per halaman; cek `03 - Assets` & `README.md` root.
 - [ ] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa).
-- [ ] Susun ulang Bagian 6 (Desain Visual) berdasarkan referensi.
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
 - [ ] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/`.
 
