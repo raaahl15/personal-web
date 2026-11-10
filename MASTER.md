@@ -11,8 +11,8 @@
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://personal-web-coral-pi.vercel.app (project Vercel `personal-web`, auto-deploy dari `main`; alias lama `raaahl15-personal-web.vercel.app`) |
 | Supabase | Project `xhoonuobulugboohqxqc` (region Sydney `ap-southeast-2`, paket Free) — URL `https://xhoonuobulugboohqxqc.supabase.co` |
-| Status saat ini | **Fase 3 — Projects & Tasks (database aktif, tahap uji):** Tasks (List + Kanban), Projects (daftar, detail, lampiran, switch Publik/Unggulan), Konteks di Pengaturan, Portfolio publik membaca database; SQL sudah dijalankan & RLS terverifikasi; berikutnya Rahul menguji di perangkat → perbaikan → Fase 4 (Journal) |
-| Terakhir diperbarui | 2026-11-10 |
+| Status saat ini | **Fase 4 — Journal (kode selesai, menunggu SQL):** editor blok BlockNote per tanggal, simpan otomatis, mood, tag, kalender, pencarian. Portfolio +2 project (DME Capstone, Skripsi CD4) dengan tautan GitHub/Drive. **Rahul perlu menjalankan `0002_more_projects.sql` dan `0003_journal.sql`**; project PSMF menunggu bahan dari Rahul |
+| Terakhir diperbarui | 2026-11-11 |
 
 ## Daftar Isi
 
@@ -70,8 +70,9 @@ prefix `/id` (`/id/about`). Life OS (`/app/*`) hanya bahasa Indonesia.
 /login                  → Login (hanya kamu)
 
 /app                    → [PRIVATE] Dashboard "Today"
-/app/journal            → Journaling harian ala Notion
-/app/journal/[date]     → Halaman jurnal per tanggal
+/app/journal            → Journaling harian ala Notion (proxy → /app/journal/<hari ini WIB>)
+/app/journal/[date]     → Halaman jurnal per tanggal (editor + kalender + tulisan terbaru)
+/app/journal/cari?q=    → Pencarian jurnal (judul, isi, #tag)
 /app/tasks              → Tugas & to-do (kuliah, organisasi, KKN)
 /app/projects           → Kumpulan project + file/link + progres
 /app/projects/[id]      → Detail project (task, catatan, lampiran)
@@ -217,9 +218,12 @@ tasks               (id, user_id, project_id?, context_id?, title, description,
                      due_date, completed_at, position, created_at, updated_at)
                      -- project_id & context_id ON DELETE SET NULL
 
+-- ✅ Fase 4: dibuat oleh supabase/migrations/0003_journal.sql
 journal_entries     (id, user_id, entry_date UNIQUE per user, title,
                      content jsonb  ← format block BlockNote,
-                     mood smallint, tags text[], created_at, updated_at)
+                     content_text text ← judul + isi + #tag (pencarian & cuplikan),
+                     mood smallint 1–5?, tags text[], created_at, updated_at)
+                     -- RLS: pemilik saja. Entri yang dikosongkan dihapus (kalender hanya hari bertulisan)
 
 accounts            (id, user_id, name, type[cash|bank|ewallet|broker],
                      currency[IDR|USD], initial_balance numeric)
@@ -276,7 +280,9 @@ personal-web/
 │        ├─ layout.tsx            ← sidebar (desktop) + bottom nav (HP)
 │        ├─ actions.ts            ← signOut
 │        ├─ page.tsx              ← Dashboard "Hari ini"
-│        ├─ journal/ tasks/ projects/ money/ money/invest/   ← placeholder s.d. fasenya
+│        ├─ tasks/ projects/      ← Fase 3
+│        ├─ journal/[date] journal/cari journal/actions.ts   ← Fase 4
+│        ├─ money/ money/invest/  ← placeholder s.d. Fase 5
 │        └─ settings/
 ├─ components/
 │  ├─ ui/                         ← shadcn (button, card, dialog…)
@@ -488,7 +494,7 @@ Kerjakan bertahap, tiap fase menghasilkan sesuatu yang bisa langsung dipakai.
 | **1. Public Site** | Welcome, About, Portfolio (data sementara dari file JSON), Contact | Website publik live ✅ |
 | **2. Auth & Shell** | Supabase, login, middleware `/app`, sidebar Life OS | Ruang private bisa diakses |
 | **3. Projects & Tasks** | CRUD project + task + lampiran, Kanban; Portfolio mulai ambil data dari DB | Kumpulan tugas/project jalan |
-| **4. Journal** | Editor BlockNote, satu entri per hari, mood, kalender, search | Journaling harian jalan |
+| **4. Journal** | Editor BlockNote, satu entri per hari, mood, kalender, search | Journaling harian jalan (kode ✅ 2026-11-11, menunggu SQL 0003) |
 | **5. Money** | Akun IDR/USD, kategori, transaksi, budget, grafik, kurs; lalu sub-modul Invest (aset, trade, P/L) | Money management + jurnal trading jalan |
 | **6. Dashboard Today** | Gabungkan ringkasan semua modul di `/app` | Satu layar untuk hari ini |
 | **7. Polish** | PWA (install di HP), export data, dark/light, fitur lanjutan | Siap dipakai harian |
@@ -629,6 +635,11 @@ yang menjelaskan alasannya.
 | K-32 | 2026-11-10 | Skema Fase 3 dikelola sebagai file SQL di `supabase/migrations/` dan dijalankan Rahul di SQL Editor (idempoten); teks publik project = jsonb `{en, id}`, form Life OS mengisi keduanya (EN kosong → pakai ID) | Tanpa kunci rahasia di repo/Claude; satu sumber skema yang bisa dijalankan ulang |
 | K-33 | 2026-11-10 | Portfolio publik membaca project `is_public` dari database lewat fungsi `'use cache'` (`cacheTag('public-projects')`, `cacheLife('hours')`); setiap Server Action project memanggil `updateTag` → situs langsung segar. Gagal/kosong → data cadangan `content/profile.ts` | Prinsip "Public ← Private" (Bagian 1) tanpa mengorbankan kecepatan halaman statis |
 | K-34 | 2026-11-10 | Lampiran diunggah langsung dari browser ke bucket privat `project-files` (path diawali id user, dijaga RLS Storage), metadata dicatat lewat Server Action; unduhan memakai signed URL 1 jam. Kanban: drag & drop + pilihan "Pindah ke" (alternatif drag, WCAG 2.5.7) | Hindari batas ukuran body Server Action; file pribadi tidak pernah publik |
+| K-35 | 2026-11-11 | Halaman detail Portfolio menampilkan **tautan** (`links`) dan **alat** (`tech_stack`) dari database; hanya URL http(s) yang ditampilkan. Folder Drive hanya ditautkan bila sudah "siapa saja yang punya link" — folder Drive DME Capstone tetap terbatas untuk tim (risiko R-13 di repo capstone), jadi DME hanya ditautkan ke GitHub | Permintaan Rahul: project bisa dilihat di GitHub/Drive tanpa membuka data tim |
+| K-36 | 2026-11-11 | Gaya cover baru `plant` (sketsa P&ID) dan `cells` (citra sel) — dipakai DME Capstone & Skripsi sampai ada foto asli | Cover lama tidak mewakili project rekayasa proses & riset |
+| K-37 | 2026-11-11 | Editor jurnal: **BlockNote 0.56.0 varian shadcn** (Base UI + token tema kita, versi dipin exact; 0.57.0 dilewati karena rilis < 2 minggu), dimuat `dynamic(..., { ssr: false })`; locale EN dengan placeholder Indonesia (belum ada locale `id`) | Sesuai K-02; varian shadcn memakai Base UI yang sama dengan komponen kita, tanpa Mantine |
+| K-38 | 2026-11-11 | Jurnal **simpan otomatis**: jeda 0,9 dtk, klien selalu mengirim keadaan lengkap → Server Action `upsert` (user_id, entry_date); entri dikosongkan → dihapus; `content_text` (judul + isi + #tag) untuk pencarian `ilike`; `/app/journal` diarahkan `proxy.ts` ke tanggal hari ini (WIB) | Entri "otomatis ada" saat ditulis tanpa baris kosong di DB; pencarian cukup untuk skala pribadi tanpa indeks full-text |
+| K-39 | 2026-11-11 | Unggah gambar ke jurnal **ditunda** (gambar lewat URL saja) | Bucket privat butuh signed URL yang kedaluwarsa → URL di isi blok akan putus; perlu resolver path → URL dulu |
 | K-31 | 2026-11-10 | Area privat = route group `app/(private)` sebagai root layout kedua (ID, `noindex`); login hanya email + password untuk satu akun (sign-up dimatikan di Supabase); magic link / reset password menyusul | Pisah total dari i18n publik; cukup untuk pemakaian pribadi |
 
 ---
@@ -636,6 +647,39 @@ yang menjelaskan alasannya.
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-11 — Sesi 12: 3 project baru ke Portfolio + Fase 4 Journal
+- Rahul: "masukkan 3 project baruku (DME Capstone, Skripsi, PSMF), jadikan public, bisa lihat di
+  GitHub/GDrive, lalu lanjutkan fase selanjutnya".
+- Bahan dicari di GitHub (`raaahl15`) & Drive:
+  - **DME Capstone** → repo publik `dashboardcapstone` (README, Bimbingan 6, laporan PSTF 1). Folder
+    Drive `CAPSTONE_DME_AREA1` hanya dibagikan ke 4 anggota tim → tidak ditautkan (K-35).
+  - **Skripsi** → repo publik `Project-Skripsi` (README, `docs/STATUS.md`, `requirements.txt`) +
+    folder Drive `Project-Skripsi` (sudah "siapa saja yang punya link").
+  - **PSMF** → **tidak ditemukan** di Drive, GitHub, maupun disk lokal → menunggu bahan dari Rahul.
+- Isi project ditulis dua bahasa, hanya klaim yang ada sumbernya; nama anggota tim & dosen tidak
+  dicantumkan; angka desain yang masih draf/PLACEHOLDER tidak dikutip.
+- `supabase/migrations/0002_more_projects.sql`: constraint `cover_style` + `plant`/`cells`, insert 2
+  project (publik, belum unggulan, `on conflict do nothing`), lengkapi tech stack + GitHub Life OS bila
+  masih kosong. Data cadangan `content/profile.ts` ikut diperbarui.
+- Portfolio: tipe `Project` + `techStack`/`links`; `getPublicProjects` membaca `tech_stack,links`
+  (disaring http/https); detail project punya kartu **Berkas project** (GitHub/Drive, tab baru, label
+  pembaca layar) + **Alat**; ikon GitHub di `icons.tsx`; 2 cover SVG baru; opsi cover di form Life OS.
+- **Fase 4 — Journal:** `0003_journal.sql` (tabel + RLS + trigger + indeks tag); paket
+  `@blocknote/core|react|shadcn@0.56.0`; `@source` BlockNote di `globals.css` + gaya editor menyatu
+  dengan kartu kaca; DAL (`getJournalEntry`, `getJournalRange`, `getRecentJournal`, `searchJournal`);
+  Server Action `saveJournalEntry` (zod, batas 900 KB); `/app/journal/[date]` (editor, pindah hari,
+  tombol Hari ini, kalender bulan `?m=` dengan emoji mood, tulisan terbaru) dan `/app/journal/cari`
+  (hasil + sorotan kata); `JournalEditor` (judul, mood 1–5 `aria-pressed`, tag chip, status simpan
+  `aria-live`, coba lagi, simpan saat tab disembunyikan, peringatan saat menutup tab);
+  `useTheme()` dari `theme-toggle`; `DbNotReady` menyebut file migration yang benar; kartu "Hari ini"
+  menautkan ke jurnal.
+- Verifikasi: lint & build lolos (34 halaman). Screenshot Edge headless (dev server dengan Supabase
+  sengaja tak terjangkau → data cadangan; halaman uji editor sementara, sudah dihapus): detail DME &
+  CD4, grid portfolio, editor jurnal desktop terang/gelap. Diperbaiki dari screenshot: latar editor
+  BlockNote, chip tag di mode gelap, cover gelap menyatu dengan latar di dark mode. Catatan: Edge
+  headless memaksa lebar minimum ±500px, jadi uji 390px tampak terpotong — di 500px layout pas.
+- Belum diuji dengan database asli: SQL 0002 & 0003 belum dijalankan (Claude tidak punya akses).
 
 ### 2026-11-10 — Sesi 11: Fase 3 — Projects & Tasks
 - Rahul mengirim Publishable key → `.env.local` (tidak di-commit). Cek: sign-up publik sudah
@@ -867,6 +911,17 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Fase 3 (kode): Tasks, Projects, lampiran, Konteks, Portfolio dari database — Sesi 11
 - [x] **Rahul:** jalankan `supabase/migrations/0001_projects_tasks.sql` — 2026-11-10. Dicek Claude
       via REST anon: 3 project publik terbaca; contexts/tasks/project_files tertutup (RLS OK).
+- [ ] **Rahul:** jalankan `supabase/migrations/0002_more_projects.sql` lalu `0003_journal.sql` di
+      Supabase → SQL Editor (keduanya aman dijalankan ulang). Setelah itu DME Capstone & Skripsi
+      muncul di Portfolio, dan Jurnal aktif.
+- [ ] **Rahul:** kirim bahan **project PSMF** (kepanjangan, ringkasan, peran, link GitHub/Drive) —
+      tidak ditemukan di Drive/GitHub/disk lokal (Sesi 12).
+- [ ] **Rahul:** pilih project unggulan di Welcome (saat ini tetap GROMICS, Video Profil, Life OS;
+      DME/Skripsi bisa dinyalakan lewat switch "Unggulan" di Life OS).
+- [ ] **Rahul:** uji Jurnal di HP/iPad/komputer: tulis, mood, tag, pindah hari, kalender, cari.
+- [ ] Fase 4 lanjutan: unggah gambar ke jurnal (K-39), template entri harian, terjemahan menu `/`
+      BlockNote ke Indonesia, ekspor jurnal ke Markdown.
+- [ ] Fase 5 — Money (akun IDR/USD, kategori, transaksi, budget, grafik, kurs) setelah Jurnal diuji.
 - [ ] **Rahul:** uji di perangkat: tambah/centang/edit task, Kanban, buat project + lampiran,
       switch Publik/Unggulan, ubah konteks.
 - [ ] Fase 3 lanjutan (opsional): urutan manual task (drag di dalam kolom), subtask, pencarian.

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, FolderOpen, Globe } from "lucide-react";
+import { GitHubIcon } from "@/components/site/icons";
 import { getPublicProjects } from "@/lib/data/public-projects";
 import { hasLocale, localePath } from "@/lib/i18n";
 import { ProjectCover } from "@/components/site/project-cover";
@@ -24,6 +25,15 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/portfolio/
   return { title: project.title[lang], description: project.summary[lang] };
 }
 
+function LinkIcon({ url }: { url: string }) {
+  const host = new URL(url).hostname;
+  if (host === "github.com") return <GitHubIcon className="size-[18px]" />;
+  if (host.endsWith("drive.google.com") || host.endsWith("docs.google.com")) {
+    return <FolderOpen className="size-[18px]" aria-hidden />;
+  }
+  return <Globe className="size-[18px]" aria-hidden />;
+}
+
 // Detail project — desain v1.0 (FigCraft "Project Detail — Desktop 1440").
 export default async function ProjectPage({ params }: PageProps<"/[lang]/portfolio/[slug]">) {
   const { lang, slug } = await params;
@@ -33,6 +43,8 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/portfol
   const dict = await getDictionary(lang);
   const t = dict.project;
 
+  const links = project.links ?? [];
+  const techStack = project.techStack ?? [];
   const index = projects.indexOf(project);
   const next = projects[(index + 1) % projects.length];
 
@@ -85,7 +97,43 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/portfol
               ))}
             </ul>
           </Reveal>
-          <Reveal delay={100} className="h-fit rounded-[32px] bg-card p-7 lg:sticky lg:top-28">
+          <Reveal delay={100} className="flex h-fit flex-col gap-7 rounded-[32px] bg-card p-7 lg:sticky lg:top-28">
+            {links.length > 0 && (
+              <div>
+                <h2 className="text-xs font-semibold tracking-[0.14em] text-subtle uppercase">{t.links}</h2>
+                <ul className="mt-3 flex flex-col gap-2.5">
+                  {links.map((l) => (
+                    <li key={l.url}>
+                      <a
+                        href={l.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex min-h-11 items-center justify-between gap-3 rounded-full bg-muted px-5 py-2.5 text-[15px] font-medium outline-none transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <LinkIcon url={l.url} />
+                          {l.label}
+                        </span>
+                        <ArrowUpRight className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
+                        <span className="sr-only">{t.opensNewTab}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {techStack.length > 0 && (
+              <div>
+                <h2 className="text-xs font-semibold tracking-[0.14em] text-subtle uppercase">{t.tools}</h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {techStack.map((s) => (
+                    <li key={s} className="rounded-full border px-3 py-1 text-[13px] font-medium text-muted-foreground">
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <p className="text-[15px] leading-relaxed text-muted-foreground">{t.photosSoon}</p>
           </Reveal>
         </div>

@@ -176,6 +176,8 @@ export function ProjectForm({ project }: { project: ProjectRecord }) {
             <option value="pulse">Grafik sinyal</option>
             <option value="video">Video</option>
             <option value="dashboard">Dashboard</option>
+            <option value="plant">Diagram proses (pabrik)</option>
+            <option value="cells">Citra sel (riset)</option>
           </select>
         </Field>
       </div>

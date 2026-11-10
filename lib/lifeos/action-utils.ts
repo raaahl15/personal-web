@@ -28,7 +28,7 @@ export function firstError(error: z.ZodError): string {
 
 export function dbError(message: string): ActionResult {
   if (message.includes("schema cache") || message.includes("does not exist")) {
-    return { error: "Database belum disiapkan — jalankan SQL migration Fase 3 di Supabase." };
+    return { error: "Database belum disiapkan — jalankan SQL migration terbaru (supabase/migrations/) di Supabase." };
   }
   return { error: "Gagal menyimpan. Coba lagi." };
 }

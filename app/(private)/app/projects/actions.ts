@@ -78,7 +78,7 @@ const updateSchema = z.object({
   result_en: optionalText(160),
   category: z.string().trim().min(1, "Kategori wajib diisi.").max(30),
   status,
-  cover_style: z.enum(["pulse", "video", "dashboard"]),
+  cover_style: z.enum(["pulse", "video", "dashboard", "plant", "cells"]),
   start_date: optionalDate,
   end_date: optionalDate,
 });

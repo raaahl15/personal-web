@@ -89,6 +89,9 @@
     "statusDone": "Selesai",
     "statusActive": "Berjalan",
     "highlights": "Sorotan",
+    "links": "Berkas project",
+    "tools": "Alat",
+    "opensNewTab": "(terbuka di tab baru)",
     "photosSoon": "Foto dan dokumen project ini sedang disiapkan.",
     "next": "Project berikutnya"
   },

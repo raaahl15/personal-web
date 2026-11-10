@@ -4,7 +4,7 @@ import type { Localized } from "@/lib/i18n";
 export type TaskStatus = "todo" | "doing" | "done";
 export type TaskPriority = "low" | "med" | "high";
 export type ProjectStatus = "idea" | "active" | "done" | "archived";
-export type CoverStyle = "pulse" | "video" | "dashboard";
+export type CoverStyle = "pulse" | "video" | "dashboard" | "plant" | "cells";
 
 export type Context = { id: string; name: string; color: string; position: number };
 
@@ -56,6 +56,28 @@ export type ProjectFile = {
   created_at: string;
   url: string | null;
 };
+
+/** Entri jurnal harian (tabel journal_entries, migration 0003). `content` = blok BlockNote. */
+export type JournalEntry = {
+  id: string;
+  entry_date: string; // YYYY-MM-DD
+  title: string;
+  content: unknown[];
+  mood: number | null;
+  tags: string[];
+  updated_at: string;
+};
+
+/** Ringkasan entri untuk kalender, daftar terbaru, dan hasil pencarian. */
+export type JournalDay = { entry_date: string; title: string; mood: number | null; tags: string[]; snippet: string };
+
+export const MOODS = [
+  { value: 1, emoji: "😞", label: "Berat" },
+  { value: 2, emoji: "😕", label: "Kurang" },
+  { value: 3, emoji: "😐", label: "Biasa" },
+  { value: 4, emoji: "🙂", label: "Baik" },
+  { value: 5, emoji: "😄", label: "Hebat" },
+] as const;
 
 export const STATUS_LABEL: Record<TaskStatus, string> = { todo: "To Do", doing: "Dikerjakan", done: "Selesai" };
 export const PRIORITY_LABEL: Record<TaskPriority, string> = { low: "Rendah", med: "Sedang", high: "Tinggi" };

@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import {
   PROJECT_FILES_BUCKET,
   type Context,
+  type JournalDay,
+  type JournalEntry,
   type ProjectFile,
   type ProjectRecord,
   type ProjectSummary,
@@ -97,6 +99,82 @@ export async function getProject(id: string): Promise<ProjectRecord | null> {
     .eq("id", id)
     .maybeSingle<ProjectRecord>();
   return check(res);
+}
+
+// ---------------------------------------------------------------------------
+// Journal (Fase 4)
+// ---------------------------------------------------------------------------
+
+type JournalRow = { entry_date: string; title: string; mood: number | null; tags: string[]; content_text: string };
+const JOURNAL_DAY_COLUMNS = "entry_date,title,mood,tags,content_text";
+
+const toDay = (r: JournalRow): JournalDay => {
+  // content_text = judul + isi + tag (lihat saveJournalEntry); cuplikan = isi tanpa judul.
+  const body = r.title && r.content_text.startsWith(r.title) ? r.content_text.slice(r.title.length) : r.content_text;
+  const snippet = body.replace(/\s+/g, " ").trim();
+  return {
+    entry_date: r.entry_date,
+    title: r.title,
+    mood: r.mood,
+    tags: r.tags,
+    snippet: snippet.length > 160 ? `${snippet.slice(0, 157)}…` : snippet,
+  };
+};
+
+export async function getJournalEntry(date: string): Promise<JournalEntry | null> {
+  const supabase = await db();
+  return check(
+    await supabase
+      .from("journal_entries")
+      .select("id,entry_date,title,content,mood,tags,updated_at")
+      .eq("entry_date", date)
+      .maybeSingle<JournalEntry>(),
+  );
+}
+
+/** Semua entri dalam rentang tanggal (inklusif) — untuk kalender bulanan. */
+export async function getJournalRange(from: string, to: string): Promise<JournalDay[]> {
+  const supabase = await db();
+  const rows = check(
+    await supabase
+      .from("journal_entries")
+      .select(JOURNAL_DAY_COLUMNS)
+      .gte("entry_date", from)
+      .lte("entry_date", to)
+      .order("entry_date")
+      .returns<JournalRow[]>(),
+  );
+  return rows.map(toDay);
+}
+
+export async function getRecentJournal(limit = 6): Promise<JournalDay[]> {
+  const supabase = await db();
+  const rows = check(
+    await supabase
+      .from("journal_entries")
+      .select(JOURNAL_DAY_COLUMNS)
+      .neq("content_text", "")
+      .order("entry_date", { ascending: false })
+      .limit(limit)
+      .returns<JournalRow[]>(),
+  );
+  return rows.map(toDay);
+}
+
+/** Pencarian teks (judul, isi, tag) — tidak peka huruf besar/kecil. */
+export async function searchJournal(query: string, limit = 50): Promise<JournalDay[]> {
+  const supabase = await db();
+  const pattern = `%${query.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+  const rows = check(
+    await supabase
+      .from("journal_entries")
+      .select(JOURNAL_DAY_COLUMNS)
+      .ilike("content_text", pattern)
+      .order("entry_date", { ascending: false })
+      .limit(limit)
+      .returns<JournalRow[]>(),
+  );
+  return rows.map(toDay);
 }
 
 /** Lampiran + URL unduh bertanda tangan (berlaku 1 jam; bucket privat). */

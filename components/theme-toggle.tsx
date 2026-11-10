@@ -18,6 +18,11 @@ function subscribe(onChange: () => void) {
   return () => observer.disconnect();
 }
 
+/** Tema aktif (ikut kelas .dark di <html>) — mis. untuk editor jurnal. */
+export function useTheme(): Theme {
+  return useSyncExternalStore(subscribe, currentTheme, () => "light" as Theme);
+}
+
 function readStoredTheme(): Theme {
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);

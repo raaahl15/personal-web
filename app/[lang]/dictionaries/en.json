@@ -89,6 +89,9 @@
     "statusDone": "Completed",
     "statusActive": "In progress",
     "highlights": "Highlights",
+    "links": "Project files",
+    "tools": "Tools",
+    "opensNewTab": "(opens in a new tab)",
     "photosSoon": "Photos and documents for this project are being prepared.",
     "next": "Next project"
   },

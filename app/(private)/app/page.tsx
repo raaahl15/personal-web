@@ -24,11 +24,17 @@ export default function TodayPage() {
 
       <section className="relative overflow-hidden rounded-[32px] bg-linear-to-br from-sky-750 via-sky-700 to-sky-600 p-7 text-white sm:p-9">
         <div aria-hidden className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-sky-300/30 blur-3xl" />
-        <p className="text-xs font-semibold tracking-[0.14em] text-sky-100 uppercase">Fase 2 selesai</p>
-        <h2 className="mt-2 max-w-xl text-3xl leading-tight font-light">Kerangka Life OS sudah aktif.</h2>
+        <p className="text-xs font-semibold tracking-[0.14em] text-sky-100 uppercase">Fase 4 · Jurnal</p>
+        <h2 className="mt-2 max-w-xl text-3xl leading-tight font-light">Tasks, Projects, dan Jurnal sudah aktif.</h2>
         <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-sky-50">
-          Login, proteksi halaman, dan navigasi sudah jalan. Modul diisi bertahap — mulai dari Tasks & Projects.
+          Tulis jurnal hari ini — tersimpan otomatis. Berikutnya: Money (Fase 5).
         </p>
+        <Link
+          href="/app/journal"
+          className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-sky-750 outline-none hover:bg-sky-50 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-sky-700"
+        >
+          Tulis jurnal hari ini <ArrowUpRight className="size-4" aria-hidden />
+        </Link>
       </section>
 
       <section aria-labelledby="modul-heading" className="flex flex-col gap-4">

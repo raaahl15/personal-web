@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* Editor jurnal (Fase 4): kelas Tailwind di komponen BlockNote shadcn ikut dipindai. */
+@source "../node_modules/@blocknote/shadcn";
 
 /* Dark mode via class .dark di <html> (diset inline script di app/[lang]/layout.tsx) */
 @custom-variant dark (&:is(.dark *));
@@ -346,6 +348,18 @@ dialog.menu-sheet[open] {
 dialog.menu-sheet[open] .menu-item {
   animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--i, 0) * 45ms + 80ms);
+}
+
+/* Editor jurnal (BlockNote): menyatu dengan kartu kaca, warna & font ikut token tema. */
+.journal-editor.bn-container[data-color-scheme] {
+  --bn-colors-editor-background: transparent;
+  --bn-colors-editor-text: var(--foreground);
+  --bn-colors-side-menu: var(--subtle);
+  --bn-font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+.journal-editor .bn-editor {
+  background-color: transparent;
+  font-size: 1.0625rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
