@@ -412,8 +412,9 @@ hormati `prefers-reduced-motion` (animasi berat dimatikan).
 ### Desain UI/UX v1.0 (FigCraft) — 2026-11-10
 
 File: `2026-11-10_personal-web-ui-v1.0.figcraft` (lokal: `D:\rahul\personal-web-design\`,
-plus `export/` berisi 5 PDF per halaman, 4 PNG, `tokens-v1.0.css`). **Belum diunggah ke
-Drive `06 - Design Files`** (lihat Bagian 13).
+plus `export/` berisi 5 PDF per halaman, 4 PNG, `tokens-v1.0.css`). Sudah diunggah ke
+Drive: [`06 - Design Files/2026-11-10_ui-v1.0`](https://drive.google.com/drive/folders/1Vmj6PjP2S_D6aJ8h5G8BHhxzK1ZbxPbF)
+— review dari iPad lewat PDF di folder itu.
 
 | Halaman FigCraft | Isi |
 |---|---|
@@ -640,8 +641,10 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   "ghost" berisi, font Outfit/Instrument Serif/Inter Medium dimuat manual.
 - Export: 5 PDF per halaman, 4 PNG (cover, welcome, Today light/dark), `tokens-v1.0.css`
   di `D:\rahul\personal-web-design\export\`.
-- Unggah ke Drive `06 - Design Files` **gagal** (izin tool Google Drive `create_file`
-  ditolak di sesi ini) → perlu diunggah manual atau izin ditambahkan.
+- Unggah ke Drive: percobaan pertama ditolak izin; setelah Rahul meminta, 11 file (5 PDF,
+  `.figcraft`, 4 PNG, `tokens-v1.0.css`) diunggah ke `06 - Design Files/2026-11-10_ui-v1.0`
+  untuk direview dari iPad. (Catatan teknis: upload by-reference hanya jalan untuk file di
+  dalam folder kerja repo → disalin sementara ke `.upload-tmp/` lalu dihapus.)
 - Keputusan baru K-21 s.d. K-25; Bagian 6 dilengkapi spesifikasi v1.0.
 
 ### 2026-11-10 — Sesi 6: Rapikan Drive referensi
@@ -727,8 +730,7 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Sesi desain pertama di FigCraft → **desain UI/UX v1.0 lengkap** (27 frame) — 2026-11-10
 - [ ] **Rahul:** review desain v1.0 di FigCraft (buka `D:\rahul\personal-web-design\…v1.0.figcraft`
       atau PDF di `export/`); tulis revisi sebagai komentar FigCraft atau di chat → v1.1.
-- [ ] **Rahul:** unggah folder `D:\rahul\personal-web-design\` ke Drive `06 - Design Files/2026-11-10_ui-v1.0/`
-      (atau beri izin tool Google Drive `create_file` agar Claude yang mengunggah).
+- [x] Unggah desain v1.0 ke Drive `06 - Design Files/2026-11-10_ui-v1.0/` — 2026-11-10
 - [ ] **Rahul (opsional):** pasang font Outfit, Inter (variable) & Instrument Serif di Windows
       agar FigCraft tidak perlu memuat font tiap sesi.
 - [ ] Fase 1: samakan `app/globals.css` dengan token v1.0 (lihat "Selisih dengan kode" di Bagian 6),
