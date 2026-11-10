@@ -572,6 +572,8 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   toggle tema tanpa kedip (inline script), `prefers-reduced-motion`, routing dua bahasa
   (K-18), halaman sementara berisi nama + ringkasan + kontak. Build & lint lolos;
   tes routing: `/`→en, `/id`→id, `/en/*`→308 ke tanpa prefix, locale asing→404.
+- Semua commit di-merge (fast-forward) ke `main` dan di-push; sebelumnya `origin/main`
+  masih berisi commit lama (upload `portfolio.html`). Deploy Vercel menunggu Rahul login.
 - Ditemukan: Next 16 mengganti `middleware.ts` menjadi `proxy.ts`; AGENTS.md bawaan
   meminta membaca dokumentasi di `node_modules/next/dist/docs/` sebelum menulis kode.
 
@@ -643,8 +645,12 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
       tech stack, link) — minimal GROMICS; tambah project lain bila ada.
 - [ ] **Rahul:** foto profil untuk situs → Drive `03 - Assets`.
 - [x] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/` — 2026-11-10
-- [ ] Hubungkan repo ke **Vercel** (perlu login akun Rahul) → situs sementara online di `*.vercel.app`.
-- [ ] Merge branch kerja ke `main` setelah dicek.
+- [x] Merge branch kerja ke `main` + push ke GitHub — 2026-11-10
+- [ ] **Rahul:** hubungkan repo ke **Vercel** (vercel.com → login GitHub → Import
+      `personal-web` → Deploy; setelan default Next.js) → situs sementara di `*.vercel.app`.
+      Catat URL-nya di header file ini.
+- Catatan: cek data CV, bahan project, dan foto profil (3 poin di atas) **ditunda sampai
+  desain UI/UX website versi 1 selesai** (permintaan Rahul, 2026-11-10).
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
 
 ### Saran
