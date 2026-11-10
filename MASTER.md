@@ -446,7 +446,7 @@ Semua sudah dijawab 2026-11-10 → K-14 s.d. K-17.
 
 Masih terbuka:
 - Nama domain sendiri (sebelum situs dibagikan luas).
-- Bahasa default situs publik: diusulkan **Inggris** (portfolio dibaca recruiter); bisa diganti.
+- ~~Bahasa default situs publik~~ → **Inggris**, dikonfirmasi Rahul 2026-11-10 (K-17).
 
 ---
 
@@ -552,6 +552,8 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   (Bagian 2), skema database (Bagian 4: `contexts`, `currency`, `to_amount`,
   `exchange_rates`, `assets`, `trades`, konten project jsonb `{en,id}`), struktur
   folder (`[locale]`, `messages/`), Roadmap Fase 5, Bagian 9.
+- Rahul mengonfirmasi bahasa default situs publik = Inggris, dan setuju menyiapkan
+  teks dua bahasa (Claude bantu draf terjemahan).
 
 ### 2026-11-10 — Sesi 5: Analisis referensi & arah desain visual
 - Dicek progres GitHub + Drive. Ditemukan: referensi (3 gambar, 6 video) diunggah
@@ -611,8 +613,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Rapikan Drive: pindahkan referensi ke subfolder per halaman; cek `03 - Assets` & `README.md` root — 2026-11-10
 - [ ] Perbarui template `links.txt` di Drive: aturan "video wajib disertai screenshot" sudah tidak berlaku (K-12).
 - [x] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa) — 2026-11-10
-- [ ] **Rahul:** konfirmasi bahasa default situs publik (usulan: Inggris).
-- [ ] Siapkan teks halaman publik dalam **dua bahasa** (EN + ID).
+- [x] **Rahul:** konfirmasi bahasa default situs publik → Inggris — 2026-11-10
+- [ ] Siapkan teks halaman publik dalam **dua bahasa** (EN + ID): Rahul menyiapkan
+      bahan (About, daftar project), Claude membantu draf terjemahan.
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
 - [ ] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/`.
 
