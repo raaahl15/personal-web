@@ -328,10 +328,13 @@ Struktur folder Drive **Personal Web**:
 Personal Web/
 ├─ README.md               ← link ke repo + aturan penyimpanan
 ├─ 01 - Docs               ← export PDF dokumen (baca offline)
-├─ 02 - Design References  ← screenshot & link referensi desain, moodboard
+├─ 02 - Design References  ← referensi desain dari luar
+│  ├─ welcome/ portfolio/ dashboard/ journal/ money/   ← screenshot per halaman
+│  └─ links.txt            ← link + "kenapa suka" + nama screenshot
 ├─ 03 - Assets             ← foto profil, logo, font, ilustrasi (mentah)
 ├─ 04 - Portfolio Content  ← bahan per project (foto, laporan, video demo)
-└─ 05 - Backups            ← export data Life OS (JSON/CSV)
+├─ 05 - Backups            ← export data Life OS (JSON/CSV) + README lama
+└─ 06 - Design Files       ← file desain FigCraft (.figcraft) + export PNG
 ```
 
 Aturan:
@@ -360,8 +363,8 @@ Alur kerja desain:
 1. Buka FigCraft via shortcut → buka session Claude Code.
 2. Beri prompt (misal: *"welcome page desktop 1440px, background gelap, hero besar"*).
 3. Claude menggambar → ambil `screenshot` untuk cek → revisi lewat prompt.
-4. File desain disimpan (`.figcraft`) ke Drive `02 - Design References/` atau
-   `03 - Assets/`; hasil final di-export PNG untuk dicatat di Bagian 6.
+4. File desain (`.figcraft`) + export PNG disimpan ke Drive `06 - Design Files/`;
+   keputusan desain final dicatat di Bagian 6.
 
 ---
 
@@ -398,6 +401,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   port 47821; dibuat shortcut Desktop "FigCraft (Claude)". Tes `tools/list`
   berhasil (19 tool). Backup config: `~/.claude.json.bak-figcraft`.
 - Repo di-clone ke laptop: `D:\rahul\personal-web`.
+- Google Drive: dibuat subfolder `welcome/ portfolio/ dashboard/ journal/ money/`
+  + template `links.txt` di `02 - Design References`; folder baru `06 - Design Files`;
+  `README.md` Drive diperbarui (versi lama dipindah ke `05 - Backups`).
 
 ### 2026-11-09 — Sesi 3: File master
 - `docs/KONSEP.md` dipindah & dikembangkan menjadi `MASTER.md` di root repo.
