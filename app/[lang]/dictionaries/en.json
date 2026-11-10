@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "title": "Rahul Ghulam Hidayatulloh",
+    "description": "Engineering Physics student at Universitas Gadjah Mada — energy systems, instrumentation, and leadership."
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "portfolio": "Portfolio",
+    "contact": "Contact",
+    "switchLanguage": "Bahasa Indonesia",
+    "toggleTheme": "Toggle dark mode"
+  },
+  "home": {
+    "greeting": "Welcome to my website",
+    "underConstruction": "This site is being rebuilt. The full design is on its way.",
+    "ctaPortfolio": "View portfolio",
+    "ctaAbout": "About me"
+  }
+}

@@ -9,7 +9,7 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** arah desain visual & animasi ditetapkan (biru langit + glassmorphism, Outfit + Inter, alur gelap → terang); referensi Drive sudah dirapikan per halaman; berikutnya desain welcome page di FigCraft |
+| Status saat ini | **Fase 0 — Persiapan:** arah desain visual & animasi ditetapkan (biru langit + glassmorphism, Outfit + Inter, alur gelap → terang); referensi Drive sudah dirapikan per halaman; project Next.js 16 dua bahasa sudah disiapkan + konten dari CV; berikutnya deploy Vercel & desain welcome page di FigCraft |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -170,9 +170,9 @@ Reminder via email/Telegram · Integrasi Google Calendar.
 
 | Lapisan | Pilihan | Alasan |
 |---|---|---|
-| Framework | **Next.js (App Router) + TypeScript** | Satu project untuk public (SEO) & private app; routing sudah rapi per folder |
+| Framework | **Next.js 16.4 (App Router, Turbopack, Cache Components) + TypeScript** | Satu project untuk public (SEO) & private app; routing sudah rapi per folder |
 | Styling | **Tailwind CSS** | Sudah dipakai di `index.html`, tinggal pindahkan token warna |
-| Komponen UI | **shadcn/ui** + **lucide-react** | Komponen siap pakai (dialog, tabel, form), ikon sama dengan yang sekarang |
+| Komponen UI | **shadcn/ui** (CLI v4, style `base-nova` / Base UI) + **lucide-react** | Komponen siap pakai (dialog, tabel, form), ikon sama dengan yang sekarang |
 | Database + Auth + File | **Supabase** | Gratis untuk skala personal, Postgres asli, login & storage sudah tersedia |
 | Editor jurnal | **BlockNote** | Editor block ala Notion, tinggal pasang |
 | Grafik keuangan | **Recharts** | Ringan, gampang dipakai di React |
@@ -254,7 +254,10 @@ Relasi penting:
 ```
 personal-web/
 ├─ app/
-│  ├─ [locale]/(public)/          ← en | id (next-intl, K-17)
+│  ├─ [lang]/                     ← situs publik en | id (i18n bawaan Next.js, K-18)
+│  │  ├─ layout.tsx               ← root layout publik (font, tema, metadata)
+│  │  ├─ dictionaries.ts          ← loader teks UI per bahasa
+│  │  ├─ dictionaries/en.json, id.json
 │  │  ├─ page.tsx                 ← Welcome
 │  │  ├─ about/page.tsx
 │  │  ├─ portfolio/page.tsx
@@ -272,16 +275,17 @@ personal-web/
 ├─ components/
 │  ├─ ui/                         ← shadcn (button, card, dialog…)
 │  ├─ layout/                     ← Navbar, Sidebar, Footer
-│  └─ cosmic/                     ← elemen visual tema (planet, bintang, orbit)
+│  └─ theme-toggle.tsx            ← toggle dark/light (animasi lingkaran menyusul)
 ├─ features/                      ← logika per modul (query, action, schema)
 │  ├─ journal/
 │  ├─ tasks/
 │  ├─ projects/
 │  └─ money/
-├─ messages/en.json, id.json      ← teks UI situs publik per bahasa
+├─ content/profile.ts             ← profil, pendidikan, pengalaman, prestasi, skill (dari CV, {en,id})
+├─ lib/i18n.ts                    ← daftar locale, tipe Localized, localePath()
 ├─ lib/supabase/                  ← client & server helper
 ├─ supabase/migrations/           ← SQL skema database (versi terkontrol)
-├─ middleware.ts                  ← proteksi /app/*
+├─ proxy.ts                       ← routing bahasa; nanti juga proteksi /app/* (Next 16: middleware → proxy)
 ├─ MASTER.md                      ← dokumen ini
 └─ legacy/index.html              ← versi lama, jadi referensi desain
 ```
@@ -342,14 +346,16 @@ Penerapan per wajah:
 > Hex dibaca dari teks gambar; urutan nama Mist Blue/Light Sky dan
 > Twilight/Evening/Night Blue perlu dicek ulang di gambar aslinya.
 
-Pemakaian (usulan token Tailwind `sky-50` … `sky-950` versi sendiri):
+Pemakaian — sudah diterapkan sebagai token di `app/globals.css` (skala `sky-50…950`
++ token semantik shadcn untuk light/dark):
 
 | Peran | Light mode | Dark mode |
 |---|---|---|
 | Latar halaman | Cloud `#F0F7FF` | Ink Sky `#010A16` |
 | Permukaan / kartu | Arctic Sky `#E1F0FF` (kaca putih) | Midnight `#021024` (kaca gelap) |
 | Garis / border | Mist Blue `#CDE4FF` | Evening Sky `#062956` |
-| Aksen utama (tombol, link) | Cerulean `#1E7DFF` | Pure Sky `#3D9BFF` |
+| Aksen utama (tombol, link) | Deep Sky `#1662CC` (K-19) | Pure Sky `#3D9BFF` |
+| Ring fokus / grafik | Cerulean `#1E7DFF` | Pure Sky `#3D9BFF` |
 | Teks utama | Midnight `#021024` | Cloud `#F0F7FF` |
 | Teks sekunder | Azure `#0F4FA3` | Clear Sky `#97C9FF` |
 
@@ -532,6 +538,9 @@ yang menjelaskan alasannya.
 | K-15 | 2026-11-10 | Konteks task **dibuat sendiri** (tabel `contexts`, bisa tambah/ganti/hapus); isian awal Kuliah, BEM, Asprak, GMRT, KKN | Kegiatan berubah tiap semester |
 | K-16 | 2026-11-10 | Money mendukung **IDR + USD** (mata uang per akun, kurs harian untuk total dalam IDR) + sub-modul **Invest** (forex, saham, crypto, instrumen lain) | Rahul aktif trading di berbagai instrumen; akun broker sering dalam USD |
 | K-17 | 2026-11-10 | Situs publik **dua bahasa** (Inggris default, Indonesia di `/id`) pakai next-intl; Life OS hanya Indonesia | Portfolio bisa dibaca recruiter luar & lokal; Life OS cuma dipakai sendiri |
+| K-18 | 2026-11-10 | i18n memakai **cara bawaan Next.js 16** (`app/[lang]`, `proxy.ts` rewrite/redirect, kamus JSON) — bukan next-intl (merevisi K-17 bagian library) | Didukung resmi di Next 16.4 + Cache Components; tanpa dependensi tambahan; kebutuhan hanya 2 bahasa |
+| K-19 | 2026-11-10 | Warna tombol utama light mode = **Deep Sky `#1662CC`**, bukan Cerulean | Teks putih di Cerulean hanya 3.9:1 (gagal WCAG AA 4.5:1); Deep Sky 5.8:1 |
+| K-20 | 2026-11-10 | Konten publik awal diambil dari **CV Rahul** (versi sebelum Nov 2026) → `content/profile.ts`; nomor HP tidak ditampilkan | Bahan paling lengkap yang ada; privasi |
 
 ---
 
@@ -554,6 +563,17 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
   folder (`[locale]`, `messages/`), Roadmap Fase 5, Bagian 9.
 - Rahul mengonfirmasi bahasa default situs publik = Inggris, dan setuju menyiapkan
   teks dua bahasa (Claude bantu draf terjemahan).
+- **Konten dari CV** (K-20): seluruh isi CV (ringkasan, pendidikan, 7 pengalaman
+  organisasi, 3 mentoring, 1 asisten praktikum, 3 prestasi, skill) disusun dua bahasa
+  di `content/profile.ts`; 2 kandidat project portfolio: GROMICS (IoT) & video profil SMA.
+- **Setup project Next.js** (awal Fase 0 teknis): Next.js 16.4.6 + React 19.3 +
+  Tailwind 4.3 + shadcn CLI v4 (`base-nova`) + lucide. `index.html` lama dipindah ke
+  `legacy/`. Token warna Sky Blue (light/dark), font Outfit + Inter (`next/font`),
+  toggle tema tanpa kedip (inline script), `prefers-reduced-motion`, routing dua bahasa
+  (K-18), halaman sementara berisi nama + ringkasan + kontak. Build & lint lolos;
+  tes routing: `/`→en, `/id`→id, `/en/*`→308 ke tanpa prefix, locale asing→404.
+- Ditemukan: Next 16 mengganti `middleware.ts` menjadi `proxy.ts`; AGENTS.md bawaan
+  meminta membaca dokumentasi di `node_modules/next/dist/docs/` sebelum menulis kode.
 
 ### 2026-11-10 — Sesi 5: Analisis referensi & arah desain visual
 - Dicek progres GitHub + Drive. Ditemukan: referensi (3 gambar, 6 video) diunggah
@@ -614,10 +634,18 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [ ] Perbarui template `links.txt` di Drive: aturan "video wajib disertai screenshot" sudah tidak berlaku (K-12).
 - [x] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa) — 2026-11-10
 - [x] **Rahul:** konfirmasi bahasa default situs publik → Inggris — 2026-11-10
-- [ ] Siapkan teks halaman publik dalam **dua bahasa** (EN + ID): Rahul menyiapkan
-      bahan (About, daftar project), Claude membantu draf terjemahan.
+- [x] Siapkan teks halaman publik dalam **dua bahasa** (EN + ID) dari CV — 2026-11-10 (`content/profile.ts`)
+- [ ] **Rahul:** cek data CV yang mungkin sudah berubah per Nov 2026: status kelulusan
+      UGM (CV: lulus Jun 2026), jabatan "Present" (Teknisiade, Kepala Biro BEM, Manajer
+      Eksternal GMRT), apakah `ralogystudio.wuaze.com` masih dipakai, pengalaman baru
+      (KKN, dll).
+- [ ] **Rahul:** bahan project portfolio di Drive `04 - Portfolio Content` (foto, peran,
+      tech stack, link) — minimal GROMICS; tambah project lain bila ada.
+- [ ] **Rahul:** foto profil untuk situs → Drive `03 - Assets`.
+- [x] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/` — 2026-11-10
+- [ ] Hubungkan repo ke **Vercel** (perlu login akun Rahul) → situs sementara online di `*.vercel.app`.
+- [ ] Merge branch kerja ke `main` setelah dicek.
 - [ ] Kunci isi teks tiap halaman publik (About, daftar project yang ditampilkan).
-- [ ] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/`.
 
 ### Saran
 - Mulai dari **situs publik dulu** (Fase 1) supaya cepat punya sesuatu yang bisa dibagikan.

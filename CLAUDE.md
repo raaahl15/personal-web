@@ -7,6 +7,12 @@
 - Ikuti stack & keputusan di Log Keputusan (Bagian 11) kecuali ada keputusan baru yang dicatat.
 - Bahasa dokumen: Indonesia.
 
+## Next.js 16
+- Project memakai Next.js 16.4 yang punya breaking changes (mis. `middleware.ts` → `proxy.ts`).
+  Ikuti `AGENTS.md`: baca panduan di `node_modules/next/dist/docs/` sebelum menulis kode Next.js.
+- Situs publik ada di `app/[lang]/` (en default tanpa prefix, id di `/id`); konten di `content/`.
+- Cek sebelum commit: `npm run lint` dan `npm run build`.
+
 ## Skill acuan: UI/UX Pro Max
 - Skill project di `.claude/skills/ui-ux-pro-max/` (sumber: github.com/nextlevelbuilder/ui-ux-pro-max-skill,
   v2.15.0, commit `4f2dbb6`, MIT). Muat skill ini untuk setiap pekerjaan UI/UX: desain di FigCraft,

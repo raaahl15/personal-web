@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "title": "Rahul Ghulam Hidayatulloh",
+    "description": "Mahasiswa Teknik Fisika Universitas Gadjah Mada — sistem energi, instrumentasi, dan kepemimpinan."
+  },
+  "nav": {
+    "home": "Beranda",
+    "about": "Tentang",
+    "portfolio": "Portofolio",
+    "contact": "Kontak",
+    "switchLanguage": "English",
+    "toggleTheme": "Ganti mode gelap"
+  },
+  "home": {
+    "greeting": "Selamat datang di website saya",
+    "underConstruction": "Website ini sedang dibangun ulang. Desain lengkapnya segera hadir.",
+    "ctaPortfolio": "Lihat portofolio",
+    "ctaAbout": "Tentang saya"
+  }
+}
