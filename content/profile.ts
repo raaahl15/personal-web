@@ -378,31 +378,111 @@ export const skills = {
  * Kandidat project portfolio dari CV (belum lengkap — perlu foto, peran, tech stack, link).
  * Bahan per project disiapkan di Drive `04 - Portfolio Content`.
  */
-export const projects = [
+export type ProjectCategory = "IoT" | "Creative" | "Web";
+
+export type Project = {
+  slug: string;
+  title: Localized;
+  shortTitle: string;
+  category: ProjectCategory;
+  year: string;
+  status: "done" | "active";
+  summary: Localized;
+  /** Fakta yang bisa dipertanggungjawabkan (dari CV / MASTER.md). Peran detail menyusul. */
+  highlights: Localized<string[]>;
+  result?: Localized;
+  /** Gaya cover sementara sampai foto asli ada di Drive `04 - Portfolio Content`. */
+  cover: "pulse" | "video" | "dashboard";
+  featured: boolean;
+};
+
+export const projects: Project[] = [
   {
     slug: "gromics",
     title: { en: "GROMICS — IoT Health Monitoring", id: "GROMICS — Pemantauan Kesehatan Berbasis IoT" },
+    shortTitle: "GROMICS",
     category: "IoT",
+    year: "2025",
+    status: "done",
     summary: {
       en: "All-in-one real-time health monitoring system using non-invasive sensors for early detection of non-communicable diseases. PKM proposal, university-level finalist (2025).",
       id: "Sistem pemantauan kesehatan real-time all-in-one dengan sensor noninvasif untuk deteksi dini penyakit tidak menular. Proposal PKM, finalis tingkat universitas (2025).",
     },
+    highlights: {
+      en: [
+        "Proposed an all-in-one IoT device that monitors health in real time using non-invasive sensors.",
+        "Aimed at early detection of non-communicable diseases without needles or lab visits.",
+        "Passed the university's internal funding selection and advanced to the national PKM selection by Belmawa Kemendikbudristek.",
+      ],
+      id: [
+        "Mengusulkan perangkat IoT all-in-one yang memantau kesehatan secara real-time dengan sensor noninvasif.",
+        "Ditujukan untuk deteksi dini penyakit tidak menular tanpa jarum atau kunjungan ke laboratorium.",
+        "Lolos seleksi internal pendanaan universitas dan melaju ke seleksi nasional PKM oleh Belmawa Kemendikbudristek.",
+      ],
+    },
+    result: { en: "PKM university-level finalist", id: "Finalis PKM tingkat universitas" },
+    cover: "pulse",
     featured: true,
   },
   {
     slug: "school-profile-video",
     title: { en: "SMAN 2 Jember Profile Video", id: "Video Profil SMAN 2 Jember" },
+    shortTitle: "SMAN 2 Jember Profile",
     category: "Creative",
+    year: "2022",
+    status: "done",
     summary: {
       en: "Led production of the school profile video that won 1st place — concept, narrative, team, and schedule.",
       id: "Memimpin produksi video profil sekolah yang meraih Juara 1 — konsep, alur cerita, tim, dan jadwal produksi.",
     },
-    featured: false,
+    highlights: {
+      en: [
+        "Production lead for the winning video.",
+        "Developed the core concept, narrative flow, and central theme.",
+        "Formed the production team and managed the schedule from shooting to editing deadlines.",
+      ],
+      id: [
+        "Pimpinan produksi video pemenang.",
+        "Mengembangkan konsep inti, alur naratif, dan tema sentral.",
+        "Membentuk tim produksi dan mengelola jadwal dari syuting hingga tenggat penyuntingan.",
+      ],
+    },
+    result: { en: "1st place, school profile video competition", id: "Juara 1 kompetisi video profil sekolah" },
+    cover: "video",
+    featured: true,
   },
-] satisfies {
-  slug: string;
-  title: Localized;
-  category: string;
-  summary: Localized;
-  featured: boolean;
-}[];
+  {
+    slug: "life-os",
+    title: { en: "Life OS — this website", id: "Life OS — situs ini" },
+    shortTitle: "Life OS — this website",
+    category: "Web",
+    year: "2026",
+    status: "active",
+    summary: {
+      en: "My public portfolio plus a private dashboard for journal, tasks, projects and money. Next.js 16 + Supabase.",
+      id: "Portfolio publik sekaligus dashboard pribadi untuk jurnal, task, project, dan keuangan. Next.js 16 + Supabase.",
+    },
+    highlights: {
+      en: [
+        "Bilingual public site (English and Indonesian) with a dark-to-light visual story.",
+        "Private Life OS: daily dashboard, block-based journal, Kanban tasks, IDR/USD money and an investment journal.",
+        "Designed in FigCraft with a shared token system for light and dark mode.",
+      ],
+      id: [
+        "Situs publik dua bahasa (Inggris dan Indonesia) dengan alur visual gelap ke terang.",
+        "Life OS pribadi: dashboard harian, jurnal berbasis blok, task Kanban, keuangan IDR/USD, dan jurnal investasi.",
+        "Didesain di FigCraft dengan sistem token bersama untuk mode terang dan gelap.",
+      ],
+    },
+    cover: "dashboard",
+    featured: true,
+  },
+];
+
+/** Angka singkat untuk welcome page (semua dari CV). */
+export const stats = [
+  { value: 100, suffix: "+", label: { en: "committee members coordinated", id: "anggota panitia dikoordinasikan" } },
+  { value: 200, suffix: "+", label: { en: "staff evaluated at BEM KMFT", id: "staf BEM KMFT dievaluasi" } },
+  { value: 7, suffix: "", label: { en: "organisations & committees", id: "organisasi & kepanitiaan" } },
+  { value: 3, suffix: "", label: { en: "awards, incl. PKM finalist", id: "penghargaan, termasuk finalis PKM" } },
+] satisfies { value: number; suffix: string; label: Localized }[];

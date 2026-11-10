@@ -10,7 +10,7 @@
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://raaahl15-personal-web.vercel.app (auto-deploy dari `main`) |
-| Status saat ini | **Fase 0 — Persiapan:** **desain UI/UX v1.0 selesai di FigCraft** (5 halaman, 27 frame: design system, situs publik desktop+mobile, Life OS desktop+mobile, light/dark via variabel); project Next.js 16 dua bahasa sudah disiapkan + konten dari CV; desain sudah di Drive dan situs sementara live di Vercel; berikutnya Rahul review desain (iPad) → revisi v1.1 → mulai Fase 1 |
+| Status saat ini | **Fase 1 — Public Site (berjalan):** desain UI/UX v1.0 disetujui; Welcome, About, Portfolio, detail project, dan Contact sudah dibangun sesuai desain (EN + ID, light/dark, mobile); berikutnya deploy ke Vercel + cek di perangkat asli, lalu foto asli & sisa Fase 1 |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -275,8 +275,10 @@ personal-web/
 │     └─ settings/…
 ├─ components/
 │  ├─ ui/                         ← shadcn (button, card, dialog…)
-│  ├─ layout/                     ← Navbar, Sidebar, Footer
-│  └─ theme-toggle.tsx            ← toggle dark/light (animasi lingkaran menyusul)
+│  ├─ site/                       ← komponen situs publik (navbar, menu mobile, footer, kartu folder,
+│  │                                 reveal, counter, tab pengalaman, filter, form kontak)
+│  ├─ layout/                     ← (Fase 2) Sidebar Life OS
+│  └─ theme-toggle.tsx            ← toggle dark/light, animasi lingkaran membesar (View Transitions)
 ├─ features/                      ← logika per modul (query, action, schema)
 │  ├─ journal/
 │  ├─ tasks/
@@ -464,10 +466,10 @@ TransactionRow. Ikon = vektor gaya lucide (stroke 1.75–2).
 - Kontras dicek: teks putih **tidak** boleh di atas Pure Sky/Bright Sky (≈2.9:1) — gradien
   berisi teks dimulai dari Azure/Deep Sky (K-23).
 
-**Selisih dengan kode saat ini (`app/globals.css`) yang perlu disamakan di Fase 1:**
-`--card` light masih Arctic Sky (desain: putih untuk `surface`, Arctic Sky untuk `muted`);
-belum ada token `success`, `warm-soft`/`success-soft`, `text-3`, `glass`/`glass-stroke`;
-`--chart-1` light masih Cerulean (desain: Deep Sky).
+**Di kode (`app/globals.css`, Sesi 8):** token sudah disamakan. Pemetaan nama: `surface` →
+`--card`, `text-2` → `--muted-foreground`, `text-3` → `--subtle`, `muted` → `--muted`, plus
+`--primary-soft`, `--glass`, `--glass-stroke`, `--backdrop`, `--success(-soft)`, `--warm(-soft)`;
+kelas utilitas `glass` = kartu kaca. Font aksen: kelas `font-accent`.
 
 ---
 
@@ -614,12 +616,38 @@ yang menjelaskan alasannya.
 | K-23 | 2026-11-10 | Teks putih hanya di atas Deep Sky/Azure atau lebih gelap; gradien yang berisi teks dimulai dari `#0F4FA3`/`#1662CC` | Putih di atas Pure Sky ≈2.9:1 (gagal WCAG AA), ditemukan saat cek kontras |
 | K-24 | 2026-11-10 | Aksen **Instrument Serif Italic** dipakai untuk 1–2 kata di judul besar | Sesuai referensi video welcome; menutup opsi yang terbuka di Bagian 6 |
 | K-25 | 2026-11-10 | Navigasi Life OS: desktop = sidebar pil ikon + tooltip; mobile = bottom nav 5 item (Today, Journal, Tasks, Money, More); situs publik mobile = top bar + menu layar penuh | Aturan skill: bottom nav ≤5, target sentuh ≥44px, label aksesibel |
+| K-26 | 2026-11-10 | Animasi Fase 1 pakai **CSS + IntersectionObserver + View Transitions** (tanpa GSAP/Motion dulu); semua delay & transisi nol saat `prefers-reduced-motion` | Cukup untuk reveal, counter, warp, marquee, toggle lingkaran; tanpa dependensi & bundle tambahan. GSAP ScrollTrigger dipertimbangkan bila butuh scroll scrub |
+| K-27 | 2026-11-10 | Form kontak Fase 1 = validasi di klien lalu membuka aplikasi email (`mailto:`) | Belum ada backend/layanan email; pengiriman langsung menyusul |
+| K-28 | 2026-11-10 | Hero Welcome & bingkainya selalu gelap memakai kelas `.dark` lokal (token tema ikut gelap di dalamnya), di mode terang maupun gelap | Alur gelap → terang (K-11) tetap utuh tanpa menggandakan komponen |
 
 ---
 
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 8: Fase 1 — situs publik sesuai desain v1.0
+- Rahul menyetujui desain v1.0 ("sudah bagus") → mulai Fase 1.
+- `globals.css`: token disamakan dengan v1.0 (kartu putih, `subtle`/text-3, `primary-soft`, `glass`,
+  `success`, `warm` + soft, chart), utilitas `glass`, animasi `rise`/`warp`/`blink`/`marquee`,
+  reveal saat scroll, aturan View Transitions; reduced motion menolkan durasi & delay.
+- Font: tambah **Instrument Serif Italic** (`font-accent`) lewat `next/font`.
+- Komponen baru di `components/site/`: navbar pil kaca (`site-header`, `nav-links` dengan
+  indikator aktif + switch EN|ID yang mempertahankan halaman), menu mobile layar penuh
+  (`<dialog>`), footer, `pill-link`, `folder-card`, `project-cover`, `reveal`, `count-up`,
+  `experience-tabs` (pola tab WAI-ARIA), `project-filter`, `contact-form` + tombol salin, ikon LinkedIn.
+- `theme-toggle`: pil sun|moon, ganti tema dengan **lingkaran membesar** (View Transitions),
+  sinkron antar-toggle lewat `useSyncExternalStore` (kelas `.dark` di `<html>`).
+- Halaman: Welcome (hero gelap, statistik dark→light, project unggulan, cuplikan About,
+  penutup), About, Portfolio (folder + filter), `/portfolio/[slug]` (generateStaticParams,
+  tanpa `dynamicParams` karena Cache Components), Contact. Semua EN + ID, data dari
+  `content/profile.ts` (ditambah project "Life OS", `stats`, highlight per project dari CV).
+- Kamus `en.json`/`id.json` diperluas untuk semua teks UI.
+- Verifikasi: lint & build lolos (24 halaman prerender); screenshot headless Edge 1440 & 375,
+  light & dark → sesuai desain. Perbaikan dari screenshot: judul hero terlalu besar, kartu hero
+  meregang, delay animasi tetap jalan saat reduced motion, garis warp menimpa teks di mobile,
+  intro About dobel, angka folder organisasi.
+- Ditunda (lihat Bagian 13): foto asli, carousel Moments, 404 bergaya, OG image, kirim form langsung.
 
 ### 2026-11-10 — Sesi 7: Desain UI/UX v1.0 di FigCraft
 - Koneksi MCP `figcraft` **berhasil** (attach 127.0.0.1:47821).
@@ -732,13 +760,16 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Hubungkan alat desain (FigCraft) ke Claude Code — 2026-11-10
 - [x] Buka session Claude Code baru → izinkan server `figcraft` → tes koneksi — 2026-11-10
 - [x] Sesi desain pertama di FigCraft → **desain UI/UX v1.0 lengkap** (27 frame) — 2026-11-10
-- [ ] **Rahul:** review desain v1.0 di FigCraft (buka `D:\rahul\personal-web-design\…v1.0.figcraft`
-      atau PDF di `export/`); tulis revisi sebagai komentar FigCraft atau di chat → v1.1.
+- [x] **Rahul:** review desain v1.0 → "sudah bagus", lanjut Fase 1 — 2026-11-10
 - [x] Unggah desain v1.0 ke Drive `06 - Design Files/2026-11-10_ui-v1.0/` — 2026-11-10
 - [ ] **Rahul (opsional):** pasang font Outfit, Inter (variable) & Instrument Serif di Windows
       agar FigCraft tidak perlu memuat font tiap sesi.
-- [ ] Fase 1: samakan `app/globals.css` dengan token v1.0 (lihat "Selisih dengan kode" di Bagian 6),
-      lalu bangun komponen (Navbar pil, Button, kartu kaca, kartu folder) dan halaman Welcome.
+- [x] Fase 1 (bagian besar): token v1.0 di `globals.css`, komponen situs, halaman Welcome, About,
+      Portfolio, detail project, Contact (EN + ID) — 2026-11-10, Sesi 8
+- [ ] Fase 1 sisa: deploy ke Vercel (merge ke `main`) lalu cek di iPad/HP asli; foto profil + cover
+      project asli (menggantikan placeholder gradien); carousel "Moments" saat foto kegiatan ada;
+      halaman 404 bergaya; gambar OG untuk share link; kirim form kontak langsung (server action +
+      layanan email, mis. Resend) menggantikan `mailto:`.
 - [ ] Desain v1.1 (setelah review): halaman About/Contact mobile, Login mobile, Journal & Money
       mobile, state kosong/loading/error, foto asli & cover project.
 - [x] **Rahul:** kumpulkan referensi desain di Drive `02 - Design References` — 2026-11-10 (3 gambar, 6 video)

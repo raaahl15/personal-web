@@ -34,6 +34,17 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-heading: var(--font-outfit);
+  --font-accent: var(--font-instrument-serif);
+  /* Token tambahan desain v1.0 (MASTER.md Bagian 6, K-21/K-22) */
+  --color-subtle: var(--subtle);
+  --color-primary-soft: var(--primary-soft);
+  --color-glass: var(--glass);
+  --color-glass-stroke: var(--glass-stroke);
+  --color-backdrop: var(--backdrop);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warm: var(--warm);
+  --color-warm-soft: var(--warm-soft);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -76,8 +87,17 @@
 :root {
   --background: #f0f7ff;           /* Cloud */
   --foreground: #021024;           /* Midnight */
-  --card: #e1f0ff;                 /* Arctic Sky */
+  --card: #ffffff;                 /* surface v1.0: kartu solid putih */
   --card-foreground: #021024;
+  --subtle: #4a6890;               /* text-3: teks meta, 5.3:1 di atas Cloud */
+  --primary-soft: #cde4ff;
+  --glass: rgb(255 255 255 / 0.7);
+  --glass-stroke: rgb(255 255 255 / 0.9);
+  --backdrop: #b6d8ff;             /* blob latar di belakang kaca */
+  --success: #15803d;
+  --success-soft: #dcfce7;
+  --warm: #c2410c;
+  --warm-soft: #ffedd5;
   --popover: #ffffff;
   --popover-foreground: #021024;
   /* Deep Sky, bukan Cerulean: teks putih di Cerulean hanya 3.9:1 (< 4.5:1 WCAG AA) */
@@ -93,9 +113,9 @@
   --border: #cde4ff;               /* Mist Blue */
   --input: #b6d8ff;
   --ring: #1e7dff;                 /* Cerulean */
-  --chart-1: #1e7dff;
+  --chart-1: #1662cc;
   --chart-2: #5caeff;
-  --chart-3: #0f4fa3;
+  --chart-3: #0a3b7a;
   --chart-4: #97c9ff;
   --chart-5: #062956;
   --radius: 1rem;
@@ -115,6 +135,15 @@
   --foreground: #f0f7ff;           /* Cloud */
   --card: #021024;                 /* Midnight */
   --card-foreground: #f0f7ff;
+  --subtle: #78baff;               /* Day Sky */
+  --primary-soft: #0a3b7a;
+  --glass: rgb(6 41 86 / 0.55);
+  --glass-stroke: rgb(61 155 255 / 0.18);
+  --backdrop: #062956;
+  --success: #4ade80;
+  --success-soft: #052e16;
+  --warm: #fb923c;
+  --warm-soft: #431407;
   --popover: #021024;
   --popover-foreground: #f0f7ff;
   --primary: #3d9bff;              /* Pure Sky — 6.9:1 dengan teks Ink Sky */
@@ -131,7 +160,7 @@
   --ring: #3d9bff;
   --chart-1: #3d9bff;
   --chart-2: #97c9ff;
-  --chart-3: #1e7dff;
+  --chart-3: #cde4ff;
   --chart-4: #cde4ff;
   --chart-5: #5caeff;
   --sidebar: #021024;
@@ -163,11 +192,76 @@
   }
 }
 
+/* Kartu kaca (glassmorphism): fill transparan + border tipis + blur 24 + bayangan halus */
+@utility glass {
+  background-color: var(--glass);
+  border: 1px solid var(--glass-stroke);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 12px 32px rgb(6 41 86 / 0.1);
+}
+
+/* Animasi masuk hero (load) */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes warp {
+  from { opacity: 0; transform: translateX(-30%) rotate(var(--warp-rotate, 14deg)); }
+  to { opacity: 1; transform: translateX(0) rotate(var(--warp-rotate, 14deg)); }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+@utility animate-rise {
+  animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-warp {
+  animation: warp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-blink {
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+@utility animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/*
+ * Reveal saat scroll (components/site/reveal.tsx). Hanya disembunyikan kalau JS aktif
+ * (kelas .js dipasang inline script di layout), jadi konten tetap terlihat tanpa JS.
+ */
+.js [data-reveal]:not([data-shown]) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+[data-reveal] {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { transition-delay: 0ms; }
+}
+
+/* Ganti tema: lingkaran membesar dari tombol (K-11), lihat components/theme-toggle.tsx */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .js [data-reveal]:not([data-shown]) {
+    opacity: 1;
+    transform: none;
   }
 }

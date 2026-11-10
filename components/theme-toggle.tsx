@@ -1,36 +1,103 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-// Animasi lingkaran membesar (K-11) ditambahkan saat desain final; ini versi dasar.
 export const THEME_STORAGE_KEY = "theme";
+type Theme = "light" | "dark";
 
-function applyStoredTheme() {
-  try {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    const dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.classList.toggle("dark", dark);
-  } catch {}
+const currentTheme = (): Theme =>
+  document.documentElement.classList.contains("dark") ? "dark" : "light";
+
+// Sumber kebenaran = kelas .dark di <html>; semua toggle (navbar & menu mobile) ikut berubah.
+function subscribe(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  return () => observer.disconnect();
 }
 
-export function ThemeToggle({ label }: { label: string }) {
-  // Strict Mode (dev) me-reset atribut <html>; terapkan ulang sebelum paint.
-  useLayoutEffect(applyStoredTheme, []);
+function readStoredTheme(): Theme {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "dark" || stored === "light") return stored;
+    return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
 
-  function toggle() {
-    const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
-    document.documentElement.classList.toggle("dark", next === "dark");
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, next);
-    } catch {}
+/**
+ * Toggle tema berbentuk pil (sun | moon), desain v1.0.
+ * Ganti tema memakai View Transitions: lingkaran membesar dari tombol yang diklik (K-11).
+ * Tanpa dukungan API / dengan prefers-reduced-motion → langsung ganti.
+ */
+export function ThemeToggle({
+  lightLabel,
+  darkLabel,
+  className,
+}: {
+  lightLabel: string;
+  darkLabel: string;
+  className?: string;
+}) {
+  const theme = useSyncExternalStore(subscribe, currentTheme, () => "light" as Theme);
+
+  // Strict Mode (dev) me-reset atribut <html>; terapkan ulang sebelum paint.
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle("dark", readStoredTheme() === "dark");
+  }, []);
+
+  function apply(next: Theme, event: React.MouseEvent<HTMLButtonElement>) {
+    if (next === currentTheme()) return;
+    const commit = () => {
+      document.documentElement.classList.toggle("dark", next === "dark");
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, next);
+      } catch {}
+    };
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduce) {
+      commit();
+      return;
+    }
+
+    const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    const transition = document.startViewTransition(() => flushSync(commit));
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 550, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-new(root)" },
+      );
+    });
   }
 
+  const item = (value: Theme, label: string, Icon: typeof Sun) => (
+    <button
+      type="button"
+      onClick={(e) => apply(value, e)}
+      aria-label={label}
+      aria-pressed={theme === value}
+      title={label}
+      className={cn(
+        "grid size-11 place-items-center md:size-9 rounded-full text-subtle transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        theme === value && "bg-card text-primary shadow-sm",
+      )}
+    >
+      <Icon className="size-[18px]" aria-hidden />
+    </button>
+  );
+
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label={label} title={label} className="size-11 rounded-full">
-      <Sun className="hidden size-5 dark:block" aria-hidden />
-      <Moon className="size-5 dark:hidden" aria-hidden />
-    </Button>
+    <div role="group" className={cn("flex items-center gap-1 rounded-full bg-muted p-1", className)}>
+      {item("light", lightLabel, Sun)}
+      {item("dark", darkLabel, Moon)}
+    </div>
   );
 }
