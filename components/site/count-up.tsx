@@ -13,6 +13,8 @@ export function CountUp({ value, suffix = "", className }: { value: number; suff
   useEffect(() => {
     const el = ref.current;
     if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Sudah terlihat saat halaman dibuka → biarkan angka akhir (hindari lompat ke 0).
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
 
     let frame = 0;
     let fallback = 0;
@@ -31,7 +33,8 @@ export function CountUp({ value, suffix = "", className }: { value: number; suff
         setDisplay(0);
         frame = requestAnimationFrame(tick);
       },
-      { threshold: 0.4 },
+      // Mulai sedikit sebelum terlihat → reset ke 0 tidak pernah tampak, hitungan terlihat mulus.
+      { rootMargin: "0px 0px 10% 0px" },
     );
     io.observe(el);
     return () => {

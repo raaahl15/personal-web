@@ -5,6 +5,7 @@ import { profile } from "@/content/profile";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LangSwitch, NavLinks } from "./nav-links";
 import { MobileMenu } from "./mobile-menu";
+import { HeaderTone } from "./header-tone";
 
 export function Monogram({ className = "size-11 text-base" }: { className?: string }) {
   return (
@@ -20,10 +21,12 @@ export function Monogram({ className = "size-11 text-base" }: { className?: stri
 /** Navbar pil kaca yang mengambang (desain v1.0, komponen Navbar/Public & Navbar/Mobile). */
 export function SiteHeader({ lang, nav }: { lang: Locale; nav: Dictionary["nav"] }) {
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 md:pt-6">
+    <header className="site-header pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-4 [view-transition-name:site-header] sm:px-6 md:pt-6">
+      <HeaderTone targetId="site-nav" />
       <nav
+        id="site-nav"
         aria-label={nav.primary}
-        className="glass pointer-events-auto mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full p-1.5 md:p-2"
+        className="glass pointer-events-auto mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full p-1.5 text-foreground transition-[background-color,border-color,color] duration-500 md:p-2"
       >
         <Link
           href={localePath(lang)}
@@ -50,7 +53,13 @@ export function SiteHeader({ lang, nav }: { lang: Locale; nav: Dictionary["nav"]
 
         {/* < lg: link navigasi lewat menu layar penuh (tablet tetap punya bahasa/tema/CTA di atas) */}
         <div className="lg:hidden">
-          <MobileMenu lang={lang} labels={nav} />
+          <MobileMenu
+            lang={lang}
+            labels={nav}
+            name={profile.shortName}
+            email={profile.contact.email}
+            linkedin={profile.contact.linkedin}
+          />
         </div>
       </nav>
     </header>

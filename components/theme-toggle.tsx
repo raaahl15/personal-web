@@ -58,9 +58,18 @@ export function ThemeToggle({
       } catch {}
     };
 
+    const root = document.documentElement;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!document.startViewTransition || reduce) {
+    if (reduce) {
       commit();
+      return;
+    }
+
+    // Fallback (Safari < 18 dll.): crossfade warna singkat, bukan ganti mendadak.
+    if (!document.startViewTransition) {
+      root.classList.add("theme-fade");
+      commit();
+      window.setTimeout(() => root.classList.remove("theme-fade"), 400);
       return;
     }
 
@@ -69,13 +78,15 @@ export function ThemeToggle({
     const y = top + height / 2;
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
+    root.classList.add("theme-vt");
     const transition = document.startViewTransition(() => flushSync(commit));
     transition.ready.then(() => {
-      document.documentElement.animate(
+      root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: 550, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-new(root)" },
+        { duration: 600, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" },
       );
     });
+    transition.finished.finally(() => root.classList.remove("theme-vt"));
   }
 
   const item = (value: Theme, label: string, Icon: typeof Sun) => (
@@ -86,8 +97,8 @@ export function ThemeToggle({
       aria-pressed={theme === value}
       title={label}
       className={cn(
-        "grid size-11 place-items-center md:size-9 rounded-full text-subtle transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        theme === value && "bg-card text-primary shadow-sm",
+        "relative z-10 grid size-11 place-items-center rounded-full text-subtle outline-none focus-visible:ring-2 focus-visible:ring-ring md:size-9",
+        theme === value && "text-primary",
       )}
     >
       <Icon className="size-[18px]" aria-hidden />
@@ -95,7 +106,15 @@ export function ThemeToggle({
   );
 
   return (
-    <div role="group" className={cn("flex items-center gap-1 rounded-full bg-muted p-1", className)}>
+    <div role="group" className={cn("relative flex items-center gap-1 rounded-full bg-muted p-1", className)}>
+      {/* Thumb yang bergeser di belakang ikon aktif */}
+      <span
+        aria-hidden
+        className={cn(
+          "vt-keep absolute top-1 left-1 size-11 rounded-full bg-card shadow-sm transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] md:size-9",
+          theme === "dark" ? "translate-x-12 md:translate-x-10" : "translate-x-0",
+        )}
+      />
       {item("light", lightLabel, Sun)}
       {item("dark", darkLabel, Moon)}
     </div>

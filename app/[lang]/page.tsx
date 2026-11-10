@@ -37,7 +37,7 @@ function Hero({ lang, dict }: SectionProps) {
   const t = dict.home;
   const gromics = projects[0];
   return (
-    <section className="bg-sky-950 p-3 sm:p-4 md:p-6">
+    <section data-dark-section className="bg-sky-950 p-3 sm:p-4 md:p-6">
       {/* Hero selalu gelap: kelas .dark mengubah token tema di dalam bingkai ini. */}
       <div className="dark relative isolate overflow-hidden rounded-[32px] bg-linear-to-br from-sky-950 via-sky-850 to-sky-750 text-foreground md:rounded-[40px]">
         <Decor />

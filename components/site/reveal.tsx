@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 /**
- * Konten muncul (fade + naik 24px) saat masuk viewport. Gaya ada di globals.css
- * ([data-reveal]); tanpa JS atau dengan prefers-reduced-motion konten langsung terlihat.
+ * Konten muncul (fade + naik 20px) saat masuk viewport.
+ * - Elemen yang sudah terlihat saat halaman dibuka TIDAK disembunyikan (tidak ada kedip
+ *   menunggu JavaScript); mereka ikut animasi masuk halaman (template.tsx).
+ * - Elemen di bawah layar diberi `data-pending` sebelum paint, lalu dilepas saat terlihat.
+ * Status disimpan di atribut DOM (bukan state React) supaya tidak ada render ulang.
  */
 export function Reveal({
   children,
@@ -18,29 +21,33 @@ export function Reveal({
   as?: "div" | "section" | "li" | "article";
 }) {
   const ref = useRef<HTMLElement>(null);
-  const [shown, setShown] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
+
+    el.setAttribute("data-pending", "");
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true);
-          io.disconnect();
-        }
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        // Satu frame jeda agar transisi benar-benar diputar dari state tersembunyi.
+        requestAnimationFrame(() => el.removeAttribute("data-pending"));
       },
-      { rootMargin: "0px 0px -10% 0px" },
+      { rootMargin: "0px 0px -8% 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      el.removeAttribute("data-pending");
+    };
   }, []);
 
   return (
     <Tag
       ref={ref as React.Ref<never>}
       data-reveal=""
-      data-shown={shown ? "" : undefined}
       className={className}
       style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties}
     >

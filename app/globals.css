@@ -129,8 +129,13 @@
   --sidebar-ring: #1e7dff;
 }
 
-/* Dark mode */
-.dark {
+/*
+ * Dark mode. Selector kedua: navbar di atas section gelap (hero Welcome) langsung bergaya
+ * gelap sejak HTML pertama; components/site/header-tone.tsx memberi data-tone="light"
+ * setelah navbar melewati section itu.
+ */
+.dark,
+body:has([data-dark-section]) #site-nav:not([data-tone="light"]) {
   --background: #010a16;           /* Ink Sky */
   --foreground: #f0f7ff;           /* Cloud */
   --card: #021024;                 /* Midnight */
@@ -192,13 +197,20 @@
   }
 }
 
-/* Kartu kaca (glassmorphism): fill transparan + border tipis + blur 24 + bayangan halus */
+/*
+ * Kartu kaca (glassmorphism): fill transparan + border tipis + blur + bayangan halus.
+ * Blur 20 (desktop) / 12 (layar kecil): backdrop-filter mahal di iPad/HP saat scroll & animasi.
+ */
 @utility glass {
   background-color: var(--glass);
   border: 1px solid var(--glass-stroke);
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   box-shadow: 0 12px 32px rgb(6 41 86 / 0.1);
+  @media (min-width: 768px) {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
 }
 
 /* Animasi masuk hero (load) */
@@ -229,27 +241,111 @@
   animation: marquee 40s linear infinite;
 }
 
-/*
- * Reveal saat scroll (components/site/reveal.tsx). Hanya disembunyikan kalau JS aktif
- * (kelas .js dipasang inline script di layout), jadi konten tetap terlihat tanpa JS.
- */
-.js [data-reveal]:not([data-shown]) {
-  opacity: 0;
-  transform: translateY(24px);
+/* Masuk halaman (app/[lang]/template.tsx): jalan saat load pertama tanpa JS & tiap navigasi. */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
-[data-reveal] {
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] { transition-delay: 0ms; }
+@utility animate-page {
+  animation: page-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Ganti tema: lingkaran membesar dari tombol (K-11), lihat components/theme-toggle.tsx */
-::view-transition-old(root),
+/*
+ * Reveal saat scroll (components/site/reveal.tsx). Hanya elemen yang awalnya DI BAWAH
+ * layar yang disembunyikan (data-pending, dipasang setelah hydrate) — konten yang sudah
+ * terlihat tidak pernah "berkedip". Tanpa JS semua konten tetap terlihat.
+ */
+[data-reveal] {
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal][data-pending] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: none;
+}
+
+/* Kunci scroll halaman saat menu mobile (dialog) terbuka. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/*
+ * View Transitions.
+ * 1) Antar-halaman (termasuk ganti bahasa, yang memuat ulang dokumen karena [lang] = root
+ *    layout): crossfade halus; header diberi nama sendiri supaya tidak ikut berkedip.
+ * 2) Ganti tema (html.theme-vt): tanpa crossfade, lingkaran clip-path dianimasikan dari JS.
+ */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: 220ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
+}
 ::view-transition-new(root) {
+  animation: 380ms cubic-bezier(0, 0, 0.2, 1) 60ms both vt-fade-in;
+}
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+html.theme-vt::view-transition-new(root) {
+  z-index: 1;
+}
+/* Saat ganti tema, header ikut lingkaran (bukan grup terpisah). */
+html.theme-vt .site-header {
+  view-transition-name: none;
+}
+/* Selama snapshot tema diambil, matikan transisi CSS agar tidak ada animasi ganda. */
+html.theme-vt *:not(.vt-keep),
+html.theme-vt *::before,
+html.theme-vt *::after {
+  transition: none !important;
+}
+/* Fallback tanpa View Transitions: crossfade warna singkat. */
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease !important;
+}
+
+/* Menu mobile: buka/tutup halus (dialog + @starting-style). */
+dialog.menu-sheet {
+  opacity: 0;
+  transform: translateY(-12px) scale(0.985);
+  transition:
+    opacity 0.28s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
+}
+dialog.menu-sheet[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  dialog.menu-sheet[open] {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.985);
+  }
+}
+dialog.menu-sheet[open] .menu-item {
+  animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 80ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -258,10 +354,12 @@
     animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
-  .js [data-reveal]:not([data-shown]) {
-    opacity: 1;
-    transform: none;
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

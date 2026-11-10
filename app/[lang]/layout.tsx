@@ -20,6 +20,15 @@ const instrumentSerif = Instrument_Serif({
 // Dipasang sebelum paint: tema tanpa kedip (tersimpan → ikut sistem) + kelas .js untuk animasi reveal.
 const themeScript = `(function(){var e=document.documentElement;e.classList.add("js");try{var t=localStorage.getItem("theme");var d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;if(d)e.classList.add("dark")}catch(x){}})()`;
 
+// Setelah ganti bahasa: kembalikan posisi scroll (disimpan LangSwitch). Jalan di akhir <body>
+// sebelum paint pertama; kalau halaman di-prerender (hover), tunggu sampai benar-benar dibuka.
+const restoreScrollScript = `(function(){function r(){try{var s=sessionStorage.getItem("lang-scroll");if(!s)return;sessionStorage.removeItem("lang-scroll");var d=JSON.parse(s);if(d.path===location.pathname)window.scrollTo(0,d.y)}catch(e){}}if(document.prerendering){document.addEventListener("prerenderingchange",r,{once:true})}else{r()}})()`;
+
+// Chrome/Edge: prerender halaman bahasa lain saat link EN/ID di-hover → ganti bahasa instan.
+const speculationRules = JSON.stringify({
+  prerender: [{ where: { selector_matches: "a[hreflang]" }, eagerness: "moderate" }],
+});
+
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
@@ -50,6 +59,7 @@ export default async function PublicRootLayout({ children, params }: LayoutProps
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script type="speculationrules" dangerouslySetInnerHTML={{ __html: speculationRules }} />
       </head>
       <body className="flex min-h-full flex-col">
         <a
@@ -63,6 +73,7 @@ export default async function PublicRootLayout({ children, params }: LayoutProps
           {children}
         </main>
         <SiteFooter lang={lang} dict={dict} />
+        <script dangerouslySetInnerHTML={{ __html: restoreScrollScript }} />
       </body>
     </html>
   );

@@ -619,12 +619,37 @@ yang menjelaskan alasannya.
 | K-26 | 2026-11-10 | Animasi Fase 1 pakai **CSS + IntersectionObserver + View Transitions** (tanpa GSAP/Motion dulu); semua delay & transisi nol saat `prefers-reduced-motion` | Cukup untuk reveal, counter, warp, marquee, toggle lingkaran; tanpa dependensi & bundle tambahan. GSAP ScrollTrigger dipertimbangkan bila butuh scroll scrub |
 | K-27 | 2026-11-10 | Form kontak Fase 1 = validasi di klien lalu membuka aplikasi email (`mailto:`) | Belum ada backend/layanan email; pengiriman langsung menyusul |
 | K-28 | 2026-11-10 | Hero Welcome & bingkainya selalu gelap memakai kelas `.dark` lokal (token tema ikut gelap di dalamnya), di mode terang maupun gelap | Alur gelap → terang (K-11) tetap utuh tanpa menggandakan komponen |
+| K-29 | 2026-11-10 | Ganti bahasa tetap memuat ulang dokumen (konsekuensi `[lang]` sebagai root layout, K-18), dihaluskan dengan View Transitions antar-dokumen + pemulihan scroll + prerender saat hover — bukan memindah i18n ke client | Struktur i18n bawaan Next tetap sederhana & SEO-friendly; di Safari/Chrome terbaru hasilnya crossfade tanpa kedip |
 
 ---
 
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 9: Revisi Fase 1 dari Rahul (kehalusan & menu HP)
+- Masukan Rahul setelah cek di iPad: animasi kurang mulus, menu HP kurang, ganti bahasa
+  kurang mulus, toggle tema kurang mulus. Semua diperbaiki lalu di-merge ke `main`.
+- **Animasi:** `Reveal` tidak lagi menyembunyikan konten yang sudah terlihat saat load
+  (sebelumnya berkedip menunggu JS); hanya konten di bawah layar yang muncul saat scroll
+  (status di atribut DOM, tanpa render ulang). Transisi masuk tiap halaman lewat
+  `app/[lang]/template.tsx`. Blur kaca diturunkan (12px HP, 20px desktop) agar ringan di iPad.
+  Counter tidak lompat ke 0 bila sudah terlihat, dan mulai sedikit sebelum terlihat.
+- **Ganti bahasa:** penyebab patah = `[lang]` adalah root layout → ganti bahasa memuat ulang
+  dokumen. Solusi: `<a>` biasa (tanpa fetch RSC sia-sia), crossfade antar-dokumen
+  (`@view-transition`), header tetap diam (`view-transition-name`), posisi scroll dipulihkan
+  (sessionStorage + script akhir `<body>`, sadar prerender), prerender halaman bahasa lain saat
+  hover (Speculation Rules, Chrome/Edge), thumb EN|ID bergeser.
+- **Toggle tema:** thumb bergeser (spring), transisi CSS dimatikan selama lingkaran agar tidak
+  dobel (`html.theme-vt`), header ikut lingkaran, durasi 600ms; fallback crossfade warna
+  (`html.theme-fade`) untuk browser tanpa View Transitions.
+- **Navbar:** indikator aktif kini bergeser antar-link; navbar otomatis bergaya gelap di atas
+  hero (`data-dark-section`, `header-tone.tsx`, gaya awal dari CSS `body:has()` → tanpa kedip).
+- **Menu HP:** desain ulang — pil atas berkaca, baris bernomor + lingkaran panah (aktif biru),
+  kartu pengaturan Bahasa/Tema, CTA, Email/LinkedIn; animasi buka/tutup (`@starting-style`)
+  + stagger; scroll halaman terkunci saat menu terbuka; safe-area bawah.
+- Verifikasi: lint & build lolos; uji lewat Edge + DevTools Protocol (viewport HP asli 390px,
+  klik menu, klik toggle tema, klik EN→ID dari posisi scroll 1200px → tetap di posisi itu).
 
 ### 2026-11-10 — Sesi 8: Fase 1 — situs publik sesuai desain v1.0
 - Rahul menyetujui desain v1.0 ("sudah bagus") → mulai Fase 1.
