@@ -9,8 +9,8 @@
 | Pemilik | Rahul Ghulam |
 | Repo | https://github.com/raaahl15/personal-web |
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
-| Status saat ini | **Fase 0 — Persiapan:** mengumpulkan referensi desain |
-| Terakhir diperbarui | 2026-11-09 |
+| Status saat ini | **Fase 0 — Persiapan:** mengumpulkan referensi desain; FigCraft siap untuk desain via prompt |
+| Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
 
@@ -339,6 +339,30 @@ Aturan:
 2. Nama file di Drive: `YYYY-MM-DD_nama-singkat.ext` (contoh `2026-11-09_ref-hero-dark.png`).
 3. Aset yang sudah final → dioptimasi lalu masuk ke repo (`public/`).
 
+### Format referensi desain
+- **Foto/screenshot** (PNG/JPG/WebP) → paling ideal, bisa langsung dianalisis AI.
+- **Video** (termasuk TikTok) → AI tidak bisa menonton video / membuka link TikTok.
+  Sertakan 2–4 screenshot momen penting + catatan singkat (animasi/interaksi apa
+  yang disukai) + link sumber asli (Dribbble/Awwwards/website) bila disebut di video.
+- Catat di `links.txt` per referensi: link + "kenapa suka" + nama file screenshot.
+
+### Alat desain: FigCraft (ArtCraft)
+Desain dibuat lewat prompt ke Claude Code, yang menggambar langsung di FigCraft.
+
+| | |
+|---|---|
+| Aplikasi | FigCraft (ArtCraft) — `C:\Program Files\ArtCraft\FigCraft\` |
+| Koneksi | MCP server `figcraft` (user-scope di `~/.claude.json`): `figcraft-cli.exe mcp --attach 47821 --timeout 120` |
+| Cara buka | **Wajib** lewat shortcut Desktop **"FigCraft (Claude)"** (= `figcraft.exe --control 47821`) |
+| Tool utama | `create_node`, `set_properties`, `batch`, `run_command`, `inspect_document`, `screenshot`, `export`, `save_file` |
+
+Alur kerja desain:
+1. Buka FigCraft via shortcut → buka session Claude Code.
+2. Beri prompt (misal: *"welcome page desktop 1440px, background gelap, hero besar"*).
+3. Claude menggambar → ambil `screenshot` untuk cek → revisi lewat prompt.
+4. File desain disimpan (`.figcraft`) ke Drive `02 - Design References/` atau
+   `03 - Assets/`; hasil final di-export PNG untuk dicatat di Bagian 6.
+
 ---
 
 # BAGIAN B — CATATAN BERJALAN
@@ -358,12 +382,22 @@ yang menjelaskan alasannya.
 | K-04 | 2026-11-09 | GitHub untuk kode & dokumen, Google Drive untuk bahan mentah & file besar | Pemisahan jelas, tidak ada duplikasi dokumen |
 | K-05 | 2026-11-09 | Semua konsep, history, dan saran dicatat di **satu file `MASTER.md`** | Satu tempat acuan; mudah dilacak |
 | K-06 | 2026-11-09 | Desain visual menunggu referensi dari Rahul (tema kosmik lama belum tentu dipakai) | Desain ingin dimulai ulang berdasarkan referensi baru |
+| K-07 | 2026-11-10 | Alat desain: **FigCraft (ArtCraft)** yang dikendalikan Claude via MCP | Desain bisa dibuat & direvisi lewat prompt; tidak perlu Figma |
+| K-08 | 2026-11-10 | Referensi desain utama berupa screenshot + catatan; video/TikTok hanya pelengkap | AI tidak bisa menonton video atau membuka link TikTok |
 
 ---
 
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 4: Format referensi & koneksi FigCraft
+- Ditetapkan format referensi desain: foto/screenshot utama; video & TikTok
+  dilengkapi screenshot + catatan + link sumber asli (lihat Bagian 10).
+- FigCraft (ArtCraft, desktop) dihubungkan ke Claude Code lewat MCP mode *attach*
+  port 47821; dibuat shortcut Desktop "FigCraft (Claude)". Tes `tools/list`
+  berhasil (19 tool). Backup config: `~/.claude.json.bak-figcraft`.
+- Repo di-clone ke laptop: `D:\rahul\personal-web`.
 
 ### 2026-11-09 — Sesi 3: File master
 - `docs/KONSEP.md` dipindah & dikembangkan menjadi `MASTER.md` di root repo.
@@ -390,6 +424,9 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 ## 13. Saran & Ide ke Depan
 
 ### Langkah berikutnya (prioritas)
+- [x] Hubungkan alat desain (FigCraft) ke Claude Code — 2026-11-10
+- [ ] Buka session Claude Code baru → izinkan server `figcraft` → tes koneksi.
+- [ ] Sesi desain pertama di FigCraft: welcome page (desktop + mobile).
 - [ ] **Rahul:** kumpulkan 5–15 referensi desain di Drive `02 - Design References`
       (pisahkan: welcome page, portfolio, dashboard, journal, money).
 - [ ] **Rahul:** jawab Keputusan Terbuka di Bagian 9 (domain, konteks task, mata uang, bahasa).
