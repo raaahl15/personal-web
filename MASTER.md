@@ -354,6 +354,10 @@ scroll. Dark/light mode dijadikan "alur cerita" welcome page, bukan sekadar sett
 | Global | Toggle dark/light dengan lingkaran membesar; navbar pil dengan indikator aktif bergeser |
 | Life OS | Minimal: transisi tema + kartu fade-in; tanpa efek berat |
 
+**Acuan kualitas:** setiap halaman dicek dengan Pre-Delivery Checklist skill
+UI/UX Pro Max (kontras 4.5:1 di light & dark, fokus keyboard terlihat, target sentuh
+≥44px, ikon SVG bukan emoji, responsif 375/768/1024/1440px, `prefers-reduced-motion`).
+
 **Catatan teknis (untuk Fase 1):** animasi scroll & transisi pakai **Motion**
 (Framer Motion) atau GSAP ScrollTrigger; ganti tema pakai View Transitions API;
 hormati `prefers-reduced-motion` (animasi berat dimatikan).
@@ -478,6 +482,7 @@ yang menjelaskan alasannya.
 | K-10 | 2026-11-10 | Font: **Outfit** (judul) + **Inter** (isi), menggantikan Montserrat | Dipilih Rahul (opsi A); cocok dengan judul sans geometris di referensi layout |
 | K-11 | 2026-11-10 | Konsep animasi: alur **gelap → terang** saat scroll, toggle tema lingkaran membesar, kartu folder di portfolio; Life OS animasi minimal | Hasil analisis 6 video referensi Rahul |
 | K-12 | 2026-11-10 | Video referensi dianalisis langsung oleh Claude (ambil frame otomatis); screenshot manual tidak wajib lagi (merevisi K-08) | Frame bisa diekstrak dari file video di Drive; link TikTok tetap tidak bisa dibuka |
+| K-13 | 2026-11-10 | Skill **UI/UX Pro Max** dipasang sebagai skill acuan project (`.claude/skills/ui-ux-pro-max/`); dipakai untuk aturan UX, aksesibilitas, animasi, pedoman stack & checklist — **tidak** untuk mengganti gaya/palet/font yang sudah diputuskan | Permintaan Rahul; uji `--design-system` otomatis menyarankan Brutalism + Caveat yang bertentangan dengan K-09/K-10, jadi keputusan MASTER.md diutamakan |
 
 ---
 
@@ -494,6 +499,8 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - Keputusan K-09 (arah visual biru langit + glassmorphism) dan K-10 (Outfit + Inter).
 - 6 video referensi dianalisis langsung (unduh dari Drive → ambil frame dengan
   OpenCV) → bagian Animasi di Bagian 6 diisi; keputusan K-11 dan K-12.
+- Dipasang skill **UI/UX Pro Max** (v2.15.0) di `.claude/skills/ui-ux-pro-max/`;
+  aturan pemakaian ditulis di `CLAUDE.md`; keputusan K-13.
 - MCP `figcraft` gagal terhubung di sesi ini (aplikasi belum dibuka via shortcut).
 
 ### 2026-11-10 — Sesi 4: Format referensi & koneksi FigCraft
