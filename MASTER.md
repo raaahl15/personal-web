@@ -11,7 +11,7 @@
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://personal-web-coral-pi.vercel.app (project Vercel `personal-web`, auto-deploy dari `main`; alias lama `raaahl15-personal-web.vercel.app`) |
 | Supabase | Project `xhoonuobulugboohqxqc` (region Sydney `ap-southeast-2`, paket Free) — URL `https://xhoonuobulugboohqxqc.supabase.co` |
-| Status saat ini | **Fase 2 selesai:** situs publik live (Fase 1, sisa: foto asli dll.); login Supabase berfungsi di HP, iPad, dan komputer; shell Life OS aktif; berikutnya **Fase 3 — Projects & Tasks** (tabel database + RLS, CRUD, Kanban) |
+| Status saat ini | **Fase 3 — Projects & Tasks (kode selesai, menunggu SQL):** Tasks (List + Kanban), Projects (daftar, detail, lampiran, switch Publik/Unggulan), Konteks di Pengaturan, Portfolio publik membaca database; berikutnya Rahul menjalankan `supabase/migrations/0001_projects_tasks.sql` di SQL Editor → uji di perangkat |
 | Terakhir diperbarui | 2026-11-10 |
 
 ## Daftar Isi
@@ -197,21 +197,25 @@ Semua tabel punya `user_id` dan dilindungi **Row Level Security (RLS)**:
 ```
 profiles            (id, full_name, headline, bio, avatar_url, socials jsonb)
 
-projects            (id, user_id, title, slug, summary, content, category,
-                     -- title/summary/content berupa jsonb {en, id} untuk situs 2 bahasa (K-17)
-                     status[idea|active|done|archived], cover_url,
-                     tech_stack text[], links jsonb,
+-- ✅ Fase 3: dibuat oleh supabase/migrations/0001_projects_tasks.sql
+projects            (id, user_id, slug UNIQUE per user,
+                     title, summary, highlights, result   ← jsonb {en, id} (K-17; highlights = array per bahasa)
+                     category text, status[idea|active|done|archived],
+                     cover_style[pulse|video|dashboard], cover_url,
+                     tech_stack text[], links jsonb [{label,url}],
                      is_public bool, featured bool, start_date, end_date,
                      created_at, updated_at)
+                     -- RLS: pemilik semua akses; anon/semua boleh SELECT bila is_public
 
-project_files       (id, project_id, name, storage_path, mime_type, size)
+project_files       (id, user_id, project_id, name, storage_path, mime_type, size, created_at)
+                     -- file di Storage bucket privat "project-files", path <user_id>/<project_id>/…
 
-contexts            (id, user_id, name, color, icon, position)   ← dibuat sendiri (K-15)
+contexts            (id, user_id, name, color, position, created_at)   ← dibuat sendiri (K-15)
 
 tasks               (id, user_id, project_id?, context_id?, title, description,
                      status[todo|doing|done], priority[low|med|high],
-                     due_date, completed_at, position, created_at)
-                     -- context_id ON DELETE SET NULL
+                     due_date, completed_at, position, created_at, updated_at)
+                     -- project_id & context_id ON DELETE SET NULL
 
 journal_entries     (id, user_id, entry_date UNIQUE per user, title,
                      content jsonb  ← format block BlockNote,
@@ -622,6 +626,9 @@ yang menjelaskan alasannya.
 | K-28 | 2026-11-10 | Hero Welcome & bingkainya selalu gelap memakai kelas `.dark` lokal (token tema ikut gelap di dalamnya), di mode terang maupun gelap | Alur gelap → terang (K-11) tetap utuh tanpa menggandakan komponen |
 | K-29 | 2026-11-10 | Ganti bahasa tetap memuat ulang dokumen (konsekuensi `[lang]` sebagai root layout, K-18), dihaluskan dengan View Transitions antar-dokumen + pemulihan scroll + prerender saat hover — bukan memindah i18n ke client | Struktur i18n bawaan Next tetap sederhana & SEO-friendly; di Safari/Chrome terbaru hasilnya crossfade tanpa kedip |
 | K-30 | 2026-11-10 | Auth: Supabase via `@supabase/ssr` (cookie). Rute `/app/*` dijaga di `proxy.ts` (refresh sesi + `getClaims()` yang memverifikasi JWT); semua pembacaan user lewat satu DAL `lib/auth.ts` di dalam `<Suspense>`; Server Action memverifikasi ulang. Env: `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (fallback `…_ANON_KEY`) | Pola resmi Next 16 + Cache Components (shell statis, bagian sesi streaming); `getClaims()` lebih aman daripada `getSession()` |
+| K-32 | 2026-11-10 | Skema Fase 3 dikelola sebagai file SQL di `supabase/migrations/` dan dijalankan Rahul di SQL Editor (idempoten); teks publik project = jsonb `{en, id}`, form Life OS mengisi keduanya (EN kosong → pakai ID) | Tanpa kunci rahasia di repo/Claude; satu sumber skema yang bisa dijalankan ulang |
+| K-33 | 2026-11-10 | Portfolio publik membaca project `is_public` dari database lewat fungsi `'use cache'` (`cacheTag('public-projects')`, `cacheLife('hours')`); setiap Server Action project memanggil `updateTag` → situs langsung segar. Gagal/kosong → data cadangan `content/profile.ts` | Prinsip "Public ← Private" (Bagian 1) tanpa mengorbankan kecepatan halaman statis |
+| K-34 | 2026-11-10 | Lampiran diunggah langsung dari browser ke bucket privat `project-files` (path diawali id user, dijaga RLS Storage), metadata dicatat lewat Server Action; unduhan memakai signed URL 1 jam. Kanban: drag & drop + pilihan "Pindah ke" (alternatif drag, WCAG 2.5.7) | Hindari batas ukuran body Server Action; file pribadi tidak pernah publik |
 | K-31 | 2026-11-10 | Area privat = route group `app/(private)` sebagai root layout kedua (ID, `noindex`); login hanya email + password untuk satu akun (sign-up dimatikan di Supabase); magic link / reset password menyusul | Pisah total dari i18n publik; cukup untuk pemakaian pribadi |
 
 ---
@@ -629,6 +636,29 @@ yang menjelaskan alasannya.
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-10 — Sesi 11: Fase 3 — Projects & Tasks
+- Rahul mengirim Publishable key → `.env.local` (tidak di-commit). Cek: sign-up publik sudah
+  mati (`disable_signup = true`); tabel belum ada.
+- `supabase/migrations/0001_projects_tasks.sql`: tabel `contexts`, `projects`, `tasks`,
+  `project_files` + RLS (pemilik saja; project publik boleh dibaca anon) + trigger
+  `updated_at` + bucket privat `project-files` (50 MB) dengan policy per folder user + data
+  awal (5 konteks K-15, 3 project dari Portfolio Fase 1).
+- Paket baru: `zod` 4.6 (validasi Server Action, sesuai K-02).
+- Data layer: `lib/data/lifeos.ts` (DAL ber-RLS, deteksi "tabel belum ada"),
+  `lib/data/public-projects.ts` (K-33), `lib/supabase/public.ts` & `client.ts`.
+- Server Actions: tasks (buat/ubah/status/hapus), projects (buat → langsung ke detail, ubah
+  teks EN/ID + highlight + link + tech stack + tanggal + slug unik, flag Publik/Unggulan,
+  hapus + bersihkan lampiran, catat/hapus lampiran), konteks (buat/ubah/hapus).
+- UI: `/app/tasks` (filter konteks & tampilan di URL, tambah cepat, List berkelompok
+  Terlambat/Hari ini/Mendatang/Tanpa tenggat/Selesai dengan centang optimistis, Kanban drag &
+  drop + "Pindah ke", editor dialog), `/app/projects` (filter status, kartu progres),
+  `/app/projects/[id]` (task project, form detail, switch situs, lampiran, hapus),
+  Pengaturan → Konteks (nama + warna, hapus dua langkah).
+- Portfolio, Welcome, dan detail publik kini membaca `getPublicProjects()`.
+- Build: sidebar/bottom nav dibungkus `<Suspense>` (pathname rute dinamis tidak diketahui saat
+  prerender). Lint, typecheck, build lolos (33 halaman).
+- Belum diuji dengan data asli: menunggu Rahul menjalankan SQL (Claude tidak punya akses login).
 
 ### 2026-11-10 — Sesi 10: Fase 2 — Auth & Shell Life OS
 - Rahul: "lanjut fase 2". Dibaca panduan Next 16 *Authentication with Cache Components*.
@@ -833,7 +863,11 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
       6. Kirim URL + publishable key ke Claude (aman, kunci publik) untuk `.env.local` & uji login.
 - [x] Uji login di produksi — berhasil di HP, iPad, dan komputer (2026-11-10)
 - [ ] Fase 2 opsional: reset password / magic link.
-- [ ] **Rahul:** kirim Publishable key Supabase ke Claude → `.env.local` untuk pengembangan Fase 3.
+- [x] **Rahul:** kirim Publishable key Supabase → `.env.local` — 2026-11-10
+- [x] Fase 3 (kode): Tasks, Projects, lampiran, Konteks, Portfolio dari database — Sesi 11
+- [ ] **Rahul:** jalankan `supabase/migrations/0001_projects_tasks.sql` di Supabase → SQL Editor,
+      lalu uji: tambah/centang/edit task, Kanban, buat project + lampiran, switch Publik.
+- [ ] Fase 3 lanjutan (opsional): urutan manual task (drag di dalam kolom), subtask, pencarian.
 - [ ] Fase 1 sisa: cek di iPad/HP asli; foto profil + cover
       project asli (menggantikan placeholder gradien); carousel "Moments" saat foto kegiatan ada;
       halaman 404 bergaya; gambar OG untuk share link; kirim form kontak langsung (server action +

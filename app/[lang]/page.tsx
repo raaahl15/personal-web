@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, Mail } from "lucide-react";
-import { experienceGroups, profile, projects, stats } from "@/content/profile";
+import { experienceGroups, profile, stats, type Project } from "@/content/profile";
+import { getPublicProjects } from "@/lib/data/public-projects";
 import { hasLocale, localePath, type Locale } from "@/lib/i18n";
 import { yearOf } from "@/lib/site";
 import { CountUp } from "@/components/site/count-up";
@@ -18,11 +19,12 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary(lang);
-  const featured = projects.filter((p) => p.featured);
+  const all = await getPublicProjects();
+  const featured = all.filter((p) => p.featured).slice(0, 3);
 
   return (
     <>
-      <Hero lang={lang} dict={dict} />
+      <Hero lang={lang} dict={dict} spotlight={featured[0] ?? all[0]} />
       <Stats lang={lang} dict={dict} />
       <Featured lang={lang} dict={dict} featured={featured} />
       <AboutTeaser lang={lang} dict={dict} />
@@ -33,9 +35,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
 type SectionProps = { lang: Locale; dict: Dictionary };
 
-function Hero({ lang, dict }: SectionProps) {
+function Hero({ lang, dict, spotlight: gromics }: SectionProps & { spotlight: Project }) {
   const t = dict.home;
-  const gromics = projects[0];
   return (
     <section data-dark-section className="bg-sky-950 p-3 sm:p-4 md:p-6">
       {/* Hero selalu gelap: kelas .dark mengubah token tema di dalam bingkai ini. */}
@@ -153,7 +154,7 @@ function Stats({ lang, dict }: SectionProps) {
   );
 }
 
-function Featured({ lang, dict, featured }: SectionProps & { featured: typeof projects }) {
+function Featured({ lang, dict, featured }: SectionProps & { featured: Project[] }) {
   const t = dict.home;
   return (
     <section className="px-4 pt-10 pb-24 sm:px-6 md:pb-32">

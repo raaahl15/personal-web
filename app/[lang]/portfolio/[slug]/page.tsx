@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { projects } from "@/content/profile";
+import { getPublicProjects } from "@/lib/data/public-projects";
 import { hasLocale, localePath } from "@/lib/i18n";
 import { ProjectCover } from "@/components/site/project-cover";
 import { Reveal } from "@/components/site/reveal";
@@ -10,15 +10,16 @@ import { getDictionary } from "../../dictionaries";
 
 // Cache Components: generateStaticParams wajib ≥1 param; `dynamicParams` tidak boleh dipakai.
 // Slug yang tidak dikenal → notFound() di halaman.
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getPublicProjects();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
-const findProject = (slug: string) => projects.find((p) => p.slug === slug);
+const findProject = async (slug: string) => (await getPublicProjects()).find((p) => p.slug === slug);
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/portfolio/[slug]">): Promise<Metadata> {
   const { lang, slug } = await params;
-  const project = findProject(slug);
+  const project = await findProject(slug);
   if (!hasLocale(lang) || !project) return {};
   return { title: project.title[lang], description: project.summary[lang] };
 }
@@ -26,7 +27,8 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/portfolio/
 // Detail project — desain v1.0 (FigCraft "Project Detail — Desktop 1440").
 export default async function ProjectPage({ params }: PageProps<"/[lang]/portfolio/[slug]">) {
   const { lang, slug } = await params;
-  const project = findProject(slug);
+  const projects = await getPublicProjects();
+  const project = projects.find((p) => p.slug === slug);
   if (!hasLocale(lang) || !project) notFound();
   const dict = await getDictionary(lang);
   const t = dict.project;

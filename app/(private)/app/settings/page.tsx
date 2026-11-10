@@ -4,12 +4,19 @@ import Link from "next/link";
 import { ArrowUpRight, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AccountEmail } from "@/components/lifeos/user";
+import { ContextManager } from "@/components/lifeos/contexts";
+import { withDb } from "@/components/lifeos/db-not-ready";
+import { getContexts } from "@/lib/data/lifeos";
 import { signOut } from "../actions";
 
 export const metadata: Metadata = { title: "Pengaturan" };
 
-// Pengaturan — Fase 2: akun, tampilan, keluar. Konteks task, kategori, akun uang, dan export
-// data ditambahkan bersama modulnya (Fase 3–7).
+async function Contexts() {
+  return withDb(async () => <ContextManager contexts={await getContexts()} />);
+}
+
+// Pengaturan — akun, tampilan, konteks task (Fase 3), keluar. Kategori/akun uang dan export
+// data ditambahkan bersama modulnya (Fase 5–7).
 export default function SettingsPage() {
   return (
     <div className="flex max-w-3xl flex-col gap-8">
@@ -38,6 +45,20 @@ export default function SettingsPage() {
             Buka <ArrowUpRight className="size-4" aria-hidden />
           </Link>
         </div>
+      </section>
+
+      <section aria-labelledby="ctx-h" className="flex flex-col gap-4">
+        <div>
+          <h2 id="ctx-h" className="text-2xl font-medium">
+            Konteks task
+          </h2>
+          <p className="mt-1 text-[15px] text-muted-foreground">
+            Sesuaikan dengan kegiatan semester ini. Menghapus konteks tidak menghapus task-nya — task jadi “tanpa konteks”.
+          </p>
+        </div>
+        <Suspense fallback={<span aria-hidden className="h-48 animate-pulse rounded-[24px] bg-muted" />}>
+          <Contexts />
+        </Suspense>
       </section>
 
       <form action={signOut}>

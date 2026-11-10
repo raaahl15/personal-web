@@ -375,10 +375,12 @@ export const skills = {
 };
 
 /*
- * Kandidat project portfolio dari CV (belum lengkap — perlu foto, peran, tech stack, link).
- * Bahan per project disiapkan di Drive `04 - Portfolio Content`.
+ * Project portfolio. Sejak Fase 3 sumber utamanya tabel `projects` (is_public = true) lewat
+ * lib/data/public-projects.ts; daftar di bawah dipakai sebagai CADANGAN bila database tidak
+ * bisa diakses (dan sebagai data awal di supabase/migrations/0001_projects_tasks.sql).
  */
-export type ProjectCategory = "IoT" | "Creative" | "Web";
+/** Kategori bebas (dari database); contoh: IoT, Creative, Web, Organisasi, Riset. */
+export type ProjectCategory = string;
 
 export type Project = {
   slug: string;

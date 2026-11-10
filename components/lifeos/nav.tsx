@@ -37,10 +37,26 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Sidebar pil vertikal (desktop ≥ md). Ikon + tooltip; aria-label di setiap item. */
+/**
+ * Sidebar & bottom nav dibaca pathname-nya di dalam <Suspense> (rute dinamis seperti
+ * /app/projects/[id] tidak tahu pathname saat prerender). Fallback = navigasi yang sama tanpa
+ * penanda aktif, jadi kerangka tetap tampil seketika.
+ */
 export function Sidebar({ avatar }: { avatar: React.ReactNode }) {
-  const pathname = usePathname();
+  return <SidebarView avatar={avatar} pathname={usePathname()} />;
+}
+export function SidebarStatic({ avatar }: { avatar: React.ReactNode }) {
+  return <SidebarView avatar={avatar} pathname="" />;
+}
+export function BottomNav() {
+  return <BottomNavView pathname={usePathname()} />;
+}
+export function BottomNavStatic() {
+  return <BottomNavView pathname="" />;
+}
 
+/** Sidebar pil vertikal (desktop ≥ md). Ikon + tooltip; aria-label di setiap item. */
+function SidebarView({ avatar, pathname }: { avatar: React.ReactNode; pathname: string }) {
   const navItem = (item: Item) => {
     const active = isActive(pathname, item.href);
     const Icon = item.icon;
@@ -92,8 +108,7 @@ export function Sidebar({ avatar }: { avatar: React.ReactNode }) {
 }
 
 /** Navigasi bawah (HP < md): 4 modul utama + "Lainnya" (bottom nav ≤ 5 item, K-25). */
-export function BottomNav() {
-  const pathname = usePathname();
+function BottomNavView({ pathname }: { pathname: string }) {
   const sheetRef = useRef<HTMLDialogElement>(null);
   const primary = [MODULES[0], MODULES[1], MODULES[2], MODULES[4]];
   const more = [MODULES[3], MODULES[5], SETTINGS];

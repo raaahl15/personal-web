@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -15,7 +16,7 @@ export type CurrentUser = {
  * Membaca cookie = data request → panggil HANYA di dalam <Suspense> (Cache Components).
  * Tidak login / sesi tidak valid → redirect ke /login.
  */
-export async function getCurrentUser(): Promise<CurrentUser> {
+export const getCurrentUser = cache(async function getCurrentUser(): Promise<CurrentUser> {
   // Baca cookie lebih dulu: menandai pemanggil sebagai data request (selalu dinamis),
   // supaya redirect di bawah tidak pernah ikut "dibekukan" saat build.
   await cookies();
@@ -33,4 +34,4 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   const name = fullName.trim().split(/\s+/)[0] || "Rahul";
 
   return { id: claims.sub, email, name };
-}
+});

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { awards, experienceGroups, projects } from "@/content/profile";
+import { awards, experienceGroups } from "@/content/profile";
+import { getPublicProjects } from "@/lib/data/public-projects";
 import { hasLocale, localePath } from "@/lib/i18n";
 import { ProjectFilter } from "@/components/site/project-filter";
 import { Reveal } from "@/components/site/reveal";
@@ -22,6 +23,7 @@ export default async function PortfolioPage({ params }: PageProps<"/[lang]/portf
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary(lang);
   const t = dict.portfolio;
+  const projects = await getPublicProjects();
   const orgCount = experienceGroups.find((g) => g.id === "leadership")?.items.length ?? 0;
 
   const folders = [
