@@ -6,17 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { LangSwitch, NavLinks } from "./nav-links";
 import { MobileMenu } from "./mobile-menu";
 import { HeaderTone } from "./header-tone";
-
-export function Monogram({ className = "size-11 text-base" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`grid shrink-0 place-items-center rounded-full bg-linear-to-br from-sky-500 to-sky-750 font-heading font-semibold text-sky-50 ${className}`}
-    >
-      RG
-    </span>
-  );
-}
+import { ProfileAvatar } from "./profile-photo";
 
 /** Navbar pil kaca yang mengambang (desain v1.0, komponen Navbar/Public & Navbar/Mobile). */
 export function SiteHeader({ lang, nav }: { lang: Locale; nav: Dictionary["nav"] }) {
@@ -32,7 +22,8 @@ export function SiteHeader({ lang, nav }: { lang: Locale; nav: Dictionary["nav"]
           href={localePath(lang)}
           className="flex items-center gap-3 rounded-full pr-3 outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <Monogram />
+          {/* Avatar dekoratif — nama tertulis di sebelahnya */}
+          <ProfileAvatar />
           <span className="font-heading text-lg font-medium">{profile.shortName}</span>
         </Link>
 

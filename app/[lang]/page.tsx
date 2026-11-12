@@ -10,6 +10,7 @@ import { FolderCard } from "@/components/site/folder-card";
 import { LinkedinIcon } from "@/components/site/icons";
 import { PillLink } from "@/components/site/pill-link";
 import { ProjectCover } from "@/components/site/project-cover";
+import { ProfilePortrait } from "@/components/site/profile-photo";
 import { Reveal } from "@/components/site/reveal";
 import { getDictionary, type Dictionary } from "./dictionaries";
 
@@ -197,9 +198,7 @@ function AboutTeaser({ lang, dict }: SectionProps) {
       </div>
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 pt-16 md:pt-24 lg:grid-cols-[460px_1fr] lg:gap-20">
         <Reveal className="relative mx-auto aspect-[46/54] w-full max-w-[460px] overflow-hidden rounded-[40px] bg-linear-to-tr from-sky-600 via-sky-250 to-sky-100 shadow-[0_24px_48px_rgb(6_41_86/0.18)]">
-          {/* Placeholder foto profil (Drive 03 - Assets) */}
-          <div aria-hidden className="absolute top-[20%] left-1/2 size-[35%] -translate-x-1/2 rounded-full bg-sky-50/55" />
-          <div aria-hidden className="absolute top-[55%] left-1/2 h-[65%] w-[70%] -translate-x-1/2 rounded-full bg-sky-50/55" />
+          <ProfilePortrait lang={lang} sizes="(min-width: 1024px) 460px, (min-width: 508px) 460px, calc(100vw - 48px)" />
           <div className="absolute inset-x-5 bottom-5 flex items-center justify-between rounded-3xl border border-white/90 bg-white/75 px-5 py-4 text-sky-900 backdrop-blur-xl">
             <div>
               <p className="font-heading text-lg font-medium">{profile.name}</p>

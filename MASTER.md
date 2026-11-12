@@ -11,7 +11,7 @@
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://personal-web-coral-pi.vercel.app (project Vercel `personal-web`, auto-deploy dari `main`; alias lama `raaahl15-personal-web.vercel.app`) |
 | Supabase | Project `xhoonuobulugboohqxqc` (region Sydney `ap-southeast-2`, paket Free) — URL `https://xhoonuobulugboohqxqc.supabase.co` |
-| Status saat ini | **Fase 4 — Journal (kode selesai, menunggu SQL):** editor blok BlockNote per tanggal, simpan otomatis, mood, tag, kalender, pencarian. Portfolio +3 project (DME Capstone, Skripsi CD4, PMSF Katup Hidrolik) dengan tautan GitHub/Drive/dataset. **Rahul perlu menjalankan `0002_more_projects.sql`, `0003_journal.sql`, `0004_pmsf_project.sql`** |
+| Status saat ini | **Fase 4 — Journal (kode selesai, menunggu SQL):** editor blok BlockNote per tanggal, simpan otomatis, mood, tag, kalender, pencarian. Portfolio +3 project (DME Capstone, Skripsi CD4, PMSF Katup Hidrolik) dengan tautan GitHub/Drive/dataset. Foto profil asli terpasang. SQL 0002 & 0004 terdeteksi sudah jalan; **`0003_journal.sql` perlu dicek/dijalankan** agar Jurnal aktif |
 | Terakhir diperbarui | 2026-11-12 |
 
 ## Daftar Isi
@@ -641,6 +641,7 @@ yang menjelaskan alasannya.
 | K-38 | 2026-11-11 | Jurnal **simpan otomatis**: jeda 0,9 dtk, klien selalu mengirim keadaan lengkap → Server Action `upsert` (user_id, entry_date); entri dikosongkan → dihapus; `content_text` (judul + isi + #tag) untuk pencarian `ilike`; `/app/journal` diarahkan `proxy.ts` ke tanggal hari ini (WIB) | Entri "otomatis ada" saat ditulis tanpa baris kosong di DB; pencarian cukup untuk skala pribadi tanpa indeks full-text |
 | K-39 | 2026-11-11 | Unggah gambar ke jurnal **ditunda** (gambar lewat URL saja) | Bucket privat butuh signed URL yang kedaluwarsa → URL di isi blok akan putus; perlu resolver path → URL dulu |
 | K-40 | 2026-11-12 | Project **PMSF** (Pembelajaran Mesin untuk Sistem Fisis — klasifikasi kondisi katup hidrolik) masuk Portfolio dengan tautan ke **sumber dataset UCI**, bukan folder Drive kelompok | Folder `Proyek_PMSF_Kelompok` terbuka "siapa saja yang punya link" sebagai **Editor** → menautkannya di situs publik = orang asing bisa mengubah/menghapus isi; tidak ada repo GitHub |
+| K-41 | 2026-11-12 | **Foto profil asli** dipakai di About (potret, `preload`), kartu About di Welcome, avatar navbar & menu HP, dan avatar akun Life OS; file di `public/images/` dipotong & dikompres dari asli 4000×6000 (potret 1200×1440 ±180 KB, avatar 256×256 ±12 KB), disajikan `next/image` (srcset + blur). Logo "RG" sidebar Life OS tetap sebagai ikon aplikasi | Menggantikan placeholder Fase 1; file asli 4000×6000 terlalu berat untuk web (aturan skill: ukuran sesuai tampilan) |
 | K-31 | 2026-11-10 | Area privat = route group `app/(private)` sebagai root layout kedua (ID, `noindex`); login hanya email + password untuk satu akun (sign-up dimatikan di Supabase); magic link / reset password menyusul | Pisah total dari i18n publik; cukup untuk pemakaian pribadi |
 
 ---
@@ -648,6 +649,18 @@ yang menjelaskan alasannya.
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-12 — Sesi 14: Foto profil asli
+- Rahul mengirim foto (studio, kemeja biru tua Fakultas Teknik, latar abu-abu; 4000×6000).
+- Skill UI/UX Pro Max: alt teks deskriptif, ukuran gambar sesuai tampilan, lazy di bawah layar.
+- Dipotong dengan Pillow → `public/images/rahul-portrait.jpg` (5:6, 1200×1440) dan
+  `rahul-avatar.jpg` (wajah, 256×256). Komponen baru `components/site/profile-photo.tsx`
+  (`ProfilePortrait` dengan alt EN/ID, `ProfileAvatar`); Next 16: `preload` menggantikan `priority`.
+- Dipasang di About (bingkai oval, `preload`), Welcome (kartu About), navbar + menu HP (menggantikan
+  monogram "RG"), avatar akun di sidebar Life OS.
+- Verifikasi: lint & build lolos (40 halaman — halaman DME, Skripsi, PMSF kini dari database, tanda
+  SQL 0002 & 0004 sudah dijalankan; DME & Skripsi sudah ditandai unggulan oleh Rahul). Screenshot:
+  About desktop & 500px, Welcome mode gelap.
 
 ### 2026-11-12 — Sesi 13: Project PMSF ke Portfolio
 - Rahul: "yang psmf itu pmsf". Ditemukan di Drive: folder `Proyek_PMSF_Kelompok` (mata kuliah
@@ -962,7 +975,8 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
       (KKN, dll).
 - [ ] **Rahul:** bahan project portfolio di Drive `04 - Portfolio Content` (foto, peran,
       tech stack, link) — minimal GROMICS; tambah project lain bila ada.
-- [ ] **Rahul:** foto profil untuk situs → Drive `03 - Assets`.
+- [x] **Rahul:** foto profil untuk situs — dikirim & dipasang 2026-11-12 (Sesi 14). Opsional: simpan
+      file asli ke Drive `03 - Assets`.
 - [x] Mulai Fase 0: setup project Next.js baru, pindahkan `index.html` ke `legacy/` — 2026-11-10
 - [x] Merge branch kerja ke `main` + push ke GitHub — 2026-11-10
 - [x] **Rahul:** hubungkan repo ke **Vercel** → https://raaahl15-personal-web.vercel.app — 2026-11-10

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
+import { ProfileAvatar } from "@/components/site/profile-photo";
 
 /** Avatar di sidebar. Membaca sesi → render di dalam <Suspense>. */
 export async function UserAvatar() {
@@ -9,9 +10,9 @@ export async function UserAvatar() {
       href="/app/settings"
       aria-label={`Akun: ${user.email}`}
       title={user.email}
-      className="grid size-12 place-items-center rounded-full border-2 border-card bg-linear-to-br from-sky-250 to-sky-600 font-heading text-lg font-medium text-white outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="grid size-12 place-items-center rounded-full border-2 border-card outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {user.name.charAt(0)}
+      <ProfileAvatar className="size-full" />
     </Link>
   );
 }

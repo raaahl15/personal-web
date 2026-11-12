@@ -5,6 +5,7 @@ import { hasLocale, localePath } from "@/lib/i18n";
 import { formatPeriod, yearOf } from "@/lib/site";
 import { ExperienceTabs } from "@/components/site/experience-tabs";
 import { PillLink } from "@/components/site/pill-link";
+import { ProfilePortrait } from "@/components/site/profile-photo";
 import { Reveal } from "@/components/site/reveal";
 import { cn } from "@/lib/utils";
 import { getDictionary } from "../dictionaries";
@@ -68,12 +69,8 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/about">) 
             <h1 className="text-[13px] font-semibold tracking-[0.16em] text-subtle uppercase">{t.overline}</h1>
             <p className="text-[17px] leading-relaxed text-muted-foreground">{profile.summary[lang]}</p>
           </Reveal>
-          <Reveal className="order-1 mx-auto aspect-[400/480] w-full max-w-[400px] overflow-hidden rounded-[200px] bg-linear-to-tr from-sky-600 to-sky-250 shadow-[0_24px_48px_rgb(6_41_86/0.18)] lg:order-2">
-            {/* Placeholder foto profil */}
-            <div aria-hidden className="relative size-full">
-              <span className="absolute top-[19%] left-1/2 size-[37%] -translate-x-1/2 rounded-full bg-sky-50/55" />
-              <span className="absolute top-[56%] left-1/2 h-[67%] w-[75%] -translate-x-1/2 rounded-full bg-sky-50/55" />
-            </div>
+          <Reveal className="relative order-1 mx-auto aspect-[400/480] w-full max-w-[400px] overflow-hidden rounded-[200px] bg-linear-to-tr from-sky-600 to-sky-250 shadow-[0_24px_48px_rgb(6_41_86/0.18)] lg:order-2">
+            <ProfilePortrait lang={lang} preload sizes="(min-width: 1024px) 400px, (min-width: 448px) 400px, calc(100vw - 32px)" />
           </Reveal>
           <Reveal delay={100} className="glass order-3 flex flex-col gap-3.5 rounded-[32px] p-6 lg:mb-24">
             {[

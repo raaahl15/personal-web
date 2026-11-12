@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LinkedinIcon } from "./icons";
 import { LangSwitch } from "./nav-links";
+import { ProfileAvatar } from "./profile-photo";
 
 type Labels = {
   home: string;
@@ -78,9 +79,7 @@ export function MobileMenu({
 
           <div className="glass flex items-center justify-between rounded-full p-1.5">
             <span className="flex items-center gap-3">
-              <span aria-hidden className="grid size-11 place-items-center rounded-full bg-linear-to-br from-sky-500 to-sky-750 font-heading font-semibold text-sky-50">
-                RG
-              </span>
+              <ProfileAvatar />
               <span className="font-heading text-lg font-medium">{name}</span>
             </span>
             <button
