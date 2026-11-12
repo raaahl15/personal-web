@@ -11,8 +11,8 @@
 | Google Drive | https://drive.google.com/drive/folders/13VVrjm4MkPGJBJFvxNU29PSw40nHE-U0 |
 | Situs (Vercel) | https://personal-web-coral-pi.vercel.app (project Vercel `personal-web`, auto-deploy dari `main`; alias lama `raaahl15-personal-web.vercel.app`) |
 | Supabase | Project `xhoonuobulugboohqxqc` (region Sydney `ap-southeast-2`, paket Free) — URL `https://xhoonuobulugboohqxqc.supabase.co` |
-| Status saat ini | **Fase 4 — Journal (kode selesai, menunggu SQL):** editor blok BlockNote per tanggal, simpan otomatis, mood, tag, kalender, pencarian. Portfolio +2 project (DME Capstone, Skripsi CD4) dengan tautan GitHub/Drive. **Rahul perlu menjalankan `0002_more_projects.sql` dan `0003_journal.sql`**; project PSMF menunggu bahan dari Rahul |
-| Terakhir diperbarui | 2026-11-11 |
+| Status saat ini | **Fase 4 — Journal (kode selesai, menunggu SQL):** editor blok BlockNote per tanggal, simpan otomatis, mood, tag, kalender, pencarian. Portfolio +3 project (DME Capstone, Skripsi CD4, PMSF Katup Hidrolik) dengan tautan GitHub/Drive/dataset. **Rahul perlu menjalankan `0002_more_projects.sql`, `0003_journal.sql`, `0004_pmsf_project.sql`** |
+| Terakhir diperbarui | 2026-11-12 |
 
 ## Daftar Isi
 
@@ -640,6 +640,7 @@ yang menjelaskan alasannya.
 | K-37 | 2026-11-11 | Editor jurnal: **BlockNote 0.56.0 varian shadcn** (Base UI + token tema kita, versi dipin exact; 0.57.0 dilewati karena rilis < 2 minggu), dimuat `dynamic(..., { ssr: false })`; locale EN dengan placeholder Indonesia (belum ada locale `id`) | Sesuai K-02; varian shadcn memakai Base UI yang sama dengan komponen kita, tanpa Mantine |
 | K-38 | 2026-11-11 | Jurnal **simpan otomatis**: jeda 0,9 dtk, klien selalu mengirim keadaan lengkap → Server Action `upsert` (user_id, entry_date); entri dikosongkan → dihapus; `content_text` (judul + isi + #tag) untuk pencarian `ilike`; `/app/journal` diarahkan `proxy.ts` ke tanggal hari ini (WIB) | Entri "otomatis ada" saat ditulis tanpa baris kosong di DB; pencarian cukup untuk skala pribadi tanpa indeks full-text |
 | K-39 | 2026-11-11 | Unggah gambar ke jurnal **ditunda** (gambar lewat URL saja) | Bucket privat butuh signed URL yang kedaluwarsa → URL di isi blok akan putus; perlu resolver path → URL dulu |
+| K-40 | 2026-11-12 | Project **PMSF** (Pembelajaran Mesin untuk Sistem Fisis — klasifikasi kondisi katup hidrolik) masuk Portfolio dengan tautan ke **sumber dataset UCI**, bukan folder Drive kelompok | Folder `Proyek_PMSF_Kelompok` terbuka "siapa saja yang punya link" sebagai **Editor** → menautkannya di situs publik = orang asing bisa mengubah/menghapus isi; tidak ada repo GitHub |
 | K-31 | 2026-11-10 | Area privat = route group `app/(private)` sebagai root layout kedua (ID, `noindex`); login hanya email + password untuk satu akun (sign-up dimatikan di Supabase); magic link / reset password menyusul | Pisah total dari i18n publik; cukup untuk pemakaian pribadi |
 
 ---
@@ -647,6 +648,21 @@ yang menjelaskan alasannya.
 ## 12. Log Pengerjaan (History)
 
 Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
+
+### 2026-11-12 — Sesi 13: Project PMSF ke Portfolio
+- Rahul: "yang psmf itu pmsf". Ditemukan di Drive: folder `Proyek_PMSF_Kelompok` (mata kuliah
+  Pembelajaran Mesin untuk Sistem Fisis, Kelompok 5) — sumber isi: `PMSF_Tracker` (History,
+  Work_Orders, Experiment_Log EXP-001 s.d. EXP-011). Tidak ada repo GitHub.
+- Isi project (EN + ID): Rahul sebagai Project Lead tim 5 orang; dataset UCI *Condition Monitoring of
+  Hydraulic Systems*; fitur fisis + 68 fitur statistik; split per blok 50 siklus
+  (StratifiedGroupKFold) vs acak (RF 0,982 → 0,804); 7 model, GridSearchCV, permutation importance;
+  hasil uji 450 siklus: LogReg + fitur fisis F1-macro 1,000, HGB fitur statistik 0,878. Nama anggota
+  lain tidak dicantumkan.
+- **Temuan keamanan:** folder Drive PMSF terbuka untuk siapa saja dengan link sebagai **Editor**
+  (rencana di tracker: tutup akses link setelah anggota dapat akses Editor). Tidak ditautkan di situs
+  (K-40); disarankan diubah ke Viewer/Dibatasi.
+- `supabase/migrations/0004_pmsf_project.sql` (publik, belum unggulan, kategori "Machine Learning",
+  cover `pulse`) + data cadangan `content/profile.ts`. Tautan publik: halaman dataset UCI (dicek 200).
 
 ### 2026-11-11 — Sesi 12: 3 project baru ke Portfolio + Fase 4 Journal
 - Rahul: "masukkan 3 project baruku (DME Capstone, Skripsi, PSMF), jadikan public, bisa lihat di
@@ -911,11 +927,12 @@ Urutan terbaru di atas. Setiap sesi kerja menambah satu entri.
 - [x] Fase 3 (kode): Tasks, Projects, lampiran, Konteks, Portfolio dari database — Sesi 11
 - [x] **Rahul:** jalankan `supabase/migrations/0001_projects_tasks.sql` — 2026-11-10. Dicek Claude
       via REST anon: 3 project publik terbaca; contexts/tasks/project_files tertutup (RLS OK).
-- [ ] **Rahul:** jalankan `supabase/migrations/0002_more_projects.sql` lalu `0003_journal.sql` di
-      Supabase → SQL Editor (keduanya aman dijalankan ulang). Setelah itu DME Capstone & Skripsi
-      muncul di Portfolio, dan Jurnal aktif.
-- [ ] **Rahul:** kirim bahan **project PSMF** (kepanjangan, ringkasan, peran, link GitHub/Drive) —
-      tidak ditemukan di Drive/GitHub/disk lokal (Sesi 12).
+- [ ] **Rahul:** jalankan `supabase/migrations/0002_more_projects.sql`, `0003_journal.sql`, lalu
+      `0004_pmsf_project.sql` di Supabase → SQL Editor (semua aman dijalankan ulang). Setelah itu
+      DME Capstone, Skripsi, dan PMSF muncul di Portfolio, dan Jurnal aktif.
+- [x] Bahan project PMSF ditemukan (folder `Proyek_PMSF_Kelompok`) → masuk Portfolio — Sesi 13
+- [ ] **Rahul:** ubah akses link folder Drive `Proyek_PMSF_Kelompok` dari **Editor** ke Viewer atau
+      Dibatasi (anggota tetap lewat email). Bila jadi Viewer, folder bisa ditautkan di Portfolio.
 - [ ] **Rahul:** pilih project unggulan di Welcome (saat ini tetap GROMICS, Video Profil, Life OS;
       DME/Skripsi bisa dinyalakan lewat switch "Unggulan" di Life OS).
 - [ ] **Rahul:** uji Jurnal di HP/iPad/komputer: tulis, mood, tag, pindah hari, kalender, cari.

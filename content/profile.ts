@@ -554,6 +554,42 @@ export const projects: Project[] = [
       { label: "Google Drive", url: "https://drive.google.com/drive/folders/1L5EdiZuWsGFqOQ64QzMGHmxBUs63yKJ6" },
     ],
   },
+  {
+    slug: "pmsf-hydraulic-valve",
+    title: {
+      en: "Hydraulic Valve Monitoring — Machine Learning for Physical Systems (PMSF)",
+      id: "Monitoring Katup Hidrolik — Pembelajaran Mesin untuk Sistem Fisis (PMSF)",
+    },
+    shortTitle: "Hydraulic Valve Monitoring",
+    category: "Machine Learning",
+    year: "2026",
+    status: "done",
+    summary: {
+      en: "Group project for the Machine Learning for Physical Systems (PMSF) course, UGM: classifying the condition of a hydraulic valve from multi-sensor test-rig data with scikit-learn. I led the five-person team as Project Lead.",
+      id: "Project kelompok mata kuliah Pembelajaran Mesin untuk Sistem Fisis (PMSF), UGM: klasifikasi kondisi katup hidrolik dari data multi-sensor rig uji dengan scikit-learn. Saya memimpin tim lima orang sebagai Project Lead.",
+    },
+    highlights: {
+      en: [
+        "Project Lead of a five-person team: work orders, an experiment log, and a one-day sprint from dataset selection to the final report.",
+        "Combined physics-based features with 68 statistical sensor features; with the physics features even Logistic Regression reached an F1-macro of 1.000 on the held-out test set (450 cycles), versus 0.878 for the best statistical-feature model.",
+        "Leak-free validation with a grouped split by 50-cycle blocks (StratifiedGroupKFold), showing that a random split overstates the score (Random Forest F1 0.982 random vs 0.804 grouped).",
+        "Compared seven scikit-learn models, tuned with GridSearchCV, and interpreted with permutation importance — pressure-sensor features ranked highest.",
+      ],
+      id: [
+        "Project Lead tim lima orang: work order, log eksperimen, dan sprint satu hari dari pemilihan dataset sampai laporan akhir.",
+        "Menggabungkan fitur fisis dengan 68 fitur statistik sensor; dengan fitur fisis, Logistic Regression pun mencapai F1-macro 1,000 di data uji terpisah (450 siklus), dibanding 0,878 untuk model terbaik berfitur statistik.",
+        "Validasi bebas kebocoran dengan split berkelompok per blok 50 siklus (StratifiedGroupKFold), yang menunjukkan split acak membuat skor terlalu optimis (Random Forest F1 0,982 acak vs 0,804 berkelompok).",
+        "Membandingkan tujuh model scikit-learn, tuning dengan GridSearchCV, dan interpretasi dengan permutation importance — fitur sensor tekanan paling berpengaruh.",
+      ],
+    },
+    result: { en: "Test F1-macro 1.000 with physics-based features", id: "F1-macro uji 1,000 dengan fitur fisis" },
+    cover: "pulse",
+    featured: false,
+    techStack: ["Python", "scikit-learn", "pandas", "matplotlib", "Google Colab"],
+    links: [
+      { label: "Dataset (UCI)", url: "https://archive.ics.uci.edu/dataset/447/condition+monitoring+of+hydraulic+systems" },
+    ],
+  },
 ];
 
 /** Angka singkat untuk welcome page (semua dari CV). */
